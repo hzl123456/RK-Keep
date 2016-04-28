@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="20dp">
+
+    <cn.xmrk.rkandroid.widget.edittext.ClearEditText
+        android:id="@+id/et_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@null"
+        android:drawablePadding="15dp"
+        android:drawableRight="@drawable/ic_clear_search_holo_light"
+        android:hint="标题"
+        android:minWidth="300dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:textColor="#000000"
+        android:textSize="22sp" />
+
+    <cn.xmrk.rkandroid.widget.edittext.ClearEditText
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@null"
+        android:minWidth="300dp"
+        android:drawablePadding="15dp"
+        android:drawableRight="@drawable/ic_clear_search_holo_light"
+        android:hint="记事"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+</LinearLayout>

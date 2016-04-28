@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container_title"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/title_bar_height"
+    android:layout_gravity="top"
+    android:gravity="center_vertical"
+    android:background="@color/bg_title_bar"
+    >
+
+    <Button
+        android:id="@+id/btn_title_left"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:background="@null"
+        android:textSize="@dimen/text_normal"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:gravity="center" 
+        android:singleLine="true"
+        android:paddingLeft="50dp"
+        android:text="sss"
+        android:paddingRight="50dp"
+        android:ellipsize="end"
+        android:background="@android:color/transparent"
+        android:textColor="@color/color_text_white"
+        android:textSize="@dimen/title_bar_text"
+        />
+
+    <Button
+        android:id="@+id/btn_title_right"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:background="@null"
+        android:textSize="@dimen/text_normal"
+        android:textColor="@color/btn_text_normal"
+        android:contentDescription="@null" />
+
+</RelativeLayout>

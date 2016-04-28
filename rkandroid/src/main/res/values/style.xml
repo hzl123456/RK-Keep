@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ActivityDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <!-- <item name="android:windowAnimationStyle">@style/DialogAnimation</item> -->
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <!-- ActivityDialog 动画从下滑到上面 -->
+    <style name="ActivityDialogBottomToTop" parent="ActivityDialog">
+        <item name="android:windowAnimationStyle">@style/BottomToTop</item>
+    </style>
+
+    <!-- 从下滑到上面的动画效果 -->
+    <style name="BottomToTop" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/option_translate_in</item>
+        <!-- <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item> -->
+        <!-- <item name="android:activityCloseEnterAnimation">@anim/slide_in_right</item> -->
+        <item name="android:activityCloseExitAnimation">@anim/option_translate_out</item>
+    </style>
+</resources>

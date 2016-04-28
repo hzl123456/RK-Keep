@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--android5.0以下没有水波纹效果，只能换种点击方式-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/color_cfd8dc" android:state_pressed="false"></item>
+    <item android:drawable="@color/press_divider_grey" android:state_pressed="true" />
+</selector>

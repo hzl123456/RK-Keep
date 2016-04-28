@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.xmrk.rkandroid.widget.imageView.ScaleImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/image"
+    style="@style/WeightImageView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:src="@color/bg_white"
+    android:scaleType="centerCrop">
+
+</cn.xmrk.rkandroid.widget.imageView.ScaleImageView>

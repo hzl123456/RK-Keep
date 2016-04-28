@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/main_button_size"
+    android:background="@android:color/transparent">
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layout_content" />
+
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <View
+            style="@style/View_divider"
+            android:layout_height="0.5dp" />
+
+
+        <LinearLayout
+            android:id="@+id/layout_picture"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_size"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:layout_width="@dimen/action_size"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:src="@drawable/ic_perm_group_camera" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/addnotice_picture"
+                android:textColor="#55000000"
+                android:textSize="@dimen/text_big" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_draw"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_size"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:layout_width="@dimen/action_size"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:src="@drawable/ic_ink_pen_grey" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/addnotice_draw"
+                android:textColor="#55000000"
+                android:textSize="@dimen/text_big" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tv_voice"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_size"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:layout_width="@dimen/action_size"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:src="@drawable/ic_voice_search_api_holo_light" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/addnotice_voice"
+                android:textColor="#55000000"
+                android:textSize="@dimen/text_big" />
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/main_button_size" />
+    </LinearLayout>
+</RelativeLayout>

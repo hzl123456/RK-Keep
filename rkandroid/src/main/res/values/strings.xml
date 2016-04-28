@@ -1,0 +1,14 @@
+<resources>
+    <!-- 时间亲和显示 -->
+    <string name="time_just_now">刚刚</string>
+    <string name="time_minute_ago">%1$d分钟前</string>
+    <string name="time_hour_ago">%1$d小时前</string>
+    <string name="time_day_ago">%1$d天前 </string>
+    <string name="ok">确认</string>
+    <string name="cancel">取消</string>
+    <string name="take_picture">拍照</string>
+    <string name="select_from_gallery">从图库获取</string>
+    <string name="none_data">没有数据</string>
+    <string name="click_to_loadmore">点击加载更多</string>
+
+</resources>

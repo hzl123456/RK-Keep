@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="color_blue">#3747d9</color>
+    <color name="color_blue_light">#bdc2f1</color>
+    <!--一些颜色的需要-->
+    <color name="color_ff8a80">#ff8a80</color>
+    <color name="color_ffd180">#ffd180</color>
+    <color name="color_ffff8d">#ffff8d</color>
+    <color name="color_ccff90">#ccff90</color>
+    <color name="color_a7ffeb">#a7ffeb</color>
+    <color name="color_80d8ff">#80d8ff</color>
+    <color name="color_cfd8dc">#cfd8dc</color>
+    <!-- 点击灰色变化-->
+    <color name="press_divider_grey">#77BDBDBD</color>
+    <!--标题栏的颜色变化-->
+    <color name="title_blue">#3F51B5</color>
+    <color name="title_yellow">#fccccc00</color>
+    <color name="title_red">#fcff000d</color>
+</resources>

@@ -1,0 +1,21 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="cn.xmrk.rkandroid">
+
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application>
+        <activity
+            android:name="cn.xmrk.rkandroid.activity.WebViewActivity"/>
+        <activity
+            android:name="cn.xmrk.rkandroid.activity.ChoicePicActivity"
+            android:launchMode="singleTop"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:theme="@style/ActivityDialogBottomToTop"/>
+        <service android:name="cn.xmrk.rkandroid.net.fileupload.helper.service.FileDownloadService"/>
+        <service android:name="cn.xmrk.rkandroid.net.fileupload.helper.service.FileUploadService"/>
+    </application>
+</manifest>

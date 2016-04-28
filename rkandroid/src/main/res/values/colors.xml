@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <!-- 标题栏颜色 -->
+    <color name="bg_title_bar">#3F51B5</color>
+    <!-- 灰色背景 -->
+    <color name="bg_grey">#EEE</color>
+    <!-- 白色背景 -->
+    <color name="bg_white">#FFF</color>
+    <!-- 文字白色 -->
+    <color name="color_text_white">#FFF</color>
+    <!-- 普通按钮未按下文字效果 -->
+    <color name="color_btn_text_normal">#FFF</color>
+    <!-- 按钮下文字效果 -->
+    <color name="color_btn_text_press">#999</color>
+    <!-- 黑色字体 -->
+    <color name="color_text_black">#222</color>
+    <!-- 输入框hint颜色 -->
+    <color name="color_input_hint">#CECECE</color>
+    <!-- 未被按下的白色背景 -->
+    <color name="bg_white_normal">#FFF</color>
+    <!-- 白色背景被按下的效果 -->
+    <color name="bg_white_pressed">#F0F0F0</color>
+    <!-- 红色字 -->
+    <color name="color_text_red">#FF2257</color>
+    <!-- 蓝色字体 -->
+    <color name="color_text_blue">#336799</color>
+    <!-- 灰色字体 -->
+    <color name="color_text_grey">#717171</color>
+    <!-- 分割线的灰色 -->
+    <color name="divider_grey">#BDBDBD</color>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--android5.0后点击水波纹效果-->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/press_divider_grey">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/bg_white" />
+            <corners android:radius="4dp" />
+        </shape>
+    </item>
+    <item android:drawable="@color/bg_white" />
+</ripple>

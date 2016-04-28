@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_containert"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_grey"
+>
+
+    <FrameLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layout_bottom" />
+
+    <RelativeLayout
+        android:id="@+id/layout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_button_size"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bg_white"
+        android:orientation="horizontal"
+        android:paddingLeft="15dp"
+        android:paddingRight="8dp">
+
+        <TextView
+            android:id="@+id/tv_add_text_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/layout_right"
+            android:text="@string/main_add_item"
+            android:textSize="@dimen/text_big" />
+
+        <LinearLayout
+            android:id="@+id/layout_right"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/main_button_size"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/ib_keep_text"
+                android:layout_width="@dimen/main_button_size"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_click_ripple"
+                android:src="@drawable/ic_perm_group_calendar" />
+
+            <ImageButton
+                android:id="@+id/ib_keep_edit"
+                android:layout_width="@dimen/main_button_size"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_click_ripple"
+                android:src="@drawable/ic_ink_pen_grey" />
+
+            <ImageButton
+                android:id="@+id/ib_keep_voice"
+                android:layout_width="@dimen/main_button_size"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_click_ripple"
+                android:src="@drawable/ic_voice_search_api_holo_light" />
+
+            <ImageButton
+                android:id="@+id/ib_keep_camera"
+                android:layout_width="@dimen/main_button_size"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_click_ripple"
+                android:src="@drawable/ic_perm_group_camera" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

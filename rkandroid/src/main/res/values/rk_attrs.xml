@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 缩放图片控件支持宽高比设定 -->
+    <declare-styleable name="CustomImageView">
+        <attr name="ratio_width" format="integer" />
+        <attr name="ratio_height" format="integer" />
+    </declare-styleable>
+
+    <!-- 圆角图片的圆角大小 -->
+    <declare-styleable name="CornerImageView">
+        <attr name="corner_size" format="dimension" />
+    </declare-styleable>
+
+    <!-- 半圆形的菜单按钮 -->
+    <declare-styleable name="Satellite">
+        <attr name="position">
+            <enum name="pos_left_top" value="0" />
+            <enum name="pos_left_bottom" value="1" />
+            <enum name="pos_right_top" value="2" />
+            <enum name="pos_right_bottom" value="3" />
+            <enum name="pos_center_top" value="4" />
+            <enum name="pos_center_bottom" value="5" />
+        </attr>
+        <attr name="radius" format="dimension" />
+    </declare-styleable>
+
+    <!-- ViewPager 的指示器 -->
+    <declare-styleable name="CircleIndicator">
+        <attr name="ci_width" format="dimension" />
+        <attr name="ci_height" format="dimension" />
+        <attr name="ci_margin" format="dimension" />
+        <attr name="ci_animator" format="reference" />
+        <attr name="ci_animator_reverse" format="reference" />
+        <attr name="ci_drawable" format="reference" />
+        <attr name="ci_drawable_unselected" format="reference" />
+    </declare-styleable>
+</resources>

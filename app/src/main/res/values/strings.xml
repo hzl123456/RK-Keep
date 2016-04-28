@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Keep</string>
+    <string name="navigation_drawer_open">open</string>
+    <string name="navigation_drawer_close">close</string>
+
+
+    <!--左侧的各个小标题-->
+    <string name="nav_jishi">记事</string>
+    <string name="nav_tixing">提醒</string>
+    <string name="nav_chuangjian">创建新标签</string>
+    <string name="nav_guidang">已归档</string>
+    <string name="nav_huishouzhan">回收站</string>
+    <string name="nav_setting">设置</string>
+    <string name="nav_help">帮助和反馈</string>
+    <string name="setting_liebiaoxingwei">列表行为</string>
+    <string name="setting_add_bottom">在底部添加新内容</string>
+    <string name="setting_choose_item_bottom">将选中的项移至底部</string>
+    <string name="setting_tixing">提醒设置</string>
+    <string name="setting_shangwu">上午</string>
+    <string name="setting_xaiwu">下午</string>
+    <string name="setting_wanshang">傍晚</string>
+    <string name="setting_share">共享</string>
+    <string name="setting_open_share">启用共享功能</string>
+    <string name="setting_shangwu_limit">请在0时到12时之间选择时间</string>
+    <string name="setting_xaiwu_limit">请在12时到18时之间选择时间</string>
+    <string name="setting_wanshang_limit">请在18时到24时之间选择时间</string>
+    <string name="main_add_item">添加记事...</string>
+    <string name="addnotice_edit_time">修改时间：</string>
+    <string name="addnotice_picture">图片</string>
+    <string name="addnotice_voice">录音</string>
+    <string name="addnotice_draw">绘图</string>
+    <string name="add_picture">添加图片</string>
+    <string name="take_picture">拍照</string>
+    <string name="choose_pic">选择图片</string>
+    <string name="image_size">第%1$d张，共%1$d张</string>
+    <string name="sure_to_delete">确定删除该张图片？</string>
+    <string name="share_my_pic">分享我的图片</string>
+    <string name="pic_draw">图片绘制</string>
+    <string name="pic_show">分享图片</string>
+    <string name="pic_delete">删除图片</string>
+
+</resources>

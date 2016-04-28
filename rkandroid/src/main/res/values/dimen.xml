@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_big">16sp</dimen>
+    <dimen name="text_middle">15sp</dimen>
+    <dimen name="text_normal">14sp</dimen>
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_mini">10sp</dimen>
+
+    <dimen name="title_bar_height">56dp</dimen>
+    <dimen name="title_bar_text">18sp</dimen>
+
+    <dimen name="corner_size_normal">7dp</dimen>
+
+    <!-- 内容里的margin值 -->
+    <dimen name="content_margin_x_big">13dp</dimen>
+    <dimen name="content_margin_xx_big">20dp</dimen>
+    <dimen name="content_margin_xxx_big">30dp</dimen>
+    <dimen name="content_margin_xxxx_big">40dp</dimen>
+    <dimen name="content_margin">7dp</dimen>
+    <dimen name="content_margin_small">5dp</dimen>
+    <dimen name="content_margin_mini">3dp</dimen>
+</resources>
