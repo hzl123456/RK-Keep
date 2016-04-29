@@ -38,5 +38,14 @@
     <string name="pic_draw">图片绘制</string>
     <string name="pic_show">分享图片</string>
     <string name="pic_delete">删除图片</string>
+    <string name="choose_time">选择日期和时间</string>
+    <string name="choose_address">选择地点</string>
+    <string name="error_time">提醒时间不能早于当前时间</string>
+    <string name="edit_time">修改日期和时间</string>
+    <string name="time_delet">删除</string>
+    <string name="edit_or_delete">修改或者删除</string>
+    <string name="edit_address">修改地址</string>
+    <string name="serach_title">搜索...</string>
+    <string name="search_address">搜索地址</string>
 
 </resources>

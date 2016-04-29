@@ -19,11 +19,14 @@ import java.util.Date;
 import cn.xmrk.rkandroid.activity.BaseActivity;
 import cn.xmrk.rkandroid.utils.CommonUtil;
 import cn.xmrk.rkandroid.utils.uil.SpacesItemDecoration;
+import cn.xmrk.rkandroid.widget.edittext.ClearEditText;
 import rkkeep.keep.R;
 import rkkeep.keep.adapter.NoticeAdapter;
 import rkkeep.keep.adapter.listener.OnNoticeItemClickListener;
 import rkkeep.keep.help.ColorHelper;
+import rkkeep.keep.help.NoticeChooseHelper;
 import rkkeep.keep.help.PictureChooseHelper;
+import rkkeep.keep.pojo.AddressInfo;
 import rkkeep.keep.pojo.NoticeImgVoiceInfo;
 import rkkeep.keep.pojo.NoticeInfo;
 import rkkeep.keep.util.NoticeTypeChooseWindow;
@@ -32,6 +35,7 @@ import rkkeep.keep.util.NoticeTypeChooseWindow;
  * Created by Au61 on 2016/4/27.
  */
 public class AddNoticeActivity extends BaseActivity implements View.OnClickListener {
+
 
     private final int SHOWIMAGE_CODE = 88;
 
@@ -57,6 +61,10 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     private TextView tvNowTime;
     private ImageButton ibNoteAction;
     private RelativeLayout layoutBottom;
+    private ClearEditText etTitle;
+    private ClearEditText etContent;
+    private TextView tvNoticeTime;
+    private TextView tvNoticeAddress;
 
     /**
      * 每次进入的时候都会创建一个notice的实例
@@ -72,6 +80,11 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
      * 拍照选择图片
      **/
     private PictureChooseHelper mPictureChooseHelper;
+
+    /**
+     * 选择地点和时间
+     **/
+    private NoticeChooseHelper mNoticeChooseHelper;
 
 
     @Override
@@ -103,6 +116,38 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
                 mNoticeAdapter.notifyDataSetChanged();
             }
         });
+        mNoticeChooseHelper = new NoticeChooseHelper(this);
+        mNoticeChooseHelper.setOnNoticeChooseListener(new NoticeChooseHelper.OnNoticeChooseListener() {
+            @Override
+            public void OnTime(Date date) {
+                if (date == null) {
+                    mNoticeInfo.noticeTime = 0;
+                    tvNoticeTime.setVisibility(View.GONE);
+                } else {
+                    if (System.currentTimeMillis() >= date.getTime()) {
+                        CommonUtil.showSnackToast(getString(R.string.error_time), getTitlebar());
+                    } else {
+                        mNoticeInfo.noticeTime = date.getTime();
+                        tvNoticeTime.setVisibility(View.VISIBLE);
+                        tvNoticeTime.setText(CommonUtil.getAffineTimestampForGroupChat(mNoticeInfo.noticeTime));
+                    }
+                }
+
+            }
+
+            @Override
+            public void OnAddress(AddressInfo addressInfo) {
+                if (addressInfo == null) {
+                    mNoticeInfo.addressInfo = null;
+                    tvNoticeAddress.setVisibility(View.GONE);
+                } else {
+                    mNoticeInfo.addressInfo = null;
+                    tvNoticeAddress.setVisibility(View.VISIBLE);
+                    tvNoticeAddress.setText(mNoticeInfo.addressInfo.addressName);
+                }
+
+            }
+        });
     }
 
     private void initTitle() {
@@ -127,7 +172,7 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         mLayoutManager = new LinearLayoutManager(this, LinearLayout.VERTICAL, false);
         rvContent.setLayoutManager(mLayoutManager);
         rvContent.addItemDecoration(new SpacesItemDecoration(0, 0, 0, CommonUtil.dip2px(3)));
-        mNoticeAdapter = new NoticeAdapter(mNoticeInfo.infos);
+        mNoticeAdapter = new NoticeAdapter(mNoticeInfo.infos, this);
         rvContent.setAdapter(mNoticeAdapter);
         mNoticeAdapter.setOnNoticeItemClickListener(new OnNoticeItemClickListener() {
             @Override
@@ -151,6 +196,17 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
                 startActivityForResult(intent, SHOWIMAGE_CODE);
             }
         });
+
+    }
+
+    public void initBottomView(View view) {
+        etTitle = (ClearEditText) view.findViewById(R.id.et_title);
+        etContent = (ClearEditText) view.findViewById(R.id.et_content);
+        tvNoticeTime = (TextView) view.findViewById(R.id.tv_notice_time);
+        tvNoticeAddress = (TextView) view.findViewById(R.id.tv_notice_address);
+
+        tvNoticeTime.setOnClickListener(this);
+        tvNoticeAddress.setOnClickListener(this);
     }
 
     private void showWindowOrDismiss() {
@@ -158,7 +214,8 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         if (mWindow != null && mWindow.isShowing()) {
             mWindow.dismiss();
         } else {
-            mWindow = new NoticeTypeChooseWindow(mNoticeInfo.color, this, layoutBottom);
+            mWindow = new NoticeTypeChooseWindow(mNoticeInfo.color, this);
+            mWindow.showPopuWindow(layoutBottom);
             mWindow.setOnWindowChooseListener(new NoticeTypeChooseWindow.OnWindowChooseListener() {
                 @Override
                 public void OnChooseColor(String color) {
@@ -181,6 +238,7 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
                     }
                 }
             });
+
         }
 
     }
@@ -211,11 +269,13 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v == ibNotice) {//一些小的操作
-
-
-
+            mNoticeChooseHelper.showDialog();
         } else if (v == ibAddBox) {//添加图片或者录音啥的
             showWindowOrDismiss();
+        } else if (v == tvNoticeTime) {//提醒的时间
+            mNoticeChooseHelper.showTimeDialog();
+        } else if (v == tvNoticeAddress) {//提醒的地点
+            mNoticeChooseHelper.showAddressDialog();
         }
     }
 
@@ -232,19 +292,20 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode != RESULT_CANCELED) {
-            if (requestCode == SHOWIMAGE_CODE) {
-                int number = data.getExtras().getInt("num");
-                mNoticeInfo.infos.remove(number);
-                mNoticeAdapter.setContentSize();
-                mNoticeAdapter.notifyDataSetChanged();
-            } else {
-                if (mPictureChooseHelper != null) {
-                    mPictureChooseHelper.onActivityResult(this, requestCode, resultCode, data);
-                }
-            }
-
+        if (mPictureChooseHelper != null) {
+            mPictureChooseHelper.onActivityResult(this, requestCode, resultCode, data);
         }
+        if (mNoticeChooseHelper != null) {
+            mNoticeChooseHelper.onActivityResult(this, requestCode, resultCode, data);
+        }
+        if (requestCode != RESULT_CANCELED && requestCode == SHOWIMAGE_CODE) {
+            int number = data.getExtras().getInt("num");
+            mNoticeInfo.infos.remove(number);
+            mNoticeAdapter.setContentSize();
+            mNoticeAdapter.notifyDataSetChanged();
+        }
+
+
     }
 
 }

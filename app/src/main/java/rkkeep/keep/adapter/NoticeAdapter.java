@@ -11,6 +11,7 @@ import cn.xmrk.rkandroid.adapter.HeaderFooterRecyclerViewAdapter;
 import cn.xmrk.rkandroid.widget.MultiGridView;
 import cn.xmrk.rkandroid.widget.edittext.ClearEditText;
 import rkkeep.keep.R;
+import rkkeep.keep.activity.AddNoticeActivity;
 import rkkeep.keep.adapter.listener.OnNoticeItemClickListener;
 import rkkeep.keep.pojo.NoticeImgVoiceInfo;
 
@@ -30,9 +31,16 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
     //多余的数目
     private int excessSize;
 
+    /**
+     * 需要外部操作的view
+     ***/
+    private View bottomView;
 
-    public NoticeAdapter(List<NoticeImgVoiceInfo> mData) {
+    private AddNoticeActivity activity;
+
+    public NoticeAdapter(List<NoticeImgVoiceInfo> mData, AddNoticeActivity activity) {
         this.mData = mData;
+        this.activity = activity;
         setContentSize();
     }
 
@@ -82,7 +90,9 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
 
     @Override
     protected RecyclerView.ViewHolder onCreateFooterItemViewHolder(ViewGroup parent, int footerViewType) {
-        return new BottomViewHolder(View.inflate(parent.getContext(), R.layout.activity_addnotice_top_content, null));
+        bottomView = View.inflate(parent.getContext(), R.layout.activity_addnotice_top_content, null);
+        activity.initBottomView(bottomView);
+        return new BottomViewHolder(bottomView);
     }
 
     @Override

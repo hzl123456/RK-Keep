@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/action_size">
+
+    <cn.xmrk.rkandroid.widget.edittext.ClearEditText
+        android:id="@+id/et_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/ib_search"
+        android:background="@null"
+        android:paddingRight="10dp"
+        android:drawableRight="@drawable/places_ic_clear"
+        android:hint="@string/serach_title"
+        android:singleLine="true"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:paddingRight="10dp"
+        android:layout_toLeftOf="@+id/ib_search"
+        android:singleLine="true"
+        android:textSize="20sp" />
+
+
+    <ImageButton
+        android:id="@+id/ib_search"
+        android:layout_width="@dimen/action_size"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/btn_click_ripple"
+        android:src="@drawable/places_ic_search" />
+
+</RelativeLayout>

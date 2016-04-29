@@ -1,5 +1,7 @@
 package rkkeep.keep.application;
 
+import com.baidu.mapapi.SDKInitializer;
+
 import cn.xmrk.rkandroid.application.RKApplication;
 import cn.xmrk.rkandroid.config.IRKConfig;
 import rkkeep.keep.util.UserInfoUtil;
@@ -45,5 +47,7 @@ public class KeepApplication extends RKApplication {
     public void onCreate() {
         super.onCreate();
         UserInfoUtil.initDefaultUserInfo();
+        //加载百度地图
+        SDKInitializer.initialize(getApplicationContext());
     }
 }

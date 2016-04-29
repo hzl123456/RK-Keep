@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_click_ripple"
+        android:drawableLeft="@drawable/ic_material_reminder_location_dark"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
+        android:padding="15dp"
+        android:singleLine="true"
+        android:scrollbars="none"
+        android:layout_margin="1dp"
+        android:textSize="@dimen/text_big" />
+
+    <View
+        android:id="@+id/dv_view"
+        style="@style/View_divider"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="58dp" />
+
+</LinearLayout>

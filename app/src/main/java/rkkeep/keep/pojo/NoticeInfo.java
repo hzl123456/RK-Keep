@@ -18,10 +18,21 @@ public class NoticeInfo {
     public long editTime;
 
     /**
+     * 提醒时间
+     *
+     * **/
+    public long noticeTime;
+
+    /**
      * 存储图片语音信息
      **/
     public List<NoticeImgVoiceInfo> infos;
-    public String infosString;
+    public String noticeImgVoiceInfosString;
 
+    /**
+     * 地址信息
+     **/
+    public AddressInfo addressInfo;
+    public String addressInfoString;
 
 }

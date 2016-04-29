@@ -51,14 +51,19 @@ public class PictureChooseHelper implements IMessageOperate, View.OnClickListene
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == PhotoUtil.REQUEST_TAKE) {
                 picPath = mPhotoUtil.getTempPath().getAbsolutePath();
+                //返回获取的图片地址
+                if (mDialog.isShowing()) {
+                    mDialog.dismiss();
+                }
+                mOnPictureGetListener.OnPic(picPath);
             } else if (requestCode == PhotoUtil.REQUEST_PICK) {
                 picPath = CommonUtil.uri2Path(data.getData());
+                //返回获取的图片地址
+                if (mDialog.isShowing()) {
+                    mDialog.dismiss();
+                }
+                mOnPictureGetListener.OnPic(picPath);
             }
-            //返回获取的图片地址
-            if (mDialog.isShowing()) {
-                mDialog.dismiss();
-            }
-            mOnPictureGetListener.OnPic(picPath);
         }
     }
 

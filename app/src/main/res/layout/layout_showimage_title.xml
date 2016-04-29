@@ -40,7 +40,7 @@
             android:layout_width="@dimen/main_button_size_40"
             android:layout_height="match_parent"
             android:background="@drawable/btn_click_ripple"
-            android:src="@drawable/ic_delete_forever_black" />
+            android:src="@drawable/ic_material_trash_dark" />
     </LinearLayout>
 
 

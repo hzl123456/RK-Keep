@@ -34,30 +34,32 @@ public class NoticeTypeChooseWindow extends PopupWindow implements View.OnClickL
     private LinearLayoutManager manager;
     private NoticeTypeAdapter adapter;
     private String checkColor;
+    private View headerView;
+    private View viewDismiss;
 
-    public NoticeTypeChooseWindow(String checkColor, Context context, View view) {
+    public NoticeTypeChooseWindow(String checkColor, Context context) {
         this.checkColor = checkColor;
         mContent = context;
         findViews();
         init();
         setLayoutBackground(checkColor);
-        showPopuWindow(view);
-
     }
 
     private void findViews() {
-        View headerView = View.inflate(mContent, R.layout.layout_choose_type, null);
+        headerView = View.inflate(mContent, R.layout.layout_choose_type, null);
         layoutContent = (LinearLayout) headerView.findViewById(R.id.layout_content);
         layoutPicture = (LinearLayout) headerView.findViewById(R.id.layout_picture);
         layoutDraw = (LinearLayout) headerView.findViewById(R.id.layout_draw);
         tvVoice = (LinearLayout) headerView.findViewById(R.id.tv_voice);
         rvContent = (RecyclerView) headerView.findViewById(R.id.rv_content);
         view = headerView.findViewById(R.id.view);
+        viewDismiss=headerView.findViewById(R.id.view_dismiss);
 
         layoutPicture.setOnClickListener(this);
         layoutDraw.setOnClickListener(this);
         tvVoice.setOnClickListener(this);
         view.setOnClickListener(this);
+        viewDismiss.setOnClickListener(this);
         setContentView(headerView);
     }
 
@@ -84,13 +86,18 @@ public class NoticeTypeChooseWindow extends PopupWindow implements View.OnClickL
         layoutContent.setBackgroundColor(Color.parseColor(color));
     }
 
-    private void showPopuWindow(View view) {
+    public void showPopuWindow(View view) {
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setAnimationStyle(R.style.PopupAnimation);
         setOutsideTouchable(true);
 
-        showAtLocation(view, Gravity.NO_GRAVITY, 0, 0);
+        headerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        int popupWidth = headerView.getMeasuredWidth();
+        int popupHeight = headerView.getMeasuredHeight();
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        showAtLocation(view, Gravity.NO_GRAVITY, (location[0] + view.getWidth() / 2) - popupWidth / 2, location[1] - popupHeight);
     }
 
     @Override
