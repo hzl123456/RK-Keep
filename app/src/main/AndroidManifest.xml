@@ -63,10 +63,15 @@
         <activity
             android:name=".activity.ChooseAddressActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <!--选择地址详情页面-->
+        <activity
+            android:name=".activity.ChooseAddressDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
+        <!--不是正式版，采用的是studio的debug的keystore，不同的studio所需要的value不一样-->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="QN0SrvLiLWpdfDIUj4Kr34IoNnUt1Uc7" />
+            android:value="lSAyfvMj19UYTAOhtBr0ibWYTjUQU7sx" />
 
         <!--百度定位-->
         <service

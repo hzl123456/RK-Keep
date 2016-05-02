@@ -8,11 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/ib_search"
         android:background="@null"
-        android:paddingRight="10dp"
         android:drawableRight="@drawable/places_ic_clear"
         android:hint="@string/serach_title"
+        android:paddingRight="10dp"
         android:singleLine="true"
         android:textSize="20sp" />
 
@@ -21,18 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:paddingRight="10dp"
-        android:layout_toLeftOf="@+id/ib_search"
+        android:paddingRight="20dp"
         android:singleLine="true"
+        android:visibility="gone"
         android:textSize="20sp" />
-
-
-    <ImageButton
-        android:id="@+id/ib_search"
-        android:layout_width="@dimen/action_size"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/btn_click_ripple"
-        android:src="@drawable/places_ic_search" />
-
 </RelativeLayout>

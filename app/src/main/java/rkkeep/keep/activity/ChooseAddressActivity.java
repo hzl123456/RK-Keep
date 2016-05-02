@@ -1,14 +1,13 @@
 package rkkeep.keep.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.search.core.PoiInfo;
@@ -21,21 +20,21 @@ import com.baidu.mapapi.search.poi.PoiSearch;
 import java.util.List;
 
 import cn.xmrk.rkandroid.activity.BaseActivity;
-import cn.xmrk.rkandroid.utils.CommonUtil;
 import cn.xmrk.rkandroid.utils.StringUtil;
 import cn.xmrk.rkandroid.widget.edittext.ClearEditText;
 import rkkeep.keep.R;
 import rkkeep.keep.adapter.PoiAdapter;
 import rkkeep.keep.help.LocationHelper;
+import rkkeep.keep.pojo.AddressInfo;
 
 /**
  * Created by Au61 on 2016/4/29.
  */
 public class ChooseAddressActivity extends BaseActivity implements View.OnClickListener {
 
+    private final int CHOOSE_ADDRESS_DETAIL = 10;
+
     private ClearEditText etSearch;
-    private ImageButton ibSearch;
-    private TextView tvSearch;
     private LocationHelper mLocationHelper;
 
     /**
@@ -63,6 +62,10 @@ public class ChooseAddressActivity extends BaseActivity implements View.OnClickL
         lvContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //点击选择了地址，跳转下一个页面选择详情
+                Intent intent = new Intent(ChooseAddressActivity.this, ChooseAddressDetailActivity.class);
+                intent.putExtra("info", mPoiAdapter.getDatas().get(position));
+                startActivityForResult(intent, CHOOSE_ADDRESS_DETAIL);
 
             }
         });
@@ -123,13 +126,7 @@ public class ChooseAddressActivity extends BaseActivity implements View.OnClickL
         });
 
         etSearch = (ClearEditText) view.findViewById(R.id.et_search);
-        tvSearch = (TextView) view.findViewById(R.id.tv_search);
-        ibSearch = (ImageButton) view.findViewById(R.id.ib_search);
 
-        //设置搜索按钮的点击,初始搜索按钮为隐藏状态
-        ibSearch.setOnClickListener(this);
-        CommonUtil.setLongClick(ibSearch, getString(R.string.search_address));
-        ibSearch.setVisibility(View.GONE);
         //监听搜索输入框的输入，进行地址搜索
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -155,9 +152,7 @@ public class ChooseAddressActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        if (v == ibSearch) {//搜索地址
 
-        }
     }
 
     @Override
@@ -171,4 +166,20 @@ public class ChooseAddressActivity extends BaseActivity implements View.OnClickL
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_CANCELED && requestCode == CHOOSE_ADDRESS_DETAIL) {
+            //表示已经选择了正确的地址，这个时候返回地址的详情，然后给上个页面进行处理
+            AddressInfo addressInfo = new AddressInfo();
+            PoiInfo poiInfo = (PoiInfo) data.getExtras().get("data");
+            addressInfo.addressName = poiInfo.name;
+            addressInfo.addressIntro = poiInfo.address;
+            addressInfo.latitude = poiInfo.location.latitude;
+            addressInfo.longitude = poiInfo.location.longitude;
+            Intent intent = new Intent();
+            intent.putExtra("info", addressInfo);
+            setResult(RESULT_OK, intent);
+        }
+    }
 }

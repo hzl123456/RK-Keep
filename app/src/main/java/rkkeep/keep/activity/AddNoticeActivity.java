@@ -141,7 +141,7 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
                     mNoticeInfo.addressInfo = null;
                     tvNoticeAddress.setVisibility(View.GONE);
                 } else {
-                    mNoticeInfo.addressInfo = null;
+                    mNoticeInfo.addressInfo = addressInfo;
                     tvNoticeAddress.setVisibility(View.VISIBLE);
                     tvNoticeAddress.setText(mNoticeInfo.addressInfo.addressName);
                 }
@@ -298,14 +298,12 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         if (mNoticeChooseHelper != null) {
             mNoticeChooseHelper.onActivityResult(this, requestCode, resultCode, data);
         }
-        if (requestCode != RESULT_CANCELED && requestCode == SHOWIMAGE_CODE) {
+        if (resultCode != RESULT_CANCELED && requestCode == SHOWIMAGE_CODE) {
             int number = data.getExtras().getInt("num");
             mNoticeInfo.infos.remove(number);
             mNoticeAdapter.setContentSize();
             mNoticeAdapter.notifyDataSetChanged();
         }
-
-
     }
 
 }

@@ -47,5 +47,6 @@
     <string name="edit_address">修改地址</string>
     <string name="serach_title">搜索...</string>
     <string name="search_address">搜索地址</string>
+    <string name="serach_address">正在搜索位置...</string>
 
 </resources>

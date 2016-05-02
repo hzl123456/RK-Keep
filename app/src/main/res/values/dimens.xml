@@ -11,4 +11,7 @@
     <dimen name="main_button_size_40">40dp</dimen>
     <dimen name="action_size">56dp</dimen>
 
+    <!--选择地址详情页面拖拽的距离-->
+    <dimen name="drag_height">60dp</dimen>
+
 </resources>
