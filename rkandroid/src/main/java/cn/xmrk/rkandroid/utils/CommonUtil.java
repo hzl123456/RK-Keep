@@ -81,7 +81,7 @@ public class CommonUtil {
      * 返回字符串
      **/
     public static final String changeOne2Two(int number) {
-        return String.valueOf(number > 9 ? number : "0" + number);
+        return String.valueOf(number > 9 ? ""+number : "0" + number);
     }
 
     /**
@@ -410,7 +410,7 @@ public class CommonUtil {
         Date milliDate = new Date(millisecond);// 需要转换的时间
         if (milliDate.getDay() == (new Date(currentTime)).getDay()) {// 同一天的
             if (milliDate.getHours() < 12) {// 早上
-                return new SimpleDateFormat("早上hh:mm", Locale.CHINESE).format(new Date(millisecond));
+                return new SimpleDateFormat("上午hh:mm", Locale.CHINESE).format(new Date(millisecond));
             } else if (milliDate.getHours() == 12) {// 中午
                 return new SimpleDateFormat("中午hh:mm", Locale.CHINESE).format(new Date(millisecond));
             } else {
@@ -419,7 +419,7 @@ public class CommonUtil {
 
         } else if (milliDate.getYear() == (new Date(currentTime)).getYear()) {// 同一年的
             if (milliDate.getHours() < 12) {// 早上
-                return new SimpleDateFormat("MM月dd日 早上hh:mm", Locale.CHINESE).format(new Date(millisecond));
+                return new SimpleDateFormat("MM月dd日 上午hh:mm", Locale.CHINESE).format(new Date(millisecond));
             } else if (milliDate.getHours() == 12) {// 中午
                 return new SimpleDateFormat("MM月dd日 中午hh:mm", Locale.CHINESE).format(new Date(millisecond));
             } else {
@@ -427,7 +427,7 @@ public class CommonUtil {
             }
         } else {
             if (milliDate.getHours() < 12) {// 早上
-                return new SimpleDateFormat("yyyy年MM月dd日 早上hh:mm", Locale.CHINESE).format(new Date(millisecond));
+                return new SimpleDateFormat("yyyy年MM月dd日 上午hh:mm", Locale.CHINESE).format(new Date(millisecond));
             } else if (milliDate.getHours() == 12) {// 中午
                 return new SimpleDateFormat("yyyy年MM月dd日 中午hh:mm", Locale.CHINESE).format(new Date(millisecond));
             } else {

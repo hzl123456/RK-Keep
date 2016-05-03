@@ -64,7 +64,7 @@ public class ChooseAddressActivity extends BaseActivity implements View.OnClickL
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //点击选择了地址，跳转下一个页面选择详情
                 Intent intent = new Intent(ChooseAddressActivity.this, ChooseAddressDetailActivity.class);
-                intent.putExtra("info", mPoiAdapter.getDatas().get(position));
+                intent.putExtra("data", mPoiAdapter.getDatas().get(position));
                 startActivityForResult(intent, CHOOSE_ADDRESS_DETAIL);
 
             }
@@ -107,8 +107,7 @@ public class ChooseAddressActivity extends BaseActivity implements View.OnClickL
         if (!StringUtil.isEmptyString(cityName)) {
             mPoiSearch.searchInCity((new PoiCitySearchOption())
                     .city(cityName)
-                    .keyword(text)
-                    .pageNum(5));
+                    .keyword(text));
         }
     }
 
@@ -178,8 +177,9 @@ public class ChooseAddressActivity extends BaseActivity implements View.OnClickL
             addressInfo.latitude = poiInfo.location.latitude;
             addressInfo.longitude = poiInfo.location.longitude;
             Intent intent = new Intent();
-            intent.putExtra("info", addressInfo);
+            intent.putExtra("data", addressInfo);
             setResult(RESULT_OK, intent);
+            finish();
         }
     }
 }

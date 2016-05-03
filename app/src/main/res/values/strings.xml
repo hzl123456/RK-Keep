@@ -48,5 +48,6 @@
     <string name="serach_title">搜索...</string>
     <string name="search_address">搜索地址</string>
     <string name="serach_address">正在搜索位置...</string>
+    <string name="choose_address_">选择该地址</string>
 
 </resources>

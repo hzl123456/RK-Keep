@@ -50,7 +50,7 @@ public class PoiAdapter extends BaseAdapter {
             convertView.setTag(new ViewHolder(convertView));
         }
         ViewHolder holder = (ViewHolder) convertView.getTag();
-        holder.tvAddress.setText(infos.get(position).address);
+        holder.tvAddress.setText(infos.get(position).name);
         if (position == infos.size()) {
             holder.dvView.setVisibility(View.GONE);
         } else {

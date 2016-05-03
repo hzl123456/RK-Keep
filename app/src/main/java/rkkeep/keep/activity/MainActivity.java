@@ -135,12 +135,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_tixing://提醒
 
                 break;
-            case R.id.nav_chuangjian://创建新标签
-
-                break;
-            case R.id.nav_guidang://已归档
-
-                break;
             case R.id.nav_huishouzhan://回收站
 
                 break;

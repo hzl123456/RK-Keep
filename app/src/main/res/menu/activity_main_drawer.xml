@@ -14,25 +14,17 @@
             android:title="@string/nav_tixing" />
 
         <item
-            android:id="@+id/nav_chuangjian"
-            android:icon="@drawable/ic_material_add_black"
-            android:title="@string/nav_chuangjian"></item>
-
-        <item
-            android:id="@+id/nav_guidang"
-            android:icon="@drawable/ic_material_archive_black"
-            android:title="@string/nav_guidang" />
-        <item
             android:id="@+id/nav_huishouzhan"
             android:icon="@drawable/ic_material_trash_black"
             android:title="@string/nav_huishouzhan" />
-        <item
-            android:id="@+id/nav_setting"
-            android:icon="@drawable/ic_material_settings_black"
-            android:title="@string/nav_setting" />
-        <item
-            android:id="@+id/nav_help"
-            android:icon="@drawable/ic_material_help_black"
-            android:title="@string/nav_help" />
     </group>
+
+    <item
+        android:id="@+id/nav_setting"
+        android:icon="@drawable/ic_material_settings_black"
+        android:title="@string/nav_setting" />
+    <item
+        android:id="@+id/nav_help"
+        android:icon="@drawable/ic_material_help_black"
+        android:title="@string/nav_help" />
 </menu>

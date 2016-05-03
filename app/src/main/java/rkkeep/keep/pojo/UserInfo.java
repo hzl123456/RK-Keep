@@ -11,7 +11,6 @@ public class UserInfo {
 
     public String userIntro;
 
-
     public String userPic;
 
 }

@@ -12,6 +12,6 @@
     <dimen name="action_size">56dp</dimen>
 
     <!--选择地址详情页面拖拽的距离-->
-    <dimen name="drag_height">60dp</dimen>
+    <dimen name="drag_height">65dp</dimen>
 
 </resources>

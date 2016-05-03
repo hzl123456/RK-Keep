@@ -23,7 +23,7 @@ import java.util.List;
 
 import cn.xmrk.rkandroid.application.RKApplication;
 import cn.xmrk.rkandroid.utils.StringUtil;
-import rkkeep.keep.pojo.UserInfo;
+import rkkeep.keep.pojo.NoticeInfo;
 
 public class OpenHelper extends OrmLiteSqliteOpenHelper {
 
@@ -35,7 +35,7 @@ public class OpenHelper extends OrmLiteSqliteOpenHelper {
     private transient Integer useCount = 0;
     private String key;
 
-    private Dao<UserInfo, Integer> mUserInfoDao;
+    private Dao<NoticeInfo, Integer> mNoticeInfoDao;
 
     private static HashMap<String, OpenHelper> ohs = new HashMap<>();
 
@@ -154,7 +154,7 @@ public class OpenHelper extends OrmLiteSqliteOpenHelper {
 
     private void createTable() {
         try {
-            TableUtils.createTableIfNotExists(connectionSource, UserInfo.class);
+            TableUtils.createTableIfNotExists(connectionSource, NoticeInfo.class);
         } catch (SQLException e) {
             log.error("数据库创建失败", e);
         }
@@ -189,14 +189,14 @@ public class OpenHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-    public Dao<UserInfo, Integer> getUserInfoDao() {
-        if (mUserInfoDao == null) {
+    public Dao<NoticeInfo, Integer> getNoticeInfoDao() {
+        if (mNoticeInfoDao == null) {
             try {
-                mUserInfoDao = getDao(UserInfo.class);
+                mNoticeInfoDao = getDao(NoticeInfo.class);
             } catch (SQLException e) {
                 return null;
             }
         }
-        return mUserInfoDao;
+        return mNoticeInfoDao;
     }
 }

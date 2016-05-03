@@ -46,7 +46,7 @@ public class PoiNearByAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = View.inflate(parent.getContext(), R.layout.item_poi, null);
+            convertView = View.inflate(parent.getContext(), R.layout.item_poi_near, null);
             convertView.setTag(new ViewHolder(convertView));
         }
         ViewHolder holder = (ViewHolder) convertView.getTag();

@@ -121,15 +121,15 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void OnTime(Date date) {
                 if (date == null) {
-                    mNoticeInfo.noticeTime = 0;
+                    mNoticeInfo.remindTime = 0;
                     tvNoticeTime.setVisibility(View.GONE);
                 } else {
                     if (System.currentTimeMillis() >= date.getTime()) {
                         CommonUtil.showSnackToast(getString(R.string.error_time), getTitlebar());
                     } else {
-                        mNoticeInfo.noticeTime = date.getTime();
+                        mNoticeInfo.remindTime = date.getTime();
                         tvNoticeTime.setVisibility(View.VISIBLE);
-                        tvNoticeTime.setText(CommonUtil.getAffineTimestampForGroupChat(mNoticeInfo.noticeTime));
+                        tvNoticeTime.setText(CommonUtil.getAffineTimestampForGroupChat(mNoticeInfo.remindTime));
                     }
                 }
 
