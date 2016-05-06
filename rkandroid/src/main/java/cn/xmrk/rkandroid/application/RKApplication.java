@@ -2,9 +2,7 @@ package cn.xmrk.rkandroid.application;
 
 import android.app.Application;
 
-import com.android.volley.RequestQueue;
 import com.squareup.leakcanary.RefWatcher;
-import com.squareup.okhttp.OkHttpClient;
 
 import cn.xmrk.rkandroid.config.IRKConfig;
 import cn.xmrk.rkandroid.config.RKConfigHelper;
@@ -33,13 +31,6 @@ public abstract class RKApplication extends Application {
 		RKConfigHelper.init(this, getRKConfig());
 	}
 
-	public  RequestQueue getRequestQueue() {
-		return RKConfigHelper.getInstance().getRequestQueue();
-	}
-
-	public OkHttpClient getOkHttpClient() {
-		return RKConfigHelper.getInstance().getOkHttpClient();
-	}
 
 	/**
 	 * 设置统计分析配置

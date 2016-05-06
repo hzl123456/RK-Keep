@@ -15,7 +15,5 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/ActivityDialogBottomToTop"/>
-        <service android:name="cn.xmrk.rkandroid.net.fileupload.helper.service.FileDownloadService"/>
-        <service android:name="cn.xmrk.rkandroid.net.fileupload.helper.service.FileUploadService"/>
     </application>
 </manifest>

@@ -1,29 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".activity.MainActivity">
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
+    <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layout_bottom"
+        tools:context=".activity.MainActivity">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/title_bar_height"
-            android:background="@color/bg_title_bar"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
+            android:layout_height="wrap_content"
+            android:background="@color/bg_grey"
+            android:orientation="vertical"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-        </android.support.v7.widget.Toolbar>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/title_bar_height"
+                android:background="@color/bg_title_bar"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+        </android.support.design.widget.AppBarLayout>
 
-    </android.support.design.widget.AppBarLayout>
+        <FrameLayout
+            android:id="@+id/layout_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/layout_bottom"
+            android:background="@color/bg_grey"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </android.support.design.widget.CoordinatorLayout>
 
-    <include layout="@layout/activity_main_content" />
+    <RelativeLayout
+        android:id="@+id/layout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_button_size"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bg_white"
+        android:paddingLeft="15dp"
+        android:paddingRight="8dp">
 
-</android.support.design.widget.CoordinatorLayout>
+        <TextView
+            android:id="@+id/tv_add_text_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/layout_right"
+            android:text="@string/main_add_item"
+            android:textSize="@dimen/text_big" />
+
+        <LinearLayout
+            android:id="@+id/layout_right"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/main_button_size"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/ib_keep_text"
+                android:layout_width="@dimen/main_button_size"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_click_ripple"
+                android:src="@drawable/ic_perm_group_calendar" />
+
+            <ImageButton
+                android:id="@+id/ib_keep_edit"
+                android:layout_width="@dimen/main_button_size"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_click_ripple"
+                android:src="@drawable/ic_ink_pen_grey" />
+
+            <ImageButton
+                android:id="@+id/ib_keep_voice"
+                android:layout_width="@dimen/main_button_size"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_click_ripple"
+                android:src="@drawable/ic_voice_search_api_holo_light" />
+
+            <ImageButton
+                android:id="@+id/ib_keep_camera"
+                android:layout_width="@dimen/main_button_size"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_click_ripple"
+                android:src="@drawable/ic_perm_group_camera" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -49,5 +49,14 @@
     <string name="search_address">搜索地址</string>
     <string name="serach_address">正在搜索位置...</string>
     <string name="choose_address_">选择该地址</string>
-
+    <string name="add">添加</string>
+    <string name="add_draw">添加绘图</string>
+    <string name="add_voice">添加语音</string>
+    <string name="search">搜索</string>
+    <string name="layout">布局</string>
+    <string name="move_to_dustbin">确定将信息移至回收站？</string>
+    <string name="had_move_to_dustbin">已将信息移至回收站</string>
+    <string name="change_color">更换颜色</string>
+    <string name="to_dustbin">回收站</string>
+    <string name="notice_color">信息颜色</string>
 </resources>

@@ -14,6 +14,8 @@ public abstract class HeaderFooterRecyclerViewAdapter extends RecyclerView.Adapt
     private int contentItemCount;
     private int footerItemCount;
 
+
+
     /**
      * {@inheritDoc}
      */

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,16 +18,31 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
+
 import cn.xmrk.rkandroid.activity.ChoicePicActivity;
+import cn.xmrk.rkandroid.fragment.BaseFragment;
+import cn.xmrk.rkandroid.utils.CommonUtil;
 import cn.xmrk.rkandroid.utils.FileUtil;
 import cn.xmrk.rkandroid.widget.imageView.RoundImageView;
 import rkkeep.keep.R;
+import rkkeep.keep.fragment.JiShiFragment;
+import rkkeep.keep.fragment.RecyclerViewFragment;
+import rkkeep.keep.help.PictureChooseHelper;
+import rkkeep.keep.pojo.NoticeImgVoiceInfo;
+import rkkeep.keep.pojo.NoticeInfo;
 import rkkeep.keep.pojo.UserInfo;
 import rkkeep.keep.util.UserInfoUtil;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private static final int REQUEST_CHOICE_PORTRAIT = 1;
+
+    /**
+     * 分别为添加和修改
+     **/
+    private final int NOTICE_ADD = 10;
+    private final int NOTICE_EDIT = 11;
 
     /**
      * 侧滑的头部使用
@@ -48,7 +64,11 @@ public class MainActivity extends AppCompatActivity
     private ImageButton ibKeepVoice;
     private ImageButton ibKeepCamera;
 
+    private PictureChooseHelper mPictureChooseHelper;
+
     //各个页面的fragment
+    private BaseFragment currentFragment;
+    private BaseFragment mJiShiFragment;
 
 
     @Override
@@ -60,13 +80,26 @@ public class MainActivity extends AppCompatActivity
         setViews();
         initUserInfo();
         initFragment();
+        setCurrentFragment(mJiShiFragment);
+    }
+
+
+    private void setCurrentFragment(BaseFragment fragment) {
+        if (fragment == currentFragment) {
+            return;
+        }
+        currentFragment = fragment;
+        FragmentTransaction _ft = getSupportFragmentManager().beginTransaction();
+        _ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+        _ft.replace(R.id.layout_content, fragment);
+        _ft.commit();
     }
 
     /**
      * 加载fragment，主要的操作页面
      **/
     private void initFragment() {
-
+        mJiShiFragment = new JiShiFragment();
 
     }
 
@@ -94,6 +127,10 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
     }
 
+    public Toolbar getTitleBar() {
+        return toolbar;
+    }
+
     private void initHeaderView() {
         headerView = navigationView.getHeaderView(0);
         ivHeader = (RoundImageView) headerView.findViewById(R.id.img_head);
@@ -107,6 +144,12 @@ public class MainActivity extends AppCompatActivity
         ibKeepEdit = (ImageButton) findViewById(R.id.ib_keep_edit);
         ibKeepVoice = (ImageButton) findViewById(R.id.ib_keep_voice);
         ibKeepCamera = (ImageButton) findViewById(R.id.ib_keep_camera);
+
+        CommonUtil.setLongClick(ibKeepText, getString(R.string.add));
+        CommonUtil.setLongClick(ibKeepEdit, getString(R.string.add_draw));
+        CommonUtil.setLongClick(ibKeepVoice, getString(R.string.add_voice));
+        CommonUtil.setLongClick(ibKeepCamera, getString(R.string.add_picture));
+
         tvAddTextItem.setOnClickListener(this);
         ibKeepText.setOnClickListener(this);
         ibKeepEdit.setOnClickListener(this);
@@ -130,7 +173,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_jishi://记事
-
+                setCurrentFragment(mJiShiFragment);
                 break;
             case R.id.nav_tixing://提醒
 
@@ -155,27 +198,89 @@ public class MainActivity extends AppCompatActivity
         if (v == ivHeader) {
             startActivityForResult(new Intent(this, ChoicePicActivity.class), REQUEST_CHOICE_PORTRAIT);
         } else if (v == tvAddTextItem) {//文本添加
-            startActivity(AddNoticeActivity.class);
+            setNoticeInfoAndEdit();
         } else if (v == ibKeepText) {//文本添加
-            startActivity(AddNoticeActivity.class);
+            setNoticeInfoAndEdit();
         } else if (v == ibKeepEdit) {//画图添加
 
         } else if (v == ibKeepVoice) {//录音添加
 
         } else if (v == ibKeepCamera) {//选择图片添加
-
+            addPicture();
         }
+    }
+
+    private void addPicture() {
+        if (mPictureChooseHelper == null) {
+            mPictureChooseHelper = new PictureChooseHelper(this);
+        }
+        mPictureChooseHelper.setOnPictureGetListener(new PictureChooseHelper.OnPictureGetListener() {
+            @Override
+            public void OnPic(String path) {
+                setNoticeInfoAndEdit(path);
+            }
+        });
+        mPictureChooseHelper.showDialog();
+    }
+
+    //实例化一个noticeInfo，然后跳转下个页面进行编辑,普通
+    private void setNoticeInfoAndEdit() {
+        NoticeInfo mNoticeInfo = new NoticeInfo();
+        mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
+        toAddNoticeInfoActivity(mNoticeInfo);
+    }
+
+    //实例化一个noticeInfo，然后跳转下个页面进行编辑，图片
+    private void setNoticeInfoAndEdit(String path) {
+        NoticeInfo mNoticeInfo = new NoticeInfo();
+        mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
+        mNoticeInfo.infos.add(new NoticeImgVoiceInfo(path));
+        toAddNoticeInfoActivity(mNoticeInfo);
+    }
+
+    //实例化一个noticeInfo，然后跳转下个页面进行编辑，语音
+    private void setNoticeInfoAndEdit(String path, long length) {
+        NoticeInfo mNoticeInfo = new NoticeInfo();
+        mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
+        mNoticeInfo.infos.add(new NoticeImgVoiceInfo(path, length));
+        toAddNoticeInfoActivity(mNoticeInfo);
+    }
+
+    //跳转编辑页面
+    public void toAddNoticeInfoActivity(NoticeInfo info) {
+        //默认为添加的
+        int code = 0;
+        if (info.editTime == 0) {//如果修改时间为0的话表示为添加的，否则为修改的
+            info.editTime = System.currentTimeMillis();
+            code = NOTICE_ADD;
+        } else {
+            code = NOTICE_EDIT;
+        }
+        Intent intent = new Intent(this, AddNoticeActivity.class);
+        intent.putExtra("data", info);
+        startActivityForResult(intent, code);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CHOICE_PORTRAIT) {
-                mUserInfo.userPic = FileUtil.uri2Path(data.getData());
-                ImageLoader.getInstance().displayImage("file:///" + FileUtil.uri2Path(data.getData()), ivHeader);
-                UserInfoUtil.setUserInfo(mUserInfo);
-            }
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CHOICE_PORTRAIT) {
+            mUserInfo.userPic = FileUtil.uri2Path(data.getData());
+            ImageLoader.getInstance().displayImage("file:///" + FileUtil.uri2Path(data.getData()), ivHeader);
+            UserInfoUtil.setUserInfo(mUserInfo);
+        }
+        if (mPictureChooseHelper != null) {
+            mPictureChooseHelper.onActivityResult(this, requestCode, resultCode, data);
+        }
+        if (resultCode == RESULT_OK && requestCode == NOTICE_ADD) {//这里表示的是添加的
+            NoticeInfo info = (NoticeInfo) data.getExtras().get("data");
+            RecyclerViewFragment mFragment = (RecyclerViewFragment) currentFragment;
+            mFragment.addNoticeInfo(info);
+        }
+        if (resultCode == RESULT_OK && requestCode == NOTICE_EDIT) {//这里表示的是修改的
+            NoticeInfo info = (NoticeInfo) data.getExtras().get("data");
+            RecyclerViewFragment mFragment = (RecyclerViewFragment) currentFragment;
+            mFragment.updateNoticeInfo(info);
         }
     }
 

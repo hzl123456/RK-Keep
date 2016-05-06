@@ -13,10 +13,17 @@ public class ColorHelper {
     //要使用的颜色色值
     public static final String[] colors = {"#ffffffff", "#ff8a80", "#ffd180", "#ffff8d", "#ccff90", "#a7ffeb", "#80d8ff", "#cfd8dc"};
 
+    //水波纹无圆角
     public static final int[] colorRes = {R.drawable.btn_click_ripple, R.drawable.btn_click_ripple_ff8a80,
             R.drawable.btn_click_ripple_ffd180, R.drawable.btn_click_ripple_ffff8d,
             R.drawable.btn_click_ripple_ccff90, R.drawable.btn_click_ripple_a7ffeb,
             R.drawable.btn_click_ripple_80d8ff, R.drawable.btn_click_ripple_cfd8dc};
+
+    //水波纹有圆角
+    public static final int[] colorResRound = {R.drawable.bg_ripple_round, R.drawable.bg_ripple_round_ff8a80,
+            R.drawable.bg_ripple_round_ffd180, R.drawable.bg_ripple_round_ffff8d,
+            R.drawable.bg_ripple_round_ccff90, R.drawable.bg_ripple_round_a7ffeb,
+            R.drawable.bg_ripple_round_80d8ff, R.drawable.bg_ripple_round_cfd8dc};
 
     public static List<String> getColors() {
         List<String> infos = new ArrayList<>();
@@ -37,5 +44,17 @@ public class ColorHelper {
             }
         }
         return colorRes[0];
+    }
+
+    /**
+     * 根据颜色获取对应的水波纹效果的资源
+     **/
+    public static int getCheckColorRound(String color) {
+        for (int i = 0; i < colors.length; i++) {
+            if (color.equals(colors[i])) {
+                return colorResRound[i];
+            }
+        }
+        return colorResRound[0];
     }
 }

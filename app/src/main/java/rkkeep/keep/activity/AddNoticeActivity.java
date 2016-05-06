@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -18,11 +19,13 @@ import java.util.Date;
 
 import cn.xmrk.rkandroid.activity.BaseActivity;
 import cn.xmrk.rkandroid.utils.CommonUtil;
+import cn.xmrk.rkandroid.utils.StringUtil;
 import cn.xmrk.rkandroid.utils.uil.SpacesItemDecoration;
 import cn.xmrk.rkandroid.widget.edittext.ClearEditText;
 import rkkeep.keep.R;
 import rkkeep.keep.adapter.NoticeAdapter;
 import rkkeep.keep.adapter.listener.OnNoticeItemClickListener;
+import rkkeep.keep.db.NoticeInfoDbHelper;
 import rkkeep.keep.help.ColorHelper;
 import rkkeep.keep.help.NoticeChooseHelper;
 import rkkeep.keep.help.PictureChooseHelper;
@@ -52,6 +55,7 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     private LinearLayoutManager mLayoutManager;
     private NoticeAdapter mNoticeAdapter;
     private LinearLayout layoutTop;
+    private NoticeInfoDbHelper dbHelper;
 
 
     /**
@@ -91,14 +95,6 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addnotice);
-        //创建notice实例
-        if (mNoticeInfo == null) {
-            mNoticeInfo = new NoticeInfo();
-            if (mNoticeInfo.infos == null) {
-                mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
-            }
-            mNoticeInfo.editTime = System.currentTimeMillis();
-        }
         initTitle();
         initTop();
         initBottom();
@@ -151,6 +147,7 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initTitle() {
+        mNoticeInfo = (NoticeInfo) getIntent().getExtras().get("data");
         titleView = getLayoutInflater().inflate(R.layout.title_add_notice, null);
         ibNotice = (ImageButton) titleView.findViewById(R.id.ib_notice);
         ibNotice.setOnClickListener(this);
@@ -207,6 +204,28 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
 
         tvNoticeTime.setOnClickListener(this);
         tvNoticeAddress.setOnClickListener(this);
+
+        //设置标题
+        if (!StringUtil.isEmptyString(mNoticeInfo.title)) {
+            etTitle.setText(mNoticeInfo.title);
+        }
+        //设置内容
+        if (!StringUtil.isEmptyString(mNoticeInfo.content)) {
+            etContent.setText(mNoticeInfo.content);
+        }
+        //设置地址
+        if (mNoticeInfo.addressInfo != null) {
+            tvNoticeAddress.setVisibility(View.VISIBLE);
+            tvNoticeAddress.setText(mNoticeInfo.addressInfo.addressName);
+            Log.i("address->", CommonUtil.getGson().toJson(mNoticeInfo.addressInfo));
+        }
+        //设置时间
+        if (mNoticeInfo.remindTime != 0) {
+            tvNoticeTime.setVisibility(View.VISIBLE);
+            tvNoticeTime.setText(CommonUtil.getAffineTimestampForGroupChat(mNoticeInfo.remindTime));
+        }
+
+
     }
 
     private void showWindowOrDismiss() {
@@ -284,9 +303,43 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         if (mWindow != null && mWindow.isShowing()) {
             mWindow.dismiss();
         } else {
-            super.onBackPressed();
-            //TODO 返回的同时保存记录
+            saveNoticeInfoAndBack();
         }
+    }
+
+    private void saveNoticeInfoAndBack() {
+        //新的消息需要设置消息id
+        if (mNoticeInfo.infoId == 0) {
+            mNoticeInfo.infoId = System.currentTimeMillis();
+        }
+        if (etTitle != null) {
+            mNoticeInfo.title = etTitle.getText().toString();
+        }
+        if (etContent != null) {
+            mNoticeInfo.content = etContent.getText().toString();
+        }
+        //判断信息的类型
+        if (mNoticeInfo.remindTime != 0 && mNoticeInfo.addressInfo == null) {
+            mNoticeInfo.infoType = NoticeInfo.TIXING_TYPE;
+            mNoticeInfo.addressInfoString = null;
+        } else if (mNoticeInfo.remindTime == 0 && mNoticeInfo.addressInfo != null) {
+            mNoticeInfo.infoType = NoticeInfo.TIXING_TYPE;
+            mNoticeInfo.addressInfoString = CommonUtil.getGson().toJson(mNoticeInfo.addressInfo);
+        } else if (mNoticeInfo.remindTime != 0 && mNoticeInfo.addressInfo != null) {
+            mNoticeInfo.infoType = NoticeInfo.TIXING_TYPE;
+            mNoticeInfo.addressInfoString = CommonUtil.getGson().toJson(mNoticeInfo.addressInfo);
+        }
+        if (mNoticeInfo.infos != null && mNoticeInfo.infos.size() > 0) {
+            mNoticeInfo.noticeImgVoiceInfosString = CommonUtil.getGson().toJson(mNoticeInfo.infos);
+        }
+        if (dbHelper == null) {
+            dbHelper = new NoticeInfoDbHelper();
+        }
+        dbHelper.saveNoticeInfo(mNoticeInfo);
+        Intent intent = new Intent();
+        intent.putExtra("data", mNoticeInfo);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override

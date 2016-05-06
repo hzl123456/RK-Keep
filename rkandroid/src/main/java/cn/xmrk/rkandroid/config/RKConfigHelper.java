@@ -4,8 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -18,7 +16,6 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
-import com.squareup.okhttp.OkHttpClient;
 
 import org.apache.log4j.Logger;
 
@@ -27,9 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.ref.WeakReference;
-
-import cn.xmrk.rkandroid.net.OkHttpStack;
 import cn.xmrk.rkandroid.utils.PackageUtil;
 import cn.xmrk.rkandroid.utils.UnitUtil;
 import de.mindpipe.android.logging.log4j.LogConfigurator;
@@ -69,8 +63,6 @@ public class RKConfigHelper implements IRKConfig {
     private final Logger log = Logger.getLogger(RKConfigHelper.class);
     private RefWatcher mRefWatcher;
     private StatisticsConfig mStatisticsConfig;
-    private WeakReference<RequestQueue> mRQ;
-    private OkHttpClient mOkHttpClient;
 
     protected void initRefWatcher() {
         if (RKConfigHelper.getInstance().isLeakWatch()) {
@@ -163,19 +155,6 @@ public class RKConfigHelper implements IRKConfig {
 
     public RefWatcher getRefWatcher() {
         return mRefWatcher;
-    }
-
-    public OkHttpClient getOkHttpClient() {
-        if (mOkHttpClient == null)
-            mOkHttpClient = new OkHttpClient();
-        return mOkHttpClient;
-    }
-
-    public  RequestQueue getRequestQueue() {
-        if (mRQ == null || mRQ.get() == null) {
-            mRQ = new WeakReference<RequestQueue>(Volley.newRequestQueue(context, new OkHttpStack(getOkHttpClient())));
-        }
-        return mRQ.get();
     }
 
     /**

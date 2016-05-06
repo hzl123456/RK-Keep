@@ -14,6 +14,9 @@
     <color name="color_a7ffeb">#a7ffeb</color>
     <color name="color_80d8ff">#80d8ff</color>
     <color name="color_cfd8dc">#cfd8dc</color>
+    <color name="color_22000000">#22000000</color>
+    <color name="color_9b9b9b">#9b9b9b</color>
+    <color name="color_181010">#181010</color>
     <!-- 点击灰色变化-->
     <color name="press_divider_grey">#77BDBDBD</color>
     <!--标题栏的颜色变化-->

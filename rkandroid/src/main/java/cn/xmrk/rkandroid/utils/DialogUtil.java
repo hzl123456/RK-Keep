@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.view.View;
 
-import java.lang.ref.WeakReference;
-
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import cn.xmrk.rkandroid.R;
 import cn.xmrk.rkandroid.activity.BaseActivity;
@@ -171,23 +169,6 @@ public class DialogUtil implements SweetAlertDialog.OnCancelListener, SweetAlert
 		showProgress(null, null);
 	}
 
-	/**
-	 * 显示等待窗
-	 */
-	public void showProgress(BaseActivity activity) {
-		if (activity != null) {
-			final WeakReference<BaseActivity> _a = new WeakReference<BaseActivity>(activity);
-			showProgress(null, new OnCancelListener(){
-
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					if (_a != null && _a.get() != null) {
-						_a.get().getRequestQueue().stop();
-					}
-				}
-			});
-		}
-	}
 
 	public void dismiss() {
 		if (mProgressDialog != null) {

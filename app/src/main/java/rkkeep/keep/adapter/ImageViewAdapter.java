@@ -17,10 +17,17 @@ import rkkeep.keep.pojo.NoticeImgVoiceInfo;
  */
 public class ImageViewAdapter extends BaseAdapter {
 
+    private boolean needClick;
+
     private List<NoticeImgVoiceInfo> mData;
 
     public ImageViewAdapter(List<NoticeImgVoiceInfo> mData) {
+        this(mData, true);
+    }
+
+    public ImageViewAdapter(List<NoticeImgVoiceInfo> mData, boolean needClick) {
         this.mData = mData;
+        this.needClick = needClick;
     }
 
 
@@ -54,14 +61,21 @@ public class ImageViewAdapter extends BaseAdapter {
         }
         ImageViewHolder holder = (ImageViewHolder) convertView.getTag();
         RKUtil.displayFileImage(mData.get(position).imagePic, holder.image);
-        holder.image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnNoticeItemClickListener != null) {
-                    mOnNoticeItemClickListener.onClick(mData.get(position));
+        if(needClick){
+            holder.image.setEnabled(true);
+            holder.image.setClickable(true);
+            holder.image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnNoticeItemClickListener != null) {
+                        mOnNoticeItemClickListener.onClick(mData.get(position));
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            holder.image.setEnabled(false);
+            holder.image.setClickable(false);
+        }
         return convertView;
     }
 

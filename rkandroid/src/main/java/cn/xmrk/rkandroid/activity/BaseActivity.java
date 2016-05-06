@@ -15,16 +15,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 
 import java.lang.reflect.Field;
 
 import cn.xmrk.rkandroid.R;
 import cn.xmrk.rkandroid.application.RKApplication;
 import cn.xmrk.rkandroid.config.StatisticsConfig;
-import cn.xmrk.rkandroid.net.OkHttpStack;
 import cn.xmrk.rkandroid.utils.DialogUtil;
 
 /**
@@ -32,7 +28,6 @@ import cn.xmrk.rkandroid.utils.DialogUtil;
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
-    private RequestQueue mRequestQueue;
 
     /**
      * 标题栏采用toolbar进行折叠
@@ -102,30 +97,10 @@ public abstract class BaseActivity extends AppCompatActivity {
             pdm.dismiss();
             pdm.setContext(null);
         }
-        // Destory时把所有的连接都停止掉哦
-        if (mRequestQueue != null) {
-            mRequestQueue.cancelAll(new RequestQueue.RequestFilter() {
-
-                @Override
-                public boolean apply(Request<?> request) {
-                    return true;
-                }
-            });
-            mRequestQueue.stop();
-            mRequestQueue = null;
-        }
         // 修复InputMethodManager导致的内存泄漏
         fixInputMethodManager(this);
         // 内存泄露检测
         RKApplication.getInstance().getRefWatcher().watch(this);
-    }
-
-
-    public RequestQueue getRequestQueue() {
-        if (mRequestQueue == null) {
-            mRequestQueue = Volley.newRequestQueue(this, new OkHttpStack(RKApplication.getInstance().getOkHttpClient()));
-        }
-        return mRequestQueue;
     }
 
     /**

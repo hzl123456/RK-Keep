@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_whit_radio"
-    android:minWidth="420dp"
+    android:minWidth="440dp"
     android:orientation="vertical"
     android:paddingBottom="10dp">
 

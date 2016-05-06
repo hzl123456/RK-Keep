@@ -20,6 +20,7 @@ import rkkeep.keep.pojo.NoticeImgVoiceInfo;
  */
 public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
 
+
     private List<NoticeImgVoiceInfo> mData;
 
     //列表总数

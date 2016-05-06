@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import cn.xmrk.rkandroid.application.RKApplication;
+import cn.xmrk.rkandroid.utils.CommonUtil;
 import cn.xmrk.rkandroid.utils.StringUtil;
 import rkkeep.keep.pojo.NoticeInfo;
 
@@ -29,10 +30,11 @@ public class OpenHelper extends OrmLiteSqliteOpenHelper {
 
     private final Logger log = Logger.getLogger("OpenHelper");
 
-    public static final String DB_NAME = "RK_KEEP";
+    public static final String DB_NAME = "KeepDb";
     public static final int DB_VERSION = 1;
 
     private transient Integer useCount = 0;
+
     private String key;
 
     private Dao<NoticeInfo, Integer> mNoticeInfoDao;
@@ -114,9 +116,10 @@ public class OpenHelper extends OrmLiteSqliteOpenHelper {
     }
 
     private static String getDbPath(String key) {
-        String _dbPath = DB_NAME;
+        //保存在apk的安装目录下，利于查看
+        String _dbPath = new File(CommonUtil.getDir()).getParent() + File.separator + DB_NAME;
         if (!StringUtil.isEmptyString(key)) {
-            _dbPath = key + "-" + DB_NAME;
+            _dbPath += "-" + key;
         }
         return _dbPath;
     }

@@ -12,9 +12,10 @@ public class AddressInfo implements Parcelable {
 
     public String addressIntro;
 
-    public double longitude;
+    public Double longitude;
 
-    public double latitude;
+    public Double latitude;
+
 
     @Override
     public int describeContents() {
@@ -25,8 +26,8 @@ public class AddressInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.addressName);
         dest.writeString(this.addressIntro);
-        dest.writeDouble(this.longitude);
-        dest.writeDouble(this.latitude);
+        dest.writeValue(this.longitude);
+        dest.writeValue(this.latitude);
     }
 
     public AddressInfo() {
@@ -34,9 +35,9 @@ public class AddressInfo implements Parcelable {
 
     protected AddressInfo(Parcel in) {
         this.addressName = in.readString();
-        this.longitude = in.readDouble();
-        this.latitude = in.readDouble();
-        this.addressIntro=in.readString();
+        this.addressIntro = in.readString();
+        this.longitude = (Double) in.readValue(Double.class.getClassLoader());
+        this.latitude = (Double) in.readValue(Double.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<AddressInfo> CREATOR = new Parcelable.Creator<AddressInfo>() {

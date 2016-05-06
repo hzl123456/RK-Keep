@@ -1,29 +1,22 @@
 package cn.xmrk.rkandroid.fragment;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 
 import org.apache.log4j.Logger;
 
-import cn.xmrk.rkandroid.R;
 import cn.xmrk.rkandroid.activity.BaseActivity;
 import cn.xmrk.rkandroid.application.RKApplication;
 import cn.xmrk.rkandroid.config.RKConfigHelper;
 import cn.xmrk.rkandroid.config.StatisticsConfig;
-import cn.xmrk.rkandroid.net.OkHttpStack;
-import cn.xmrk.rkandroid.utils.CommonUtil;
 
 /**
  * @author 思落羽
@@ -34,8 +27,6 @@ public abstract class BaseFragment extends Fragment {
 
     private View contentView;
 
-    private RequestQueue mRequestQueue;
-//	private boolean isViewCreate = false;
 
     protected boolean isShow = false;
 
@@ -68,6 +59,10 @@ public abstract class BaseFragment extends Fragment {
         dispatchShow();
     }
 
+    public Toolbar getTitleBar() {
+        return getBaseActivity().getTitlebar();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -78,9 +73,7 @@ public abstract class BaseFragment extends Fragment {
                     log.debug("[onCreateView] isShow == " + isShow + ", this == " + this);
                 }
                 initOnCreateView(true);
-//	    		isViewCreate = true;
             } catch (InflateException e) {
-                /* map is already there, just return view as it is */
                 log.error("[onCreateView]", e);
             }
         } else {
@@ -103,17 +96,6 @@ public abstract class BaseFragment extends Fragment {
     protected void initOnCreateView(boolean isCreate) {
     }
 
-    public RequestQueue getRequestQueue() {
-        if (mRequestQueue == null) {
-            try {
-                mRequestQueue = ((BaseActivity) getActivity()).getRequestQueue();
-            } catch (Exception e) {
-                mRequestQueue = Volley.newRequestQueue(getActivity(),
-                        new OkHttpStack(RKApplication.getInstance().getOkHttpClient()));
-            }
-        }
-        return mRequestQueue;
-    }
 
     public void startActivity(Class<? extends Activity> actCls) {
         Context context = getActivity();
@@ -138,60 +120,6 @@ public abstract class BaseFragment extends Fragment {
     public boolean onBackPressed() {
         return false;
     }
-
-    /**
-     * 隐藏输入法
-     */
-    protected void hideKeyboard() {
-        CommonUtil.hideKeyboard(getActivity());
-    }
-
-    /**
-     * 显示输入法
-     *
-     * @param v 接受输入文字的地方
-     */
-    protected void showKeyboard(View v) {
-        CommonUtil.showKeyboard(getActivity(), v);
-    }
-
-    /**
-     * @return 输入法为显示状态是返回 {@code true}
-     */
-    protected boolean isKeyboardShow() {
-        return CommonUtil.isKeyboardShow(getActivity());
-    }
-
-//	protected boolean showProgress(int msg) {
-//		if (getActivity() instanceof BaseActivity) {
-//			((BaseActivity) getActivity()).getPDM().setMessageAndShow(msg);
-//			return true;
-//		} else {
-//			return false;
-//		}
-//	}
-//
-//	protected boolean showProgress(String msg) {
-//		if (getActivity() instanceof BaseActivity) {
-//			((BaseActivity) getActivity()).getPDM().setMessageAndShow(msg);
-//			return true;
-//		} else {
-//			return false;
-//		}
-//	}
-
-//	protected boolean hideProgress() {
-//		if (getActivity() instanceof BaseActivity) {
-//			((BaseActivity) getActivity()).getPDM().dismiss();
-//			return true;
-//		} else {
-//			return false;
-//		}
-//	}
-//
-//	public DialogUtil getPDM() {
-//		return ((BaseActivity)getActivity()).getPDM();
-//	}
 
     public boolean isShow() {
         return isShow;
@@ -246,42 +174,6 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    protected void setTitle(int resId) {
-        Activity _activity = getActivity();
-        if (_activity != null && _activity instanceof BaseActivity) {
-            ActionBar _actionBar = _activity.getActionBar();
-            View _customView = _actionBar.getCustomView();
-            TextView _tvTitle = (TextView) _customView.findViewById(R.id.tv_title);
-            _tvTitle.setText(resId);
-        }
-    }
-
-    protected void setTitle(CharSequence title) {
-        Activity _activity = getActivity();
-        if (_activity != null && _activity instanceof BaseActivity) {
-            ActionBar _actionBar = _activity.getActionBar();
-            View _customView = _actionBar.getCustomView();
-            TextView _tvTitle = (TextView) _customView.findViewById(R.id.tv_title);
-            _tvTitle.setText(title);
-        }
-    }
-
-    /**
-     * 设置Actionbar的显示
-     *
-     * @param show
-     */
-    protected void setActionbarShow(boolean show) {
-        Activity _activity = getActivity();
-        if (_activity != null) {
-            ActionBar _ab = _activity.getActionBar();
-            if (_ab != null && _ab.isShowing() && !show) {
-                _ab.hide();
-            } else if (_ab != null && !_ab.isShowing() && show) {
-                _ab.show();
-            }
-        }
-    }
 
     public View findViewById(int id) {
         if (contentView == null) {
