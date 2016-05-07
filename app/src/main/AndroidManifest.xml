@@ -58,7 +58,7 @@
         <!--添加记事页面-->
         <activity
             android:name=".activity.AddNoticeActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AddNoticeActivity" />
         <!--查看图片页面-->
         <activity
             android:name=".activity.ShowImageActivity"

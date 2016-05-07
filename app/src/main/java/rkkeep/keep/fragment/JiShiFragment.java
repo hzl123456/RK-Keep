@@ -1,5 +1,7 @@
 package rkkeep.keep.fragment;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
@@ -8,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import cn.xmrk.rkandroid.utils.CommonUtil;
@@ -33,6 +35,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
     private View titleView;
     private ImageButton ibSearch;
     private ImageButton ibLayout;
+    private TextView tvTitleJishi;
 
     private MainActivity activity;
     private StaggeredGridLayoutManager layoutManager;
@@ -41,6 +44,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
     private View titleEditView;
     private ImageButton ibColor;
     private ImageButton ibDelete;
+    private TextView tvTitleEdit;
 
 
     private ChangeColorDialog mDialog;
@@ -64,6 +68,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
             titleEditView = activity.getLayoutInflater().inflate(R.layout.title_jishi_edit, null);
             ibColor = (ImageButton) titleEditView.findViewById(R.id.ib_color);
             ibDelete = (ImageButton) titleEditView.findViewById(R.id.ib_delete);
+            tvTitleEdit = (TextView) titleEditView.findViewById(R.id.tv_title);
             ibColor.setOnClickListener(this);
             ibDelete.setOnClickListener(this);
             CommonUtil.setLongClick(ibColor, activity.getString(R.string.change_color));
@@ -78,6 +83,14 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         } else {
             activity.getTitleBar().addView(titleEditView);
             activity.getTitleBar().setBackgroundResource(R.color.color_9b9b9b);
+            activity.getTitleBar().setNavigationIcon(R.drawable.ic_white_back);
+            activity.getTitleBar().setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //返回记事页面，将所有选中的设置为未选中的状态
+                    setNullDragHolder();
+                }
+            });
         }
     }
 
@@ -87,10 +100,12 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
             titleView = activity.getLayoutInflater().inflate(R.layout.title_jishi, null);
             ibSearch = (ImageButton) titleView.findViewById(R.id.ib_search);
             ibLayout = (ImageButton) titleView.findViewById(R.id.ib_layout);
+            tvTitleJishi = (TextView) titleView.findViewById(R.id.tv_title);
             ibSearch.setOnClickListener(this);
             ibLayout.setOnClickListener(this);
             CommonUtil.setLongClick(ibSearch, activity.getString(R.string.search));
             CommonUtil.setLongClick(ibLayout, activity.getString(R.string.layout));
+            tvTitleJishi.setText(R.string.nav_jishi);
         }
 
         if (titleEditView != null && titleEditView.getParent() == activity.getTitleBar()) {
@@ -101,7 +116,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         } else {
             activity.getTitleBar().addView(titleView);
             activity.getTitleBar().setBackgroundResource(R.color.bg_title_bar);
-            activity.getSupportActionBar().setTitle(activity.getString(R.string.nav_jishi));
+            activity.setViews();
         }
     }
 
@@ -119,6 +134,28 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
     @Override
     protected RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new NoticeInfoBaseViewHolder(View.inflate(parent.getContext(), R.layout.item_noticeinfo_base, null));
+    }
+
+    /**
+     * 设置属性动画
+     **/
+    public void setAnimation(final NoticeBaseInfo baseInfo) {
+        final View view = baseInfo.holder.itemView;
+        //区域高度
+        int screenHeight = CommonUtil.getScreenDisplay().getHeight() - activity.getTitleBar().getHeight() - CommonUtil.getStateBarHeight();
+        //计算要放大的倍数
+        float size = ((float) screenHeight) / view.getHeight();
+        ObjectAnimator anim = ObjectAnimator.ofFloat(view, "scaleY", 1f, size);
+        anim.setDuration(800);
+        anim.start();
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float cVal = (Float) animation.getAnimatedValue();
+                view.setScaleY(cVal);
+                activity.toAddNoticeInfoActivity(baseInfo.info);
+            }
+        });
     }
 
     @Override
@@ -187,7 +224,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
             initEditTitle();
         }
         if (dragHolder.size() > 0) {
-            activity.getSupportActionBar().setTitle(dragHolder.size() + "");
+            tvTitleEdit.setText(dragHolder.size() + "");
         }
     }
 
@@ -232,18 +269,15 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     //用来保存将要remove的position
-                    int[] size = new int[dragHolder.size()];
+                    int size = mData.size();
                     NoticeInfo info = null;
                     for (int i = 0; i < dragHolder.size(); i++) {
                         //保存position，更新使用
-                        size[i] = dragHolder.get(i).position;
                         info = dragHolder.get(i).info;
                         mNoticeInfoDbHelper.updateNoticeInfoType(info.infoId, NoticeInfo.NOMAL_TYPE_DUSTBIN);
                         mData.remove(info);
                     }
-                    //将其按照从小到大的顺序排序
-                    Arrays.sort(size);
-                    mAdapter.notifyItemRangeRemoved(0, mData.size() - 1 + size.length);
+                    mAdapter.notifyItemRangeRemoved(0, size);
                     dragHolder.clear();
                     setTitle();
                     CommonUtil.showSnackToast(getActivity().getString(rkkeep.keep.R.string.had_move_to_dustbin), rvContent);
@@ -278,4 +312,22 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         }
     }
 
+    //将dragholder设置为空
+    public void setNullDragHolder() {
+        for (int i = 0; i < dragHolder.size(); i++) {
+            dragHolder.get(i).info.isCheck = false;
+        }
+        dragHolder.clear();
+        setTitle();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean canBackActivity() {
+        if (dragHolder.size() > 0) {
+            setNullDragHolder();
+            return false;
+        }
+        return true;
+    }
 }

@@ -112,9 +112,21 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void setViews() {
+    public void setViews() {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                super.onDrawerStateChanged(newState);
+                if (newState == DrawerLayout.STATE_DRAGGING) {
+                    if (currentFragment instanceof JiShiFragment) {
+                        JiShiFragment fragment = (JiShiFragment) currentFragment;
+                        fragment.setNullDragHolder();
+                    }
+                }
+            }
+        };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
@@ -159,10 +171,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if (currentFragment.canBackActivity()) {
             super.onBackPressed();
         }
     }
@@ -188,7 +199,6 @@ public class MainActivity extends AppCompatActivity
 
                 break;
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -287,4 +297,5 @@ public class MainActivity extends AppCompatActivity
     protected void startActivity(Class<? extends Activity> cls) {
         startActivity(new Intent(this, cls));
     }
+
 }

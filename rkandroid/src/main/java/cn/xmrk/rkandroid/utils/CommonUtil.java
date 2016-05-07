@@ -81,7 +81,7 @@ public class CommonUtil {
      * 返回字符串
      **/
     public static final String changeOne2Two(int number) {
-        return String.valueOf(number > 9 ? ""+number : "0" + number);
+        return String.valueOf(number > 9 ? "" + number : "0" + number);
     }
 
     /**
@@ -436,4 +436,12 @@ public class CommonUtil {
         }
     }
 
+    public static int getStateBarHeight() {
+        int result = 0;
+        int resourceId = getAppContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getAppContext().getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
 }

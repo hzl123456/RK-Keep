@@ -5,11 +5,19 @@
     android:gravity="center_vertical"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textColor="@color/bg_white"
+        android:textSize="20sp" />
+
     <ImageButton
-        android:layout_toLeftOf="@+id/ib_layout"
         android:id="@+id/ib_search"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/ib_layout"
         android:background="@drawable/btn_click_ripple_title_color"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
