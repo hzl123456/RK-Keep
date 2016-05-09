@@ -202,4 +202,5 @@ public abstract class BaseFragment extends Fragment {
     public boolean canBackActivity() {
         return true;
     }
+
 }

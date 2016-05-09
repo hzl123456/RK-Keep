@@ -12,8 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -21,13 +23,14 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 
 import cn.xmrk.rkandroid.activity.ChoicePicActivity;
-import cn.xmrk.rkandroid.fragment.BaseFragment;
 import cn.xmrk.rkandroid.utils.CommonUtil;
 import cn.xmrk.rkandroid.utils.FileUtil;
 import cn.xmrk.rkandroid.widget.imageView.RoundImageView;
 import rkkeep.keep.R;
+import rkkeep.keep.fragment.DustbinFragment;
 import rkkeep.keep.fragment.JiShiFragment;
 import rkkeep.keep.fragment.RecyclerViewFragment;
+import rkkeep.keep.fragment.TiXingFragment;
 import rkkeep.keep.help.PictureChooseHelper;
 import rkkeep.keep.pojo.NoticeImgVoiceInfo;
 import rkkeep.keep.pojo.NoticeInfo;
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     //底部使用
     private FrameLayout layoutContent;
+
+    private RelativeLayout layoutBottom;
     private TextView tvAddTextItem;
     private ImageButton ibKeepText;
     private ImageButton ibKeepEdit;
@@ -67,9 +72,10 @@ public class MainActivity extends AppCompatActivity
     private PictureChooseHelper mPictureChooseHelper;
 
     //各个页面的fragment
-    private BaseFragment currentFragment;
-    private BaseFragment mJiShiFragment;
-
+    private RecyclerViewFragment currentFragment;
+    private RecyclerViewFragment mJiShiFragment;
+    private RecyclerViewFragment mTiXingFragment;
+    private RecyclerViewFragment mDustbinFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +90,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void setCurrentFragment(BaseFragment fragment) {
+    private void setCurrentFragment(RecyclerViewFragment fragment) {
         if (fragment == currentFragment) {
             return;
         }
@@ -93,6 +99,18 @@ public class MainActivity extends AppCompatActivity
         _ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
         _ft.replace(R.id.layout_content, fragment);
         _ft.commit();
+
+        if(currentFragment instanceof  DustbinFragment){//这里要隐藏底部的操作栏
+            if(layoutBottom.getVisibility()==View.VISIBLE){
+                layoutBottom.startAnimation(AnimationUtils.loadAnimation(this,R.anim.fade_out));
+                layoutBottom.setVisibility(View.GONE);
+            }
+        }else{
+            if(layoutBottom.getVisibility()==View.GONE){
+                layoutBottom.startAnimation(AnimationUtils.loadAnimation(this,R.anim.fade_in));
+                layoutBottom.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     /**
@@ -100,7 +118,8 @@ public class MainActivity extends AppCompatActivity
      **/
     private void initFragment() {
         mJiShiFragment = new JiShiFragment();
-
+        mTiXingFragment = new TiXingFragment();
+        mDustbinFragment=new DustbinFragment();
     }
 
     private void initUserInfo() {
@@ -133,11 +152,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void findViews() {
+        layoutBottom= (RelativeLayout) findViewById(R.id.layout_bottom);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         setSupportActionBar(toolbar);
     }
+
 
     public Toolbar getTitleBar() {
         return toolbar;
@@ -187,10 +208,10 @@ public class MainActivity extends AppCompatActivity
                 setCurrentFragment(mJiShiFragment);
                 break;
             case R.id.nav_tixing://提醒
-
+                setCurrentFragment(mTiXingFragment);
                 break;
             case R.id.nav_huishouzhan://回收站
-
+                setCurrentFragment(mDustbinFragment);
                 break;
             case R.id.nav_setting://设置
                 startActivity(new Intent(this, SettingActivity.class));
@@ -263,6 +284,10 @@ public class MainActivity extends AppCompatActivity
         if (info.editTime == 0) {//如果修改时间为0的话表示为添加的，否则为修改的
             info.editTime = System.currentTimeMillis();
             code = NOTICE_ADD;
+            if (currentFragment instanceof TiXingFragment) {//提醒的需要默认的添加时间
+                info.remindTime = System.currentTimeMillis() + 24 * 60 * 60 * 1000;
+            }
+
         } else {
             code = NOTICE_EDIT;
         }

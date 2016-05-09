@@ -4,13 +4,15 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -21,6 +23,7 @@ import java.util.List;
 import cn.xmrk.rkandroid.R;
 import cn.xmrk.rkandroid.fragment.BaseFragment;
 import cn.xmrk.rkandroid.utils.CommonUtil;
+import cn.xmrk.rkandroid.utils.uil.SpacesItemDecoration;
 import rkkeep.keep.adapter.HeaderFooterRecyclerViewDragSwioAdapter;
 import rkkeep.keep.adapter.helper.SimpleItemTouchHelperCallback;
 import rkkeep.keep.db.NoticeInfoDbHelper;
@@ -30,8 +33,18 @@ import rkkeep.keep.pojo.NoticeInfo;
 /**
  * RecyclerView 的Activity
  */
-public abstract class RecyclerViewFragment extends BaseFragment {
+public abstract class RecyclerViewFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
+
+    /**
+     * 下拉刷新使用
+     **/
+    private SwipeRefreshLayout swRefresh;
+
+    /**
+     * 是否处于刷新状态
+     **/
+    protected boolean isRefesh;
 
     /**
      * 是否有提示过
@@ -59,7 +72,7 @@ public abstract class RecyclerViewFragment extends BaseFragment {
      * 1为加载更多<br/>
      * 2为没有数据<br/>
      */
-    private int mFooterType = 1;
+    protected int mFooterType = 1;
 
     /**
      * 数据存放的位置
@@ -79,6 +92,9 @@ public abstract class RecyclerViewFragment extends BaseFragment {
 
 
     public long getInfoId() {
+        if (isRefesh) {
+            return 0;
+        }
         if (mData != null && mData.size() > 0) {
             return mData.get(mData.size() - 1).infoId;
         }
@@ -96,21 +112,35 @@ public abstract class RecyclerViewFragment extends BaseFragment {
         if (isCreate) {
             findViews();
             initViews();
-
         }
         removeFromParent(containerLoadmore);
     }
 
     public void onSuccess(List<NoticeInfo> infos) {
+        if (isRefesh && mData != null) {
+            mData.clear();
+            isRefesh = false;
+        }
         // 加载成功
         isLoading = false;
         handlerDataResult(infos);
+        if (swRefresh.isRefreshing()) {
+            swRefresh.setRefreshing(false);
+        }
         //不晓得为嘛，为null的时候老是改不了底部的viewholder
-        if (mData == null || mData.isEmpty()) {
+        if (mData == null || mData.size() == 0) {
             rvContent.setAdapter(mAdapter);
         } else {
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    public boolean isLongPressDragEnabled() {
+        return false;
+    }
+
+    public boolean isItemViewSwipeEnabled() {
+        return true;
     }
 
     public void onError(String errorToast) {
@@ -163,10 +193,16 @@ public abstract class RecyclerViewFragment extends BaseFragment {
 
     private void findViews() {
         rvContent = (RecyclerView) findViewById(R.id.rv_content);
+        swRefresh = (SwipeRefreshLayout) findViewById(R.id.sf_refresh);
+
+        swRefresh.setOnRefreshListener(this);
     }
 
     protected RecyclerView.LayoutManager getLayoutManager() {
-        return new GridLayoutManager(getBaseActivity(), 1);
+        int spacesSize = CommonUtil.dip2px(3);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1, LinearLayout.VERTICAL);
+        rvContent.addItemDecoration(new SpacesItemDecoration(spacesSize, spacesSize, spacesSize, spacesSize));
+        return layoutManager;
     }
 
     protected void initViews() {
@@ -263,7 +299,8 @@ public abstract class RecyclerViewFragment extends BaseFragment {
             protected void onBindFooterItemViewHolder(RecyclerView.ViewHolder footerViewHolder, int position) {
                 if (mFooterType == 2) {
                     EmptyViewHolder holder = (EmptyViewHolder) footerViewHolder;
-
+                    holder.tvEmpty.setText(getEmptyString());
+                    holder.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(0, getEmptyResourse(), 0, 0);
                 } else {
                     LoadmoreViewHolder _lHolder = (LoadmoreViewHolder) footerViewHolder;
                     if (isLoadmoreEnable && !isLoading) {
@@ -277,6 +314,7 @@ public abstract class RecyclerViewFragment extends BaseFragment {
                         _lHolder.vsLoadmore.setDisplayedChild(1);
                     }
                 }
+                prepareHeaderFooter(footerViewHolder);
             }
 
             @Override
@@ -286,9 +324,15 @@ public abstract class RecyclerViewFragment extends BaseFragment {
             }
         };
         //添加拖拽的接口
-        mItemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallback(mAdapter));
+        mItemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallback(mAdapter, isLongPressDragEnabled(), isItemViewSwipeEnabled()));
         mItemTouchHelper.attachToRecyclerView(rvContent);
         rvContent.setAdapter(mAdapter);
+    }
+
+    private void prepareHeaderFooter(RecyclerView.ViewHolder vh) {
+        StaggeredGridLayoutManager.LayoutParams layoutParams = new StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.setFullSpan(true);
+        vh.itemView.setLayoutParams(layoutParams);
     }
 
     private void removeFromParent(View v) {
@@ -307,7 +351,7 @@ public abstract class RecyclerViewFragment extends BaseFragment {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1200);
                     List<NoticeInfo> infos = mNoticeInfoDbHelper.getNoticeInfoList(getInfoType(), getInfoId(), getPageSize());
                     Log.i("size-->", infos.size() + "");
                     Log.i("totalSize-->", mNoticeInfoDbHelper.getMessageCount(getInfoType()) + "");
@@ -402,9 +446,9 @@ public abstract class RecyclerViewFragment extends BaseFragment {
     /**
      * 没有数据时的ViewHolder
      */
-    private class EmptyViewHolder extends RecyclerView.ViewHolder {
+    public class EmptyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tvEmpty;
+        public TextView tvEmpty;
 
         public EmptyViewHolder(View itemView) {
             super(itemView);
@@ -418,6 +462,9 @@ public abstract class RecyclerViewFragment extends BaseFragment {
     public void addNoticeInfo(NoticeInfo info) {
         if (mData == null) {
             mData = new ArrayList<>();
+        }
+        if (info.infoType != getInfoType()) {
+            return;
         }
         mFooterType = 0;
         mData.add(0, info);
@@ -438,4 +485,17 @@ public abstract class RecyclerViewFragment extends BaseFragment {
         mAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onRefresh() {
+        isRefesh = true;
+        onLoadData();
+    }
+
+    protected int getEmptyResourse() {
+        return R.drawable.ic_launcher;
+    }
+
+    protected String getEmptyString() {
+        return getActivity().getString(rkkeep.keep.R.string.enyty_data);
+    }
 }

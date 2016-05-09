@@ -59,4 +59,15 @@
     <string name="change_color">更换颜色</string>
     <string name="to_dustbin">回收站</string>
     <string name="notice_color">信息颜色</string>
+    <string name="cannot_deit">回收站里面的信息无法进行修改</string>
+    <string name="remove_out">移出回收站</string>
+    <string name="delete_fornever">永久删除</string>
+    <string name="notice_ago">记事信息已经还原</string>
+    <string name="remove_all_dustbin">确定清空回收站</string>
+    <string name="delete_all_noticeinfo">将永久删除回收站中的所有信息</string>
+    <string name="delete_choose_noticeinfo">确定永久删除选中的信息</string>
+    <string name="enyty_data">没有数据</string>
+    <string name="no_jishi">您添加的记事会显示在此处</string>
+    <string name="no_tixing">要发出提醒的记事会显示在此处</string>
+    <string name="no__dustbin">回收站中没有任何记事</string>
 </resources>

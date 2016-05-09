@@ -32,38 +32,40 @@ import rkkeep.keep.pojo.NoticeInfo;
  */
 public class JiShiFragment extends RecyclerViewFragment implements View.OnClickListener {
 
-    private View titleView;
-    private ImageButton ibSearch;
-    private ImageButton ibLayout;
-    private TextView tvTitleJishi;
+    protected View titleView;
+    protected ImageButton ibSearch;
+    protected ImageButton ibLayout;
+    protected TextView tvTitleJishi;
 
-    private MainActivity activity;
-    private StaggeredGridLayoutManager layoutManager;
-
-
-    private View titleEditView;
-    private ImageButton ibColor;
-    private ImageButton ibDelete;
-    private TextView tvTitleEdit;
+    protected MainActivity activity;
+    protected StaggeredGridLayoutManager layoutManager;
 
 
-    private ChangeColorDialog mDialog;
+    protected View titleEditView;
+    protected ImageButton ibColor;
+    protected ImageButton ibDelete;
+    protected TextView tvTitleEdit;
+
+
+    protected ChangeColorDialog mDialog;
 
     /**
      * 保存所有的处于drag状态下的holder，当为null的时候才可以进行点击事件
      **/
-    private List<NoticeBaseInfo> dragHolder;
+    protected List<NoticeBaseInfo> dragHolder;
 
     @Override
     protected void initOnCreateView(boolean isCreate) {
         super.initOnCreateView(isCreate);
         if (isCreate) {
+            activity = (MainActivity) getActivity();
             dragHolder = new ArrayList<>();
-            initTitle();
         }
+        setTitle();
     }
 
-    private void initEditTitle() {
+    protected void initEditTitle() {
+        activity.getTitleBar().removeAllViews();
         if (titleEditView == null) {
             titleEditView = activity.getLayoutInflater().inflate(R.layout.title_jishi_edit, null);
             ibColor = (ImageButton) titleEditView.findViewById(R.id.ib_color);
@@ -74,28 +76,21 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
             CommonUtil.setLongClick(ibColor, activity.getString(R.string.change_color));
             CommonUtil.setLongClick(ibDelete, activity.getString(R.string.to_dustbin));
         }
+        activity.getTitleBar().addView(titleEditView);
+        activity.getTitleBar().setBackgroundResource(R.color.color_9b9b9b);
+        activity.getTitleBar().setNavigationIcon(R.drawable.ic_white_back);
+        activity.getTitleBar().setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //返回记事页面，将所有选中的设置为未选中的状态
+                setNullDragHolder();
+            }
+        });
 
-        if (titleView != null && titleView.getParent() == activity.getTitleBar()) {
-            activity.getTitleBar().removeView(titleView);
-        }
-        if (titleEditView != null && titleEditView.getParent() == activity.getTitleBar()) {
-
-        } else {
-            activity.getTitleBar().addView(titleEditView);
-            activity.getTitleBar().setBackgroundResource(R.color.color_9b9b9b);
-            activity.getTitleBar().setNavigationIcon(R.drawable.ic_white_back);
-            activity.getTitleBar().setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //返回记事页面，将所有选中的设置为未选中的状态
-                    setNullDragHolder();
-                }
-            });
-        }
     }
 
-    private void initTitle() {
-        activity = (MainActivity) getActivity();
+    protected void initTitle() {
+        activity.getTitleBar().removeAllViews();
         if (titleView == null) {
             titleView = activity.getLayoutInflater().inflate(R.layout.title_jishi, null);
             ibSearch = (ImageButton) titleView.findViewById(R.id.ib_search);
@@ -107,17 +102,9 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
             CommonUtil.setLongClick(ibLayout, activity.getString(R.string.layout));
             tvTitleJishi.setText(R.string.nav_jishi);
         }
-
-        if (titleEditView != null && titleEditView.getParent() == activity.getTitleBar()) {
-            activity.getTitleBar().removeView(titleEditView);
-        }
-        if (titleView != null && titleView.getParent() == activity.getTitleBar()) {
-
-        } else {
-            activity.getTitleBar().addView(titleView);
-            activity.getTitleBar().setBackgroundResource(R.color.bg_title_bar);
-            activity.setViews();
-        }
+        activity.getTitleBar().addView(titleView);
+        activity.getTitleBar().setBackgroundResource(R.color.bg_title_bar);
+        activity.setViews();
     }
 
 
@@ -217,7 +204,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         holder.rvContent.setAdapter(new MuilGridAdapter(info.infos));
     }
 
-    private void setTitle() {
+    protected void setTitle() {
         if (dragHolder.size() == 0) {
             initTitle();
         } else if (dragHolder.size() == 1) {
@@ -228,7 +215,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         }
     }
 
-    private void setDragHolder(NoticeBaseInfo baseInfo) {
+    protected void setDragHolder(NoticeBaseInfo baseInfo) {
         baseInfo.info.isCheck = !baseInfo.info.isCheck;
         baseInfo.holder.setLayoutTop();
         if (baseInfo.info.isCheck) {
@@ -260,7 +247,6 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
                     layoutManager.setSpanCount(1);
                     ibLayout.setImageResource(R.drawable.ic_view_stream);
                 }
-                mAdapter.notifyDataSetChanged();
             }
         } else if (v == ibDelete) {//移至回收站
             final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
@@ -307,6 +293,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
                     dragHolder.clear();
                     setTitle();
                     mAdapter.notifyDataSetChanged();
+
                 }
             });
         }
@@ -329,5 +316,37 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void addNoticeInfo(NoticeInfo info) {
+        if (mData == null) {
+            mData = new ArrayList<>();
+        }
+        if (info.infoType == NoticeInfo.NOMAL_TYPE_DUSTBIN) {
+            return;
+        }
+        mFooterType = 0;
+        mData.add(0, info);
+        mAdapter.notifyDataSetChanged();
+        rvContent.getLayoutManager().scrollToPosition(0);
+    }
+
+    @Override
+    public void onSuccess(List<NoticeInfo> infos) {
+        if (isRefesh) {
+            canBackActivity();
+        }
+        super.onSuccess(infos);
+    }
+
+    @Override
+    protected String getEmptyString() {
+        return activity.getString(R.string.no_jishi);
+    }
+
+    @Override
+    protected int getEmptyResourse() {
+        return R.drawable.ic_empty_notes;
     }
 }

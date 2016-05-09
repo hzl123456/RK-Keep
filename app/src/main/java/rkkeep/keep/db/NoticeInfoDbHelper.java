@@ -250,5 +250,33 @@ public class NoticeInfoDbHelper {
         }
     }
 
+    /**
+     * 获取需要提醒的消息，并且已经提醒过了
+     **/
+    public List<NoticeInfo> getTiXingNoticeInfoList() {
+        Dao _dao = getNoticeInfoDao();
+        try {
+            QueryBuilder<NoticeInfo, Integer> _qb = _dao.queryBuilder();
+            Where _where = _qb.where()
+                    .eq("ownerId", getMsgOwner()).and().eq("infoType", NoticeInfo.TIXING_TYPE).and().eq("noticeTimes", 0);
+            List<NoticeInfo> _result = _qb.query();
+            //如果查询结果数量不为0，需要对一些信息进行转换
+            if (_result != null && _result.size() > 0) {
+                for (NoticeInfo info : _result) {
+                    if (!StringUtil.isEmptyString(info.noticeImgVoiceInfosString)) {
+                        info.infos = CommonUtil.getGson().fromJson(info.noticeImgVoiceInfosString, NoticeImgVoiceInfo.getListType());
+                    }
+                    if (!StringUtil.isEmptyString(info.addressInfoString)) {
+                        info.addressInfo = CommonUtil.getGson().fromJson(info.addressInfoString, AddressInfo.class);
+                    }
+                }
+            }
+            return _result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            log.error("获取失败", e);
+            return null;
+        }
+    }
 
 }

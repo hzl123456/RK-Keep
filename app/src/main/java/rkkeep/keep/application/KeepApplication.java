@@ -1,9 +1,12 @@
 package rkkeep.keep.application;
 
+import android.content.Intent;
+
 import com.baidu.mapapi.SDKInitializer;
 
 import cn.xmrk.rkandroid.application.RKApplication;
 import cn.xmrk.rkandroid.config.IRKConfig;
+import rkkeep.keep.service.NoticeInfoService;
 import rkkeep.keep.util.UserInfoUtil;
 
 /**
@@ -49,5 +52,7 @@ public class KeepApplication extends RKApplication {
         UserInfoUtil.initDefaultUserInfo();
         //加载百度地图
         SDKInitializer.initialize(getApplicationContext());
+        //启动后台服务
+        startService(new Intent(this, NoticeInfoService.class));
     }
 }

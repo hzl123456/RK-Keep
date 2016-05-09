@@ -83,6 +83,7 @@
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="lSAyfvMj19UYTAOhtBr0ibWYTjUQU7sx" />
          -->
+        <service android:name=".service.NoticeInfoService" />
 
         <!--百度定位-->
         <service
