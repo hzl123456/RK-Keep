@@ -48,7 +48,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter adapter, boolean isLongPressDragEnabled, boolean isItemViewSwipeEnabled) {
         this.mAdapter = adapter;
         this.isLongPressDragEnabled = isLongPressDragEnabled;
-        this.isItemViewSwipeEnabled = isLongPressDragEnabled;
+        this.isItemViewSwipeEnabled = isItemViewSwipeEnabled;
     }
 
 

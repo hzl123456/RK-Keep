@@ -1,5 +1,7 @@
 package rkkeep.keep.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -96,10 +98,27 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addnotice);
         initTitle();
+        showDelete();
         initTop();
         initBottom();
         initHelper();
         setBackColor();
+    }
+
+    private void showDelete() {
+        if (dbHelper.getNoticeInfoType(mNoticeInfo.infoId) == NoticeInfo.NOMAL_TYPE_DUSTBIN) {
+            final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage("该记事已经添加到回收站中，不得编辑，请返回上一级进行刷新");
+            dialog.setCancelable(false);
+            dialog.setPositiveButton("知道了", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+            dialog.show();
+        }
     }
 
     private void initHelper() {
@@ -141,12 +160,12 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
                     tvNoticeAddress.setVisibility(View.VISIBLE);
                     tvNoticeAddress.setText(mNoticeInfo.addressInfo.addressName);
                 }
-
             }
         });
     }
 
     private void initTitle() {
+        dbHelper = new NoticeInfoDbHelper();
         mNoticeInfo = (NoticeInfo) getIntent().getExtras().get("data");
         titleView = getLayoutInflater().inflate(R.layout.title_add_notice, null);
         ibNotice = (ImageButton) titleView.findViewById(R.id.ib_notice);
@@ -330,10 +349,15 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
             mNoticeInfo.addressInfoString = CommonUtil.getGson().toJson(mNoticeInfo.addressInfo);
         }
         if (mNoticeInfo.infos != null && mNoticeInfo.infos.size() > 0) {
+            for (int i = 0; i < mNoticeInfo.infos.size(); i++) {
+                if (!StringUtil.isEmptyString(mNoticeInfo.infos.get(i).imagePic)) {
+                    mNoticeInfo.hasPic = true;
+                }
+                if (!StringUtil.isEmptyString(mNoticeInfo.infos.get(i).voicePic)) {
+                    mNoticeInfo.hasVoice = true;
+                }
+            }
             mNoticeInfo.noticeImgVoiceInfosString = CommonUtil.getGson().toJson(mNoticeInfo.infos);
-        }
-        if (dbHelper == null) {
-            dbHelper = new NoticeInfoDbHelper();
         }
         dbHelper.saveNoticeInfo(mNoticeInfo);
         Intent intent = new Intent();

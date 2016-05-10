@@ -250,6 +250,7 @@ public class DustbinFragment extends RecyclerViewFragment implements View.OnClic
             mAdapter.notifyItemRangeRemoved(0, size);
             setTitle();
             setNullDelete();
+            showDataOrEmpty();
             CommonUtil.showSnackToast(activity.getString(R.string.notice_ago), rvContent);
         } else if (v == ibLayout) {//这个表示的是永久删除
             final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
@@ -284,6 +285,7 @@ public class DustbinFragment extends RecyclerViewFragment implements View.OnClic
                         mAdapter.notifyDataSetChanged();
                     }
                     setNullDelete();
+                    showDataOrEmpty();
                 }
             });
             dialog.setNegativeButton(cn.xmrk.rkandroid.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -304,7 +306,7 @@ public class DustbinFragment extends RecyclerViewFragment implements View.OnClic
 
     @Override
     protected String getEmptyString() {
-        return activity.getString(R.string.no__dustbin);
+        return getActivity().getString(R.string.no__dustbin);
     }
 
     @Override

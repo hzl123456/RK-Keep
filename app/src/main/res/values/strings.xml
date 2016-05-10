@@ -70,4 +70,5 @@
     <string name="no_jishi">您添加的记事会显示在此处</string>
     <string name="no_tixing">要发出提醒的记事会显示在此处</string>
     <string name="no__dustbin">回收站中没有任何记事</string>
+    <string name="search_jishi">搜索记事</string>
 </resources>

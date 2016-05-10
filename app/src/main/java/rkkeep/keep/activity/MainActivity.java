@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.xmrk.rkandroid.activity.ChoicePicActivity;
 import cn.xmrk.rkandroid.utils.CommonUtil;
@@ -44,8 +45,9 @@ public class MainActivity extends AppCompatActivity
     /**
      * 分别为添加和修改
      **/
-    private final int NOTICE_ADD = 10;
-    private final int NOTICE_EDIT = 11;
+    public final int NOTICE_ADD = 10;
+    public final int NOTICE_EDIT = 11;
+    public final int NOTICE_EDIT_LIST = 12;
 
     /**
      * 侧滑的头部使用
@@ -100,14 +102,14 @@ public class MainActivity extends AppCompatActivity
         _ft.replace(R.id.layout_content, fragment);
         _ft.commit();
 
-        if(currentFragment instanceof  DustbinFragment){//这里要隐藏底部的操作栏
-            if(layoutBottom.getVisibility()==View.VISIBLE){
-                layoutBottom.startAnimation(AnimationUtils.loadAnimation(this,R.anim.fade_out));
+        if (currentFragment instanceof DustbinFragment) {//这里要隐藏底部的操作栏
+            if (layoutBottom.getVisibility() == View.VISIBLE) {
+                layoutBottom.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
                 layoutBottom.setVisibility(View.GONE);
             }
-        }else{
-            if(layoutBottom.getVisibility()==View.GONE){
-                layoutBottom.startAnimation(AnimationUtils.loadAnimation(this,R.anim.fade_in));
+        } else {
+            if (layoutBottom.getVisibility() == View.GONE) {
+                layoutBottom.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
                 layoutBottom.setVisibility(View.VISIBLE);
             }
         }
@@ -119,7 +121,7 @@ public class MainActivity extends AppCompatActivity
     private void initFragment() {
         mJiShiFragment = new JiShiFragment();
         mTiXingFragment = new TiXingFragment();
-        mDustbinFragment=new DustbinFragment();
+        mDustbinFragment = new DustbinFragment();
     }
 
     private void initUserInfo() {
@@ -152,7 +154,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void findViews() {
-        layoutBottom= (RelativeLayout) findViewById(R.id.layout_bottom);
+        layoutBottom = (RelativeLayout) findViewById(R.id.layout_bottom);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -214,10 +216,10 @@ public class MainActivity extends AppCompatActivity
                 setCurrentFragment(mDustbinFragment);
                 break;
             case R.id.nav_setting://设置
-                startActivity(new Intent(this, SettingActivity.class));
+                startActivity(SettingActivity.class);
                 break;
             case R.id.nav_help://帮助与反馈
-
+                startActivity(HelpActivity.class);
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -316,6 +318,18 @@ public class MainActivity extends AppCompatActivity
             NoticeInfo info = (NoticeInfo) data.getExtras().get("data");
             RecyclerViewFragment mFragment = (RecyclerViewFragment) currentFragment;
             mFragment.updateNoticeInfo(info);
+        }
+
+        if (resultCode == RESULT_OK && requestCode == NOTICE_EDIT_LIST) {//这里是修改的list
+            List<NoticeInfo> infos = (List<NoticeInfo>) data.getExtras().get("data");
+            if (infos != null && infos.size() > 0) {
+                RecyclerViewFragment mFragment = (RecyclerViewFragment) currentFragment;
+                NoticeInfo info = null;
+                for (int i = 0; i < infos.size(); i++) {
+                    info = infos.get(i);
+                    mFragment.updateNoticeInfo(info);
+                }
+            }
         }
     }
 

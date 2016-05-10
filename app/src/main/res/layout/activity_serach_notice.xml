@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_grey"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_white"
+        android:orientation="horizontal"
+        android:paddingBottom="7dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="7dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/ib_text"
+                style="@style/SerachImageButton"
+                android:background="@drawable/bg_search"
+                android:src="@drawable/ic_perm_group_calendar" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/ib_voice"
+                style="@style/SerachImageButton"
+                android:background="@drawable/bg_search"
+                android:src="@drawable/ic_voice_search_api_holo_light" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/ib_pic"
+                style="@style/SerachImageButton"
+                android:background="@drawable/bg_search"
+                android:src="@drawable/ic_perm_group_camera" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/ib_jishi"
+                style="@style/SerachImageButton"
+                android:background="@drawable/bg_search"
+                android:src="@drawable/ic_material_reminder_finger_dark" />
+        </RelativeLayout>
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+
+            <ImageButton
+                android:id="@+id/ib_color"
+                style="@style/SerachImageButton"
+                android:background="@drawable/bg_search"
+                android:src="@drawable/ic_material_color_dark" />
+
+            <cn.xmrk.rkandroid.widget.imageView.RoundImageView
+                android:id="@+id/iv_round"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_color"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_button_size"
+        android:background="@color/bg_white"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="3dp"
+        android:visibility="gone" />
+
+    <View
+        style="@style/View_divider"
+        android:layout_height="0.5dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="找不到任何相符的记事"
+            android:textColor="#979797"
+            android:textSize="22sp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</LinearLayout>

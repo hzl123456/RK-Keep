@@ -71,6 +71,14 @@
         <activity
             android:name=".activity.ChooseAddressDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <!--帮助与反馈 -->
+        <activity
+            android:name=".activity.HelpActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <!--搜索记事 -->
+        <activity
+            android:name=".activity.SearchNoticeInfoActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <!--不是正式版，采用的是studio的debug的keystore，不同的studio所需要的value不一样-->
         <!--公司电脑-->

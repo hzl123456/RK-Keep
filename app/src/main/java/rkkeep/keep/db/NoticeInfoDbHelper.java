@@ -195,6 +195,23 @@ public class NoticeInfoDbHelper {
     }
 
     /**
+     * 根据infoid获取infotype
+     */
+    public int getNoticeInfoType(long infoId) {
+        Dao _dao = getNoticeInfoDao();
+        try {
+            QueryBuilder<NoticeInfo, Integer> _qb = _dao.queryBuilder();
+            Where _where = _qb.where()
+                    .eq("ownerId", getMsgOwner()).and().eq("infoId", infoId);
+            return _qb.query().get(0).infoType;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("获取失败", e);
+            return 0;
+        }
+    }
+
+    /**
      * 获取当前账号的一定数量的信息
      *
      * @param infoType
@@ -218,7 +235,7 @@ public class NoticeInfoDbHelper {
                 _where.and().lt("infoId", infoId);
             }
             if (infoType == NoticeInfo.NO_DUSTBIN) {
-                _count = _where.and().eq("infoType", NoticeInfo.NOMAL_TYPE).or().eq("infoType", NoticeInfo.TIXING_TYPE).countOf();
+                _count = _where.and().not().eq("infoType", NoticeInfo.NOMAL_TYPE_DUSTBIN).countOf();
             } else {
                 _count = _where.and().eq("infoType", infoType).countOf();
             }
@@ -259,6 +276,65 @@ public class NoticeInfoDbHelper {
             QueryBuilder<NoticeInfo, Integer> _qb = _dao.queryBuilder();
             Where _where = _qb.where()
                     .eq("ownerId", getMsgOwner()).and().eq("infoType", NoticeInfo.TIXING_TYPE).and().eq("noticeTimes", 0);
+            //进行从大到小的排序
+            _qb.orderBy("infoId", false);
+            List<NoticeInfo> _result = _qb.query();
+            //如果查询结果数量不为0，需要对一些信息进行转换
+            if (_result != null && _result.size() > 0) {
+                for (NoticeInfo info : _result) {
+                    if (!StringUtil.isEmptyString(info.noticeImgVoiceInfosString)) {
+                        info.infos = CommonUtil.getGson().fromJson(info.noticeImgVoiceInfosString, NoticeImgVoiceInfo.getListType());
+                    }
+                    if (!StringUtil.isEmptyString(info.addressInfoString)) {
+                        info.addressInfo = CommonUtil.getGson().fromJson(info.addressInfoString, AddressInfo.class);
+                    }
+                }
+            }
+            return _result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            log.error("获取失败", e);
+            return null;
+        }
+    }
+
+    /**
+     * 根据内容获取信息
+     *
+     * @param etInfo,（查找的内容，这边用标题和内容去匹配他）
+     * @param hasVoice,（是否包含语音）
+     * @param hasPic,（是否包含图片）
+     * @param color,（信息的颜色,当color为null的时候表示所有颜色都可以）
+     * @param isAllType,                            (按type值进行判断)
+     **/
+    public List<NoticeInfo> getNoticeInfoList(String etInfo, boolean hasVoice, boolean hasPic, String color, boolean isAllType) {
+        Dao _dao = getNoticeInfoDao();
+        try {
+            QueryBuilder<NoticeInfo, Integer> _qb = _dao.queryBuilder();
+            Where _where = _qb.where()
+                    .eq("ownerId", getMsgOwner());
+            if (hasVoice) {
+                _where.and().eq("hasVoice", hasVoice);
+            }
+            if (hasPic) {
+                _where.and().eq("hasPic", hasPic);
+            }
+            if (isAllType) {
+                _where.and().not().eq("infoType", NoticeInfo.NOMAL_TYPE_DUSTBIN);
+            } else {
+                _where.and().eq("infoType", NoticeInfo.TIXING_TYPE);
+            }
+            //当颜色不为空的时候需要判断颜色
+            if (!StringUtil.isEmptyString(color)) {
+                _where.and().eq("color", color);
+            }
+            //当etInfo不为空的时候需要判断etInfo
+            if (!StringUtil.isEmptyString(etInfo)) {
+                _where.and().like("title", etInfo).or().like("content", etInfo);
+            }
+            _qb.setWhere(_where);
+            //进行从大到小的排序
+            _qb.orderBy("infoId", false);
             List<NoticeInfo> _result = _qb.query();
             //如果查询结果数量不为0，需要对一些信息进行转换
             if (_result != null && _result.size() > 0) {

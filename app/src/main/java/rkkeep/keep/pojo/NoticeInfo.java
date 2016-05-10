@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +17,7 @@ public class NoticeInfo implements Parcelable {
 
     /**
      * 只在长按选择的时候使用
-     * **/
+     **/
     public boolean isCheck;
 
     /**
@@ -101,6 +100,20 @@ public class NoticeInfo implements Parcelable {
     @DatabaseField(columnName = "addressInfo")
     public String addressInfoString;
 
+
+    /**
+     * 拥有语音
+     **/
+    @DatabaseField(columnName = "hasVoice")
+    public boolean hasVoice;
+
+    /**
+     * 拥有图片
+     **/
+    @DatabaseField(columnName = "hasPic")
+    public boolean hasPic;
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -108,42 +121,47 @@ public class NoticeInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(isCheck ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.ownerId);
         dest.writeString(this.title);
         dest.writeString(this.content);
-        dest.writeInt(this.ownerId);
         dest.writeInt(this.infoType);
         dest.writeLong(this.infoId);
         dest.writeString(this.color);
         dest.writeLong(this.editTime);
         dest.writeLong(this.remindTime);
         dest.writeInt(this.noticeTimes);
-        dest.writeList(this.infos);
+        dest.writeTypedList(infos);
         dest.writeString(this.noticeImgVoiceInfosString);
         dest.writeParcelable(this.addressInfo, flags);
         dest.writeString(this.addressInfoString);
+        dest.writeByte(hasVoice ? (byte) 1 : (byte) 0);
+        dest.writeByte(hasPic ? (byte) 1 : (byte) 0);
     }
 
     public NoticeInfo() {
     }
 
     protected NoticeInfo(Parcel in) {
+        this.isCheck = in.readByte() != 0;
+        this.ownerId = in.readInt();
         this.title = in.readString();
         this.content = in.readString();
-        this.ownerId = in.readInt();
         this.infoType = in.readInt();
         this.infoId = in.readLong();
         this.color = in.readString();
         this.editTime = in.readLong();
         this.remindTime = in.readLong();
         this.noticeTimes = in.readInt();
-        this.infos = new ArrayList<NoticeImgVoiceInfo>();
-        in.readList(this.infos, NoticeImgVoiceInfo.class.getClassLoader());
+        this.infos = in.createTypedArrayList(NoticeImgVoiceInfo.CREATOR);
         this.noticeImgVoiceInfosString = in.readString();
         this.addressInfo = in.readParcelable(AddressInfo.class.getClassLoader());
         this.addressInfoString = in.readString();
+        this.hasVoice = in.readByte() != 0;
+        this.hasPic = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<NoticeInfo> CREATOR = new Parcelable.Creator<NoticeInfo>() {
+    public static final Creator<NoticeInfo> CREATOR = new Creator<NoticeInfo>() {
         @Override
         public NoticeInfo createFromParcel(Parcel source) {
             return new NoticeInfo(source);

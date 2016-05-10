@@ -36,11 +36,12 @@ public class TiXingFragment extends JiShiFragment {
         mData.add(0, info);
         mAdapter.notifyDataSetChanged();
         rvContent.getLayoutManager().scrollToPosition(0);
+        showDataOrEmpty();
     }
 
     @Override
     protected String getEmptyString() {
-        return activity.getString(R.string.no_tixing);
+        return getActivity().getString(R.string.no_tixing);
     }
 
     @Override

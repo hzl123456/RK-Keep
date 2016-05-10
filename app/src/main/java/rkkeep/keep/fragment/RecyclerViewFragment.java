@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -80,6 +81,16 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
     protected RecyclerView rvContent;
 
     /**
+     * 数据为空的时候显示
+     **/
+    protected TextView tvEmpty;
+
+    /**
+     * 数据为空的时候显示
+     **/
+    protected ScrollView rvScrollow;
+
+    /**
      * 加载数据库使用
      **/
     protected NoticeInfoDbHelper mNoticeInfoDbHelper;
@@ -114,6 +125,7 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
             initViews();
         }
         removeFromParent(containerLoadmore);
+        showDataOrEmpty();
     }
 
     public void onSuccess(List<NoticeInfo> infos) {
@@ -127,12 +139,7 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
         if (swRefresh.isRefreshing()) {
             swRefresh.setRefreshing(false);
         }
-        //不晓得为嘛，为null的时候老是改不了底部的viewholder
-        if (mData == null || mData.size() == 0) {
-            rvContent.setAdapter(mAdapter);
-        } else {
-            mAdapter.notifyDataSetChanged();
-        }
+        mAdapter.notifyDataSetChanged();
     }
 
     public boolean isLongPressDragEnabled() {
@@ -148,6 +155,7 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
         //弹窗告知失败原因
         CommonUtil.showToast(errorToast);
         setBtnLoadmoreShow();
+        showDataOrEmpty();
     }
 
     /**
@@ -185,6 +193,7 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
             // 显示没有数据
             mFooterType = 2;
         }
+        showDataOrEmpty();
     }
 
     public boolean hasMore() {
@@ -194,7 +203,10 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
     private void findViews() {
         rvContent = (RecyclerView) findViewById(R.id.rv_content);
         swRefresh = (SwipeRefreshLayout) findViewById(R.id.sf_refresh);
-
+        rvScrollow = (ScrollView) findViewById(R.id.rv_scrollow);
+        tvEmpty = (TextView) findViewById(R.id.tv_empty);
+        tvEmpty.setText(getEmptyString());
+        tvEmpty.setCompoundDrawablesWithIntrinsicBounds(0, getEmptyResourse(), 0, 0);
         swRefresh.setOnRefreshListener(this);
     }
 
@@ -227,6 +239,7 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
                     mNoticeInfoDbHelper.updateNoticeInfoType(mData.get(position).infoId, NoticeInfo.NOMAL_TYPE_DUSTBIN);
                     mData.remove(position);
                     notifyItemRemoved(position);
+                    showDataOrEmpty();
                     CommonUtil.showSnackToast(getActivity().getString(rkkeep.keep.R.string.had_move_to_dustbin), rvContent);
                 } else {
                     final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
@@ -238,6 +251,7 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
                             mNoticeInfoDbHelper.updateNoticeInfoType(mData.get(position).infoId, NoticeInfo.NOMAL_TYPE_DUSTBIN);
                             mData.remove(position);
                             notifyItemRemoved(position);
+                            showDataOrEmpty();
                             CommonUtil.showSnackToast(getActivity().getString(rkkeep.keep.R.string.had_move_to_dustbin), rvContent);
                         }
                     });
@@ -259,11 +273,7 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
 
             @Override
             protected int getFooterItemCount() {
-                if (mFooterType == 0) {
-                    return 0;
-                } else {
-                    return 1;
-                }
+                return mFooterType == 1 ? 1 : 0;
             }
 
             @Override
@@ -278,11 +288,7 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
 
             @Override
             protected RecyclerView.ViewHolder onCreateFooterItemViewHolder(ViewGroup parent, int footerViewType) {
-                if (mFooterType == 1) {
-                    return new LoadmoreViewHolder(View.inflate(parent.getContext(), R.layout.layout_loadmore, null));
-                } else {
-                    return new EmptyViewHolder(View.inflate(parent.getContext(), R.layout.layout_empty, null));
-                }
+                return new LoadmoreViewHolder(View.inflate(parent.getContext(), R.layout.layout_loadmore, null));
             }
 
             @Override
@@ -297,22 +303,16 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
 
             @Override
             protected void onBindFooterItemViewHolder(RecyclerView.ViewHolder footerViewHolder, int position) {
-                if (mFooterType == 2) {
-                    EmptyViewHolder holder = (EmptyViewHolder) footerViewHolder;
-                    holder.tvEmpty.setText(getEmptyString());
-                    holder.tvEmpty.setCompoundDrawablesWithIntrinsicBounds(0, getEmptyResourse(), 0, 0);
+                LoadmoreViewHolder _lHolder = (LoadmoreViewHolder) footerViewHolder;
+                if (isLoadmoreEnable && !isLoading) {
+                    loadData();
+                }
+                containerLoadmore = _lHolder.vsLoadmore;
+                // 显示的为加载中的
+                if (isLoading) {
+                    _lHolder.vsLoadmore.setDisplayedChild(0);
                 } else {
-                    LoadmoreViewHolder _lHolder = (LoadmoreViewHolder) footerViewHolder;
-                    if (isLoadmoreEnable && !isLoading) {
-                        loadData();
-                    }
-                    containerLoadmore = _lHolder.vsLoadmore;
-                    // 显示的为加载中的
-                    if (isLoading) {
-                        _lHolder.vsLoadmore.setDisplayedChild(0);
-                    } else {
-                        _lHolder.vsLoadmore.setDisplayedChild(1);
-                    }
+                    _lHolder.vsLoadmore.setDisplayedChild(1);
                 }
                 prepareHeaderFooter(footerViewHolder);
             }
@@ -443,18 +443,6 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
         onLoadData();
     }
 
-    /**
-     * 没有数据时的ViewHolder
-     */
-    public class EmptyViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView tvEmpty;
-
-        public EmptyViewHolder(View itemView) {
-            super(itemView);
-            tvEmpty = (TextView) itemView.findViewById(R.id.tv_empty);
-        }
-    }
 
     /**
      * 添加信息的
@@ -470,6 +458,7 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
         mData.add(0, info);
         mAdapter.notifyDataSetChanged();
         rvContent.getLayoutManager().scrollToPosition(0);
+        showDataOrEmpty();
     }
 
     /**
@@ -497,5 +486,16 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
 
     protected String getEmptyString() {
         return getActivity().getString(rkkeep.keep.R.string.enyty_data);
+    }
+
+    protected void showDataOrEmpty() {
+        if ((mData == null || mData.size() == 0) && mFooterType != 1) {
+            rvContent.setVisibility(View.GONE);
+            rvScrollow.setVisibility(View.VISIBLE);
+        } else {
+            rvContent.setVisibility(View.VISIBLE);
+            rvScrollow.setVisibility(View.GONE);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 }

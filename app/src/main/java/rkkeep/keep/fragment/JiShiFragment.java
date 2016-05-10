@@ -1,9 +1,8 @@
 package rkkeep.keep.fragment;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
@@ -19,6 +18,7 @@ import cn.xmrk.rkandroid.utils.CommonUtil;
 import cn.xmrk.rkandroid.utils.uil.SpacesItemDecoration;
 import rkkeep.keep.R;
 import rkkeep.keep.activity.MainActivity;
+import rkkeep.keep.activity.SearchNoticeInfoActivity;
 import rkkeep.keep.adapter.MuilGridAdapter;
 import rkkeep.keep.adapter.listener.OnNoticeBaseViewClickListener;
 import rkkeep.keep.adapter.viewholder.NoticeInfoBaseViewHolder;
@@ -123,27 +123,6 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         return new NoticeInfoBaseViewHolder(View.inflate(parent.getContext(), R.layout.item_noticeinfo_base, null));
     }
 
-    /**
-     * 设置属性动画
-     **/
-    public void setAnimation(final NoticeBaseInfo baseInfo) {
-        final View view = baseInfo.holder.itemView;
-        //区域高度
-        int screenHeight = CommonUtil.getScreenDisplay().getHeight() - activity.getTitleBar().getHeight() - CommonUtil.getStateBarHeight();
-        //计算要放大的倍数
-        float size = ((float) screenHeight) / view.getHeight();
-        ObjectAnimator anim = ObjectAnimator.ofFloat(view, "scaleY", 1f, size);
-        anim.setDuration(800);
-        anim.start();
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float cVal = (Float) animation.getAnimatedValue();
-                view.setScaleY(cVal);
-                activity.toAddNoticeInfoActivity(baseInfo.info);
-            }
-        });
-    }
 
     @Override
     protected void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final NoticeInfo info, int position) {
@@ -236,8 +215,9 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
     @Override
     public void onClick(View v) {
         if (v == ibSearch) {//搜索
-
-
+            Intent intent = new Intent(activity, SearchNoticeInfoActivity.class);
+            intent.putExtra("data", mData == null ? new ArrayList<NoticeInfo>() : (ArrayList) mData);
+            activity.startActivityForResult(intent, activity.NOTICE_EDIT_LIST);
         } else if (v == ibLayout) {//改变布局
             if (mData != null && mData.size() > 0) {
                 if (layoutManager.getSpanCount() == 1) {//此时为线性，所以要变成网格
@@ -254,11 +234,9 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
             dialog.setPositiveButton(cn.xmrk.rkandroid.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //用来保存将要remove的position
                     int size = mData.size();
                     NoticeInfo info = null;
                     for (int i = 0; i < dragHolder.size(); i++) {
-                        //保存position，更新使用
                         info = dragHolder.get(i).info;
                         mNoticeInfoDbHelper.updateNoticeInfoType(info.infoId, NoticeInfo.NOMAL_TYPE_DUSTBIN);
                         mData.remove(info);
@@ -266,6 +244,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
                     mAdapter.notifyItemRangeRemoved(0, size);
                     dragHolder.clear();
                     setTitle();
+                    showDataOrEmpty();
                     CommonUtil.showSnackToast(getActivity().getString(rkkeep.keep.R.string.had_move_to_dustbin), rvContent);
                 }
             });
@@ -330,6 +309,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         mData.add(0, info);
         mAdapter.notifyDataSetChanged();
         rvContent.getLayoutManager().scrollToPosition(0);
+        showDataOrEmpty();
     }
 
     @Override
@@ -342,7 +322,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
 
     @Override
     protected String getEmptyString() {
-        return activity.getString(R.string.no_jishi);
+        return getActivity().getString(R.string.no_jishi);
     }
 
     @Override

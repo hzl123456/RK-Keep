@@ -21,12 +21,19 @@ import rkkeep.keep.help.ColorHelper;
  */
 public class NoticeTypeAdapter extends RecyclerView.Adapter<NoticeTypeAdapter.ViewHolder> {
 
+    private boolean isNeedChooseBackground;
+
     private String checkColor;
 
     private List<String> colors;
 
     public NoticeTypeAdapter(String checkColor) {
+        this(checkColor, true);
+    }
+
+    public NoticeTypeAdapter(String checkColor, boolean isNeedChooseBackground) {
         colors = ColorHelper.getColors();
+        this.isNeedChooseBackground = isNeedChooseBackground;
         this.checkColor = checkColor;
     }
 
@@ -51,7 +58,9 @@ public class NoticeTypeAdapter extends RecyclerView.Adapter<NoticeTypeAdapter.Vi
         } else {
             holder.ivCheck.setVisibility(View.GONE);
         }
-        holder.layoutColor.setBackgroundResource(ColorHelper.getCheckColor(checkColor));
+        if (isNeedChooseBackground) {
+            holder.layoutColor.setBackgroundResource(ColorHelper.getCheckColor(checkColor));
+        }
         holder.layoutColor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

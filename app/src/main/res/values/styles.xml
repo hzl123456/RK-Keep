@@ -32,12 +32,18 @@
         <item name="android:scaleType">centerCrop</item>
     </style>
 
-    <style mce_bogus="1" name="PopupAnimation" parent="android:Animation">
+    <style name="PopupAnimation" mce_bogus="1" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/fade_in</item>
         <item name="android:windowExitAnimation">@anim/fade_out</item>
     </style>
 
-    <style name="AddNoticeActivity" parent="AppTheme.NoActionBar">
+    <style name="AddNoticeActivity" parent="AppTheme.NoActionBar"></style>
+
+    <style name="SerachImageButton">
+        <item name="android:padding">3dp</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:layout_width">35dp</item>
+        <item name="android:layout_height">35dp</item>
     </style>
 
 
