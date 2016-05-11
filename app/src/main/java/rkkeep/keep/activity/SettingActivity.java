@@ -47,7 +47,6 @@ public class SettingActivity extends BackableBaseActivity implements View.OnClic
     }
 
 
-
     private void init() {
         mSharedPreferencesUtil = new SharedPreferencesUtil(this, "SETTING");
         tvTimeShangwu.setText(mSharedPreferencesUtil.getString(SettingContact.CHOOSE_TIME_FOR_SHANGWU, "08:00"));

@@ -126,6 +126,9 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         mPictureChooseHelper.setOnPictureGetListener(new PictureChooseHelper.OnPictureGetListener() {
             @Override
             public void OnPic(String path) {
+                if (mNoticeInfo.infos == null) {
+                    mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
+                }
                 mNoticeInfo.infos.add(0, new NoticeImgVoiceInfo(path));
                 mNoticeAdapter.setContentSize();
                 mNoticeAdapter.notifyDataSetChanged();
@@ -171,6 +174,7 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         ibNotice = (ImageButton) titleView.findViewById(R.id.ib_notice);
         ibNotice.setOnClickListener(this);
 
+        CommonUtil.setLongClick(ibNotice, "选择提醒的方式");
         getTitlebar().addView(titleView);
         getTitlebar().setBackgroundResource(R.color.bg_white);
         getTitlebar().setNavigationIcon(R.drawable.ic_material_arrow_left_dark);

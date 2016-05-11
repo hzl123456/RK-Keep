@@ -27,5 +27,6 @@ dependencies {
     compile project(':rkandroid')
     compile files('libs/BaiduLBS_Android.jar')
     compile 'com.sothree.slidinguppanel:library:3.3.0'
+
 }
 

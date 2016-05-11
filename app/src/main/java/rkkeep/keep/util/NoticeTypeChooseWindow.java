@@ -53,7 +53,7 @@ public class NoticeTypeChooseWindow extends PopupWindow implements View.OnClickL
         tvVoice = (LinearLayout) headerView.findViewById(R.id.tv_voice);
         rvContent = (RecyclerView) headerView.findViewById(R.id.rv_content);
         view = headerView.findViewById(R.id.view);
-        viewDismiss=headerView.findViewById(R.id.view_dismiss);
+        viewDismiss = headerView.findViewById(R.id.view_dismiss);
 
         layoutPicture.setOnClickListener(this);
         layoutDraw.setOnClickListener(this);
@@ -92,12 +92,7 @@ public class NoticeTypeChooseWindow extends PopupWindow implements View.OnClickL
         setAnimationStyle(R.style.PopupAnimation);
         setOutsideTouchable(true);
 
-        headerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        int popupWidth = headerView.getMeasuredWidth();
-        int popupHeight = headerView.getMeasuredHeight();
-        int[] location = new int[2];
-        view.getLocationOnScreen(location);
-        showAtLocation(view, Gravity.NO_GRAVITY, (location[0] + view.getWidth() / 2) - popupWidth / 2, location[1] - popupHeight);
+        showAtLocation(view, Gravity.TOP, 0, 0);
     }
 
     @Override

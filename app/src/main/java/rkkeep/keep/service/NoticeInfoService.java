@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.baidu.location.BDLocation;
 

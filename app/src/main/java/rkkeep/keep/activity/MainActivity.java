@@ -1,8 +1,15 @@
 package rkkeep.keep.activity;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -48,6 +55,8 @@ public class MainActivity extends AppCompatActivity
     public final int NOTICE_ADD = 10;
     public final int NOTICE_EDIT = 11;
     public final int NOTICE_EDIT_LIST = 12;
+    public final int REQUEST_CODE_ASK_PERMISSIONS = 100;
+
 
     /**
      * 侧滑的头部使用
@@ -82,6 +91,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        showVersion();
+    }
+
+    private void canUse() {
         setContentView(R.layout.activity_main);
         findViews();
         initHeaderView();
@@ -89,6 +102,69 @@ public class MainActivity extends AppCompatActivity
         initUserInfo();
         initFragment();
         setCurrentFragment(mJiShiFragment);
+    }
+
+    private void showVersion() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {//当前的sdk版本大于等于23
+            insertDummyContactWrapper();
+        } else {
+            canUse();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void insertDummyContactWrapper() {
+        //需要手动请求的权限，（相机，音频，文件读写,定位）
+        String[] needPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
+        //未允许使用的权限
+        List<String> needToPer = new ArrayList<>();
+        for (int i = 0; i < needPermission.length; i++) {
+            int hasWriteContactsPermission = checkSelfPermission(needPermission[i]);
+            if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
+                needToPer.add(needPermission[i]);
+            }
+        }
+        if (needToPer.size() == 0) {
+            canUse();
+        } else {
+            String[] sp = new String[needToPer.size()];
+            for (int i = 0; i < sp.length; i++) {
+                sp[i] = needToPer.get(i);
+            }
+            requestPermissions(sp,
+                    REQUEST_CODE_ASK_PERMISSIONS);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CODE_ASK_PERMISSIONS) {//权限结果来了
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setMessage("有权限未被允许使用，可在安全中心-权限管理中打开权限").setCancelable(false)
+                            .setPositiveButton("退出Keep", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            })
+                            .create()
+                            .show();
+                    return;
+                }
+            }
+            canUse();
+        }
+    }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 
 
@@ -100,7 +176,7 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction _ft = getSupportFragmentManager().beginTransaction();
         _ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
         _ft.replace(R.id.layout_content, fragment);
-        _ft.commit();
+        _ft.commitAllowingStateLoss();
 
         if (currentFragment instanceof DustbinFragment) {//这里要隐藏底部的操作栏
             if (layoutBottom.getVisibility() == View.VISIBLE) {

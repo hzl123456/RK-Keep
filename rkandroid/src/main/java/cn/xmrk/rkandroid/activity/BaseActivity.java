@@ -28,7 +28,6 @@ import cn.xmrk.rkandroid.utils.DialogUtil;
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
-
     /**
      * 标题栏采用toolbar进行折叠
      */
