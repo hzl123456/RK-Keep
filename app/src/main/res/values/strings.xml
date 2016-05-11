@@ -71,4 +71,8 @@
     <string name="no_tixing">要发出提醒的记事会显示在此处</string>
     <string name="no__dustbin">回收站中没有任何记事</string>
     <string name="search_jishi">搜索记事</string>
+    <string name="activity_chat_press_record">按住说话</string>
+    <string name="activity_chat_move_to_cancel">手指上滑取消发送</string>
+    <string name="activity_chat_release_to_cancel">松开手指取消发送</string>
+    <string name="voice_duration_too_short">语音时间太短</string>
 </resources>

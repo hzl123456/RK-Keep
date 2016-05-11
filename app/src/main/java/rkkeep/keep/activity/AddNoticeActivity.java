@@ -35,6 +35,7 @@ import rkkeep.keep.pojo.AddressInfo;
 import rkkeep.keep.pojo.NoticeImgVoiceInfo;
 import rkkeep.keep.pojo.NoticeInfo;
 import rkkeep.keep.util.NoticeTypeChooseWindow;
+import rkkeep.keep.util.VoiceSetWindow;
 
 /**
  * Created by Au61 on 2016/4/27.
@@ -86,6 +87,11 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
      * 拍照选择图片
      **/
     private PictureChooseHelper mPictureChooseHelper;
+
+    /**
+     * 录音
+     **/
+    private VoiceSetWindow mVoiceSetWindow;
 
     /**
      * 选择地点和时间
@@ -252,7 +258,6 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void showWindowOrDismiss() {
-
         if (mWindow != null && mWindow.isShowing()) {
             mWindow.dismiss();
         } else {
@@ -275,7 +280,21 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
 
                             break;
                         case NoticeTypeChooseWindow.CHOOSE_VOICE://选择语音
+                            if (mVoiceSetWindow == null) {
+                                mVoiceSetWindow = new VoiceSetWindow();
+                            }
+                            mVoiceSetWindow.showPopuwindow(getTitlebar());
+                            mVoiceSetWindow.setOnVoiceFinishListener(new VoiceSetWindow.OnVoiceFinishListener() {
+                                @Override
+                                public void onFinish(String path, long length) {
+                                    CommonUtil.showToast("录音成功");
+                                }
 
+                                @Override
+                                public void onError(String errorText) {
+                                    CommonUtil.showSnackToast(errorText, getTitlebar());
+                                }
+                            });
                             break;
                     }
                 }
@@ -325,10 +344,13 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     public void onBackPressed() {
         if (mWindow != null && mWindow.isShowing()) {
             mWindow.dismiss();
+        } else if (mVoiceSetWindow != null && mVoiceSetWindow.isShowing()) {
+            mVoiceSetWindow.dismiss();
         } else {
             saveNoticeInfoAndBack();
         }
     }
+
 
     private void saveNoticeInfoAndBack() {
         //新的消息需要设置消息id
