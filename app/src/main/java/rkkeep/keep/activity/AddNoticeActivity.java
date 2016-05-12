@@ -8,14 +8,15 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.gauss.speex.encode.MediaUtil;
 import com.rey.material.widget.ImageButton;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -35,6 +36,7 @@ import rkkeep.keep.pojo.AddressInfo;
 import rkkeep.keep.pojo.NoticeImgVoiceInfo;
 import rkkeep.keep.pojo.NoticeInfo;
 import rkkeep.keep.util.NoticeTypeChooseWindow;
+import rkkeep.keep.util.PlayCallback;
 import rkkeep.keep.util.VoiceSetWindow;
 
 /**
@@ -92,6 +94,11 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
      * 录音
      **/
     private VoiceSetWindow mVoiceSetWindow;
+
+    /**
+     * 播放器
+     */
+    public MediaUtil mMediaUtil;
 
     /**
      * 选择地点和时间
@@ -174,8 +181,10 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initTitle() {
+        mMediaUtil = new MediaUtil(this);
         dbHelper = new NoticeInfoDbHelper();
         mNoticeInfo = (NoticeInfo) getIntent().getExtras().get("data");
+
         titleView = getLayoutInflater().inflate(R.layout.title_add_notice, null);
         ibNotice = (ImageButton) titleView.findViewById(R.id.ib_notice);
         ibNotice.setOnClickListener(this);
@@ -198,11 +207,35 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         mLayoutManager = new LinearLayoutManager(this, LinearLayout.VERTICAL, false);
         rvContent.setLayoutManager(mLayoutManager);
         rvContent.addItemDecoration(new SpacesItemDecoration(0, 0, 0, CommonUtil.dip2px(3)));
-        mNoticeAdapter = new NoticeAdapter(mNoticeInfo.infos, this);
+        mNoticeAdapter = new NoticeAdapter(mNoticeInfo.infos, mNoticeInfo.voiceInfos, this);
         rvContent.setAdapter(mNoticeAdapter);
         mNoticeAdapter.setOnNoticeItemClickListener(new OnNoticeItemClickListener() {
+
             @Override
-            public void onClick(final NoticeImgVoiceInfo info) {
+            public void onVoiceClick(NoticeImgVoiceInfo info, int position) {
+                //点击了录音，需要进行播放
+                mMediaUtil.stopPlay();
+                if (mNoticeAdapter.isPlayingInfo == info) {
+                    mNoticeAdapter.isPlayingInfo = null;
+                    mNoticeAdapter.notifyDataSetChanged();
+                    return;
+                }
+                playVoice(info);
+            }
+
+            @Override
+            public void onVoiceLongClick(final NoticeImgVoiceInfo info, final int position) {
+                showDialogMessage("确定删除该录音文件？", "删除文件", getString(R.string.ok), getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mNoticeInfo.voiceInfos.remove(info);
+                        mNoticeAdapter.notifyDataSetChanged();
+                    }
+                }, null);
+            }
+
+            @Override
+            public void onClick(final NoticeImgVoiceInfo info, int position) {
                 //点击查看图片
                 int num = 0;
                 ArrayList<String> infos = new ArrayList<String>();
@@ -223,6 +256,18 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
             }
         });
 
+    }
+
+    private void playVoice(final NoticeImgVoiceInfo info) {
+        //判断文件是否存在，不存在就进行下载，然后播放
+        final File file = new File(info.voicePic);//录音保存位置
+        if (file.isFile()) {//文件存在就直接播放
+            mNoticeAdapter.isPlayingInfo = info;
+            mNoticeAdapter.notifyDataSetChanged();
+            mMediaUtil.playVoice(file.getAbsolutePath(), new PlayCallback(mNoticeAdapter));
+        } else {//文件不存在就需要重新下载
+            CommonUtil.showSnackToast("该录音文件已经不存在了", getTitlebar());
+        }
     }
 
     public void initBottomView(View view) {
@@ -246,7 +291,6 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         if (mNoticeInfo.addressInfo != null) {
             tvNoticeAddress.setVisibility(View.VISIBLE);
             tvNoticeAddress.setText(mNoticeInfo.addressInfo.addressName);
-            Log.i("address->", CommonUtil.getGson().toJson(mNoticeInfo.addressInfo));
         }
         //设置时间
         if (mNoticeInfo.remindTime != 0) {
@@ -286,8 +330,12 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
                             mVoiceSetWindow.showPopuwindow(getTitlebar());
                             mVoiceSetWindow.setOnVoiceFinishListener(new VoiceSetWindow.OnVoiceFinishListener() {
                                 @Override
-                                public void onFinish(String path, long length) {
-                                    CommonUtil.showToast("录音成功");
+                                public void onFinish(NoticeImgVoiceInfo info) {
+                                    if (mNoticeInfo.voiceInfos == null) {
+                                        mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
+                                    }
+                                    mNoticeInfo.voiceInfos.add(0, info);
+                                    mNoticeAdapter.notifyDataSetChanged();
                                 }
 
                                 @Override
@@ -375,15 +423,12 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
             mNoticeInfo.addressInfoString = CommonUtil.getGson().toJson(mNoticeInfo.addressInfo);
         }
         if (mNoticeInfo.infos != null && mNoticeInfo.infos.size() > 0) {
-            for (int i = 0; i < mNoticeInfo.infos.size(); i++) {
-                if (!StringUtil.isEmptyString(mNoticeInfo.infos.get(i).imagePic)) {
-                    mNoticeInfo.hasPic = true;
-                }
-                if (!StringUtil.isEmptyString(mNoticeInfo.infos.get(i).voicePic)) {
-                    mNoticeInfo.hasVoice = true;
-                }
-            }
+            mNoticeInfo.hasPic = true;
             mNoticeInfo.noticeImgVoiceInfosString = CommonUtil.getGson().toJson(mNoticeInfo.infos);
+        }
+        if (mNoticeInfo.voiceInfos != null && mNoticeInfo.voiceInfos.size() > 0) {
+            mNoticeInfo.hasVoice = true;
+            mNoticeInfo.noticeVoiceInfosString = CommonUtil.getGson().toJson(mNoticeInfo.voiceInfos);
         }
         dbHelper.saveNoticeInfo(mNoticeInfo);
         Intent intent = new Intent();
@@ -409,4 +454,9 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mMediaUtil.stopPlay();
+    }
 }

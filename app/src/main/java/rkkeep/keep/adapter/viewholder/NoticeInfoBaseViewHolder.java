@@ -28,6 +28,7 @@ public class NoticeInfoBaseViewHolder extends RecyclerView.ViewHolder {
         this.listener = listener;
     }
 
+    public MultiListView lvVoiceContent;
     public LinearLayout layoutTop;
     public TextView tvTitle;
     public TextView tvContent;
@@ -48,6 +49,7 @@ public class NoticeInfoBaseViewHolder extends RecyclerView.ViewHolder {
         layoutNotice = (LinearLayout) itemView.findViewById(R.id.layout_notice);
         tvNoticeTime = (TextView) itemView.findViewById(R.id.tv_notice_time);
         tvNoticeAddress = (TextView) itemView.findViewById(R.id.tv_notice_address);
+        lvVoiceContent = (MultiListView) itemView.findViewById(R.id.lv_voice_content);
 
         layoutBae.setOnClickListener(new View.OnClickListener() {
             @Override

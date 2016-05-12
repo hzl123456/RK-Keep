@@ -257,6 +257,9 @@ public class NoticeInfoDbHelper {
                     if (!StringUtil.isEmptyString(info.addressInfoString)) {
                         info.addressInfo = CommonUtil.getGson().fromJson(info.addressInfoString, AddressInfo.class);
                     }
+                    if (!StringUtil.isEmptyString(info.noticeVoiceInfosString)) {
+                        info.voiceInfos = CommonUtil.getGson().fromJson(info.noticeVoiceInfosString, NoticeImgVoiceInfo.getListType());
+                    }
                 }
             }
             return _result;
@@ -287,6 +290,9 @@ public class NoticeInfoDbHelper {
                     }
                     if (!StringUtil.isEmptyString(info.addressInfoString)) {
                         info.addressInfo = CommonUtil.getGson().fromJson(info.addressInfoString, AddressInfo.class);
+                    }
+                    if (!StringUtil.isEmptyString(info.noticeVoiceInfosString)) {
+                        info.voiceInfos = CommonUtil.getGson().fromJson(info.noticeVoiceInfosString, NoticeImgVoiceInfo.getListType());
                     }
                 }
             }
@@ -344,6 +350,9 @@ public class NoticeInfoDbHelper {
                     }
                     if (!StringUtil.isEmptyString(info.addressInfoString)) {
                         info.addressInfo = CommonUtil.getGson().fromJson(info.addressInfoString, AddressInfo.class);
+                    }
+                    if (!StringUtil.isEmptyString(info.noticeVoiceInfosString)) {
+                        info.voiceInfos = CommonUtil.getGson().fromJson(info.noticeVoiceInfosString, NoticeImgVoiceInfo.getListType());
                     }
                 }
             }

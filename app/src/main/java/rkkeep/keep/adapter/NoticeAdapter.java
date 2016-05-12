@@ -1,13 +1,18 @@
 package rkkeep.keep.adapter;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.xmrk.rkandroid.adapter.HeaderFooterRecyclerViewAdapter;
+import cn.xmrk.rkandroid.application.RKApplication;
 import cn.xmrk.rkandroid.widget.MultiGridView;
 import cn.xmrk.rkandroid.widget.edittext.ClearEditText;
 import rkkeep.keep.R;
@@ -21,6 +26,20 @@ import rkkeep.keep.pojo.NoticeImgVoiceInfo;
 public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
 
 
+    //语音的长度
+    private int chatMaxWidh;
+    private int chatDefWidth;
+    private int chatOneSe;
+
+    //正在播放的消息
+    public NoticeImgVoiceInfo isPlayingInfo = null;
+
+    private AnimationDrawable animationDrawable;
+
+    //录音信息使用
+    private List<NoticeImgVoiceInfo> voiceData;
+
+    //图片信息使用
     private List<NoticeImgVoiceInfo> mData;
 
     //列表总数
@@ -39,9 +58,13 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
 
     private AddNoticeActivity activity;
 
-    public NoticeAdapter(List<NoticeImgVoiceInfo> mData, AddNoticeActivity activity) {
+    public NoticeAdapter(List<NoticeImgVoiceInfo> mData, List<NoticeImgVoiceInfo> voiceData, AddNoticeActivity activity) {
         this.mData = mData;
+        this.voiceData = voiceData;
         this.activity = activity;
+        chatDefWidth = RKApplication.getInstance().getResources().getDimensionPixelOffset(R.dimen.voice_def_width);
+        chatMaxWidh = RKApplication.getInstance().getResources().getDimensionPixelOffset(R.dimen.voice_def_max_width);
+        chatOneSe = RKApplication.getInstance().getResources().getDimensionPixelOffset(R.dimen.voice_def_one_width);
         setContentSize();
     }
 
@@ -65,13 +88,17 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
         notifyDataSetChanged();
     }
 
+    public int getContentSize() {
+        return contentSize;
+    }
+
     public List<NoticeImgVoiceInfo> getMData() {
         return mData;
     }
 
     @Override
     protected int getHeaderItemCount() {
-        return 0;
+        return contentSize;
     }
 
     @Override
@@ -81,12 +108,12 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
 
     @Override
     protected int getContentItemCount() {
-        return contentSize;
+        return voiceData == null ? 0 : voiceData.size();
     }
 
     @Override
     protected RecyclerView.ViewHolder onCreateHeaderItemViewHolder(ViewGroup parent, int headerViewType) {
-        return null;
+        return new HeaderViewHolder(View.inflate(parent.getContext(), R.layout.item_addnotice_img_and_voice, null));
     }
 
     @Override
@@ -98,24 +125,14 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
 
     @Override
     protected RecyclerView.ViewHolder onCreateContentItemViewHolder(ViewGroup parent, int contentViewType) {
-        return new ContentViewHolder(View.inflate(parent.getContext(), R.layout.item_addnotice_img_and_voice, null));
+        return new ContentViewHolder(View.inflate(parent.getContext(), R.layout.item_voice, null));
     }
 
 
     @Override
     protected void onBindHeaderItemViewHolder(RecyclerView.ViewHolder headerViewHolder, int position) {
-
-    }
-
-    @Override
-    protected void onBindFooterItemViewHolder(RecyclerView.ViewHolder footerViewHolder, int position) {
-
-
-    }
-
-    @Override
-    protected void onBindContentItemViewHolder(RecyclerView.ViewHolder contentViewHolder, int position) {
-        ContentViewHolder holder = (ContentViewHolder) contentViewHolder;
+        //处理图片数据
+        HeaderViewHolder holder = (HeaderViewHolder) headerViewHolder;
         List<NoticeImgVoiceInfo> infos = null;
         ImageViewAdapter adapter = null;
         if ((mData.size() % itemSize) == 0) {//如果是整除的话就都是每行itemsize个
@@ -144,12 +161,52 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
 
         adapter.setOnNoticeItemClickListener(new OnNoticeItemClickListener() {
             @Override
-            public void onClick(NoticeImgVoiceInfo info) {
+            public void onClick(NoticeImgVoiceInfo info, int position) {
                 if (mOnNoticeItemClickListener != null) {
-                    mOnNoticeItemClickListener.onClick(info);
+                    mOnNoticeItemClickListener.onClick(info, position);
                 }
             }
+
+            @Override
+            public void onVoiceClick(NoticeImgVoiceInfo info, int position) {
+
+            }
+
+            @Override
+            public void onVoiceLongClick(NoticeImgVoiceInfo info, int position) {
+
+            }
         });
+    }
+
+    @Override
+    protected void onBindFooterItemViewHolder(RecyclerView.ViewHolder footerViewHolder, int position) {
+
+
+    }
+
+    @Override
+    protected void onBindContentItemViewHolder(RecyclerView.ViewHolder contentViewHolder, int position) {
+        //处理语音数据
+        ContentViewHolder holder = (ContentViewHolder) contentViewHolder;
+        NoticeImgVoiceInfo info = voiceData.get(position);
+        holder.info = info;
+        holder.position = position;
+        //设置语音长度
+        long duration = (info.length / 1000) > 0 ? (info.length / 1000) : 1;
+        holder.tvVoiceLength.setText(duration + "'");
+        //设置显示的长度
+        long width = (chatDefWidth + chatOneSe * (duration - 1)) > chatMaxWidh ? chatMaxWidh : (chatDefWidth + chatOneSe * (duration - 1));
+        holder.layoutVoice.setLayoutParams(new LinearLayout.LayoutParams((int) width, LinearLayout.LayoutParams.WRAP_CONTENT));
+        //是否处于播放状态
+        if (info == isPlayingInfo) {
+            holder.ivVoice.setBackgroundResource(R.drawable.show_voice);
+            animationDrawable = (AnimationDrawable) holder.ivVoice.getBackground();
+            animationDrawable.setOneShot(false);
+            animationDrawable.start();
+        } else {
+            holder.ivVoice.setBackgroundResource(R.drawable.ease_chatfrom_voice_playing);
+        }
     }
 
 
@@ -166,17 +223,56 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
             etTitle = (ClearEditText) itemView.findViewById(R.id.et_title);
             etContent = (ClearEditText) itemView.findViewById(R.id.et_content);
         }
+
     }
 
     /**
-     * 需要放在内容部分进行展示的viewHolder
+     * 需要放在头部部分进行展示的viewHolder，给图片进行使用的
+     **/
+    class HeaderViewHolder extends RecyclerView.ViewHolder {
+        public MultiGridView layoutContent;
+
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+            layoutContent = (MultiGridView) itemView.findViewById(R.id.layout_rv_content);
+        }
+    }
+
+    /**
+     * 需要在中间部分进行显示的viewHolder，给录音进行使用的
      **/
     class ContentViewHolder extends RecyclerView.ViewHolder {
-        public MultiGridView layoutContent;
+
+        public int position;
+        public NoticeImgVoiceInfo info;
+
+        private LinearLayout layoutVoice;
+        private ImageButton ivVoice;
+        private TextView tvVoiceLength;
 
         public ContentViewHolder(View itemView) {
             super(itemView);
-            layoutContent = (MultiGridView) itemView.findViewById(R.id.layout_rv_content);
+            layoutVoice = (LinearLayout) itemView.findViewById(R.id.layout_voice);
+            ivVoice = (ImageButton) itemView.findViewById(R.id.iv_voice);
+            tvVoiceLength = (TextView) itemView.findViewById(R.id.tv_voice_length);
+
+            layoutVoice.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnNoticeItemClickListener != null) {
+                        mOnNoticeItemClickListener.onVoiceClick(info, position);
+                    }
+                }
+            });
+            layoutVoice.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (mOnNoticeItemClickListener != null) {
+                        mOnNoticeItemClickListener.onVoiceLongClick(info, position);
+                    }
+                    return true;
+                }
+            });
         }
     }
 
@@ -186,5 +282,6 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
     public void setOnNoticeItemClickListener(OnNoticeItemClickListener mOnNoticeItemClickListener) {
         this.mOnNoticeItemClickListener = mOnNoticeItemClickListener;
     }
+
 
 }

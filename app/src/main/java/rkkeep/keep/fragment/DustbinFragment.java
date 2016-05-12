@@ -18,6 +18,7 @@ import cn.xmrk.rkandroid.utils.CommonUtil;
 import rkkeep.keep.R;
 import rkkeep.keep.activity.MainActivity;
 import rkkeep.keep.adapter.MuilGridAdapter;
+import rkkeep.keep.adapter.MuilListVoiceAdapter;
 import rkkeep.keep.adapter.listener.OnNoticeBaseViewClickListener;
 import rkkeep.keep.adapter.viewholder.NoticeInfoBaseViewHolder;
 import rkkeep.keep.help.ColorHelper;
@@ -113,8 +114,10 @@ public class DustbinFragment extends RecyclerViewFragment implements View.OnClic
     protected void setTitle() {
         if (dragHolder.size() == 0) {
             initTitle();
+            setRefeshEnable(true);
         } else if (dragHolder.size() == 1) {
             initEditTitle();
+            setRefeshEnable(false);
         }
         if (dragHolder.size() > 0) {
             tvTitleJishi.setText(dragHolder.size() + "");
@@ -190,6 +193,8 @@ public class DustbinFragment extends RecyclerViewFragment implements View.OnClic
             holder.tvNoticeAddress.setText(info.addressInfo.addressName);
         }
         holder.rvContent.setAdapter(new MuilGridAdapter(info.infos));
+        //设置语音显示
+        holder.lvVoiceContent.setAdapter(new MuilListVoiceAdapter(info.voiceInfos,true));
     }
 
     public boolean isLongPressDragEnabled() {

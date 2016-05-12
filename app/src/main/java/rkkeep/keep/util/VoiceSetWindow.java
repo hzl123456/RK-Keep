@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gauss.speex.encode.SpeexRecorder;
-import com.gauss.speex.encode.VoiceUtil;
 
 import java.io.File;
 import java.util.HashMap;
@@ -24,6 +23,7 @@ import cn.xmrk.rkandroid.utils.CommonUtil;
 import cn.xmrk.rkandroid.utils.FileUtil;
 import cn.xmrk.rkandroid.widget.LeaveButton;
 import rkkeep.keep.R;
+import rkkeep.keep.pojo.NoticeImgVoiceInfo;
 
 /**
  * Created by Au61 on 2016/5/11.
@@ -31,6 +31,7 @@ import rkkeep.keep.R;
 public class VoiceSetWindow extends PopupWindow implements View.OnClickListener {
 
     public static final int WHAT_SET_MIC_INDICATE = 4;
+    public static final int WINDOW_DISS_MISS = 3;
 
     private RelativeLayout recordContainer;
     private ImageButton ibClose;
@@ -60,6 +61,12 @@ public class VoiceSetWindow extends PopupWindow implements View.OnClickListener 
             switch (msg.what) {
                 case WHAT_SET_MIC_INDICATE:
                     ivMicIndicate.getDrawable().setLevel(msg.arg1);
+                    break;
+                case WINDOW_DISS_MISS:
+                    if (mOnVoiceFinishListener != null) {
+                        mOnVoiceFinishListener.onFinish((NoticeImgVoiceInfo) msg.obj);
+                    }
+                    dismiss();
                     break;
             }
             return true;
@@ -158,18 +165,15 @@ public class VoiceSetWindow extends PopupWindow implements View.OnClickListener 
 
                     @Override
                     public void onFinish(final String fileName) {
-
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
                                 Long duration = sendableList.get(fileName);
                                 duration = duration == null ? -1 : duration;
-                                if (duration > 0) {
-                                    if (mOnVoiceFinishListener != null) {
-                                        mOnVoiceFinishListener.onFinish(recordPath, duration);
-                                    }
-                                    dismiss();
+                                if (duration > 500) {//大于500毫秒才算录音成功
+                                    mHandler.sendMessage(mHandler.obtainMessage(WINDOW_DISS_MISS, new NoticeImgVoiceInfo(recordPath, duration)));
                                 } else {
+                                    CommonUtil.showToast("录音时间太短");
                                     File df = new File(fileName);
                                     df.delete();
                                 }
@@ -236,7 +240,7 @@ public class VoiceSetWindow extends PopupWindow implements View.OnClickListener 
     }
 
     public interface OnVoiceFinishListener {
-        void onFinish(String path, long length);
+        void onFinish(NoticeImgVoiceInfo info);
 
         void onError(String errorText);
     }

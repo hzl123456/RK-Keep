@@ -87,11 +87,18 @@ public class NoticeInfo implements Parcelable {
     public int noticeTimes;
 
     /**
-     * 存储图片语音信息
+     * 存储图片信息
      **/
     public List<NoticeImgVoiceInfo> infos;
     @DatabaseField(columnName = "infos")
     public String noticeImgVoiceInfosString;
+
+    /**
+     * 存储语音信息
+     **/
+    public List<NoticeImgVoiceInfo> voiceInfos;
+    @DatabaseField(columnName = "voiceInfos")
+    public String noticeVoiceInfosString;
 
     /**
      * 地址信息
@@ -133,6 +140,8 @@ public class NoticeInfo implements Parcelable {
         dest.writeInt(this.noticeTimes);
         dest.writeTypedList(infos);
         dest.writeString(this.noticeImgVoiceInfosString);
+        dest.writeTypedList(voiceInfos);
+        dest.writeString(this.noticeVoiceInfosString);
         dest.writeParcelable(this.addressInfo, flags);
         dest.writeString(this.addressInfoString);
         dest.writeByte(hasVoice ? (byte) 1 : (byte) 0);
@@ -155,6 +164,8 @@ public class NoticeInfo implements Parcelable {
         this.noticeTimes = in.readInt();
         this.infos = in.createTypedArrayList(NoticeImgVoiceInfo.CREATOR);
         this.noticeImgVoiceInfosString = in.readString();
+        this.voiceInfos = in.createTypedArrayList(NoticeImgVoiceInfo.CREATOR);
+        this.noticeVoiceInfosString = in.readString();
         this.addressInfo = in.readParcelable(AddressInfo.class.getClassLoader());
         this.addressInfoString = in.readString();
         this.hasVoice = in.readByte() != 0;

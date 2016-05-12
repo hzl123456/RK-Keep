@@ -19,7 +19,7 @@ public class SpeexDecoder {
 	protected boolean enhanced = false;
 
 	private boolean paused = false;
-
+ 
 	protected String srcFile;
 
 	private List<ProgressListener> listenerList = new ArrayList<ProgressListener>();

@@ -51,7 +51,7 @@ public class KeepApplication extends RKApplication {
         super.onCreate();
         UserInfoUtil.initDefaultUserInfo();
         //加载百度地图
-        SDKInitializer.initialize(getApplicationContext());
+        SDKInitializer.initialize(this);
         //启动后台服务
         startService(new Intent(this, NoticeInfoService.class));
     }

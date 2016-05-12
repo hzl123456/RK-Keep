@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--聊天大小-->
+    <dimen name="voice_def_width">100dp</dimen>
+    <dimen name="voice_def_one_width">10dp</dimen>
+    <dimen name="voice_def_max_width">240dp</dimen>
+</resources>

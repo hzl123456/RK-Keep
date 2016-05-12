@@ -28,6 +28,7 @@ import cn.xmrk.rkandroid.widget.edittext.ClearEditText;
 import cn.xmrk.rkandroid.widget.imageView.RoundImageView;
 import rkkeep.keep.R;
 import rkkeep.keep.adapter.MuilGridAdapter;
+import rkkeep.keep.adapter.MuilListVoiceAdapter;
 import rkkeep.keep.adapter.NoticeTypeAdapter;
 import rkkeep.keep.adapter.listener.OnNoticeBaseViewClickListener;
 import rkkeep.keep.adapter.viewholder.NoticeInfoBaseViewHolder;
@@ -392,6 +393,8 @@ public class SearchNoticeInfoActivity extends BaseActivity implements View.OnCli
                 holder.tvNoticeAddress.setText(info.addressInfo.addressName);
             }
             holder.rvContent.setAdapter(new MuilGridAdapter(info.infos));
+            //设置语音显示
+            holder.lvVoiceContent.setAdapter(new MuilListVoiceAdapter(info.voiceInfos,true));
 
         }
 

@@ -142,6 +142,10 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
         mAdapter.notifyDataSetChanged();
     }
 
+    protected void setRefeshEnable(boolean isEnable) {
+        swRefresh.setEnabled(isEnable);
+    }
+
     public boolean isLongPressDragEnabled() {
         return false;
     }

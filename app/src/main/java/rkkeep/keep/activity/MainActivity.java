@@ -336,6 +336,7 @@ public class MainActivity extends AppCompatActivity
     private void setNoticeInfoAndEdit() {
         NoticeInfo mNoticeInfo = new NoticeInfo();
         mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
+        mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
         toAddNoticeInfoActivity(mNoticeInfo);
     }
 
@@ -343,6 +344,8 @@ public class MainActivity extends AppCompatActivity
     private void setNoticeInfoAndEdit(String path) {
         NoticeInfo mNoticeInfo = new NoticeInfo();
         mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
+        mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
+
         mNoticeInfo.infos.add(new NoticeImgVoiceInfo(path));
         toAddNoticeInfoActivity(mNoticeInfo);
     }
@@ -351,7 +354,8 @@ public class MainActivity extends AppCompatActivity
     private void setNoticeInfoAndEdit(String path, long length) {
         NoticeInfo mNoticeInfo = new NoticeInfo();
         mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
-        mNoticeInfo.infos.add(new NoticeImgVoiceInfo(path, length));
+        mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
+        mNoticeInfo.voiceInfos.add(new NoticeImgVoiceInfo(path, length));
         toAddNoticeInfoActivity(mNoticeInfo);
     }
 

@@ -68,7 +68,7 @@ public class ImageViewAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     if (mOnNoticeItemClickListener != null) {
-                        mOnNoticeItemClickListener.onClick(mData.get(position));
+                        mOnNoticeItemClickListener.onClick(mData.get(position),position);
                     }
                 }
             });

@@ -20,6 +20,7 @@ import rkkeep.keep.R;
 import rkkeep.keep.activity.MainActivity;
 import rkkeep.keep.activity.SearchNoticeInfoActivity;
 import rkkeep.keep.adapter.MuilGridAdapter;
+import rkkeep.keep.adapter.MuilListVoiceAdapter;
 import rkkeep.keep.adapter.listener.OnNoticeBaseViewClickListener;
 import rkkeep.keep.adapter.viewholder.NoticeInfoBaseViewHolder;
 import rkkeep.keep.help.ChangeColorDialog;
@@ -161,9 +162,12 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         holder.tvTitle.setText(info.title);
         holder.tvContent.setText(info.content);
         //设置布局形式
+        boolean isVertical = true;
         if (layoutManager.getSpanCount() == 1) {
+            isVertical=true;
             holder.layoutNotice.setOrientation(LinearLayout.HORIZONTAL);
         } else {
+            isVertical=false;
             holder.layoutNotice.setOrientation(LinearLayout.VERTICAL);
         }
         //设置提醒时间
@@ -180,14 +184,19 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
             holder.tvNoticeAddress.setVisibility(View.VISIBLE);
             holder.tvNoticeAddress.setText(info.addressInfo.addressName);
         }
+        //设置图片显示
         holder.rvContent.setAdapter(new MuilGridAdapter(info.infos));
+        //设置语音显示
+        holder.lvVoiceContent.setAdapter(new MuilListVoiceAdapter(info.voiceInfos,isVertical));
     }
 
     protected void setTitle() {
         if (dragHolder.size() == 0) {
             initTitle();
+            setRefeshEnable(true);
         } else if (dragHolder.size() == 1) {
             initEditTitle();
+            setRefeshEnable(false);
         }
         if (dragHolder.size() > 0) {
             tvTitleEdit.setText(dragHolder.size() + "");
@@ -227,6 +236,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
                     layoutManager.setSpanCount(1);
                     ibLayout.setImageResource(R.drawable.ic_view_stream);
                 }
+                mAdapter.notifyDataSetChanged();
             }
         } else if (v == ibDelete) {//移至回收站
             final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
