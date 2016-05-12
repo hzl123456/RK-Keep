@@ -12,12 +12,11 @@
         android:id="@+id/layout_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical">
-
+        android:orientation="vertical"
+        android:paddingBottom="5dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="5dp">
 
         <cn.xmrk.rkandroid.widget.MultiListView
             android:id="@+id/rv_content"
@@ -30,16 +29,23 @@
             android:focusable="false"
             android:scrollbars="none" />
 
+        <LinearLayout
+            android:id="@+id/layout_voice_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"></LinearLayout>
+
+
         <cn.xmrk.rkandroid.widget.MultiListView
             android:id="@+id/lv_voice_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
             android:clickable="false"
-            android:divider="@null"
             android:clipChildren="false"
+            android:divider="@null"
             android:dividerHeight="3dp"
             android:focusable="false"
-            android:layout_marginTop="3dp"
             android:scrollbars="none" />
 
         <include layout="@layout/item_notice_base_top" />

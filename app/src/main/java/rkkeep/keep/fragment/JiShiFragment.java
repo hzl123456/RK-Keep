@@ -20,7 +20,6 @@ import rkkeep.keep.R;
 import rkkeep.keep.activity.MainActivity;
 import rkkeep.keep.activity.SearchNoticeInfoActivity;
 import rkkeep.keep.adapter.MuilGridAdapter;
-import rkkeep.keep.adapter.MuilListVoiceAdapter;
 import rkkeep.keep.adapter.listener.OnNoticeBaseViewClickListener;
 import rkkeep.keep.adapter.viewholder.NoticeInfoBaseViewHolder;
 import rkkeep.keep.help.ChangeColorDialog;
@@ -187,7 +186,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         //设置图片显示
         holder.rvContent.setAdapter(new MuilGridAdapter(info.infos));
         //设置语音显示
-        holder.lvVoiceContent.setAdapter(new MuilListVoiceAdapter(info.voiceInfos,isVertical));
+        holder.setNoticeVoiceInfo(info.voiceInfos,isVertical);
     }
 
     protected void setTitle() {

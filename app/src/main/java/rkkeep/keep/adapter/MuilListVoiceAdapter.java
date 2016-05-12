@@ -3,7 +3,6 @@ package rkkeep.keep.adapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -74,12 +73,10 @@ public class MuilListVoiceAdapter extends BaseAdapter {
 
     class ViewHolder {
         private LinearLayout layoutVoice;
-        private ImageButton ivVoice;
         private TextView tvVoiceLength;
 
         public ViewHolder(View itemView) {
             layoutVoice = (LinearLayout) itemView.findViewById(R.id.layout_voice);
-            ivVoice = (ImageButton) itemView.findViewById(R.id.iv_voice);
             tvVoiceLength = (TextView) itemView.findViewById(R.id.tv_voice_length);
         }
     }

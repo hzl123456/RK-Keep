@@ -44,7 +44,6 @@ import rkkeep.keep.util.VoiceSetWindow;
  */
 public class AddNoticeActivity extends BaseActivity implements View.OnClickListener {
 
-
     private final int SHOWIMAGE_CODE = 88;
 
     /**
@@ -422,14 +421,21 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
             mNoticeInfo.infoType = NoticeInfo.TIXING_TYPE;
             mNoticeInfo.addressInfoString = CommonUtil.getGson().toJson(mNoticeInfo.addressInfo);
         }
+        //设置图片消息
         if (mNoticeInfo.infos != null && mNoticeInfo.infos.size() > 0) {
             mNoticeInfo.hasPic = true;
             mNoticeInfo.noticeImgVoiceInfosString = CommonUtil.getGson().toJson(mNoticeInfo.infos);
+        }else{
+            mNoticeInfo.noticeImgVoiceInfosString=null;
         }
+        //设置语音消息
         if (mNoticeInfo.voiceInfos != null && mNoticeInfo.voiceInfos.size() > 0) {
             mNoticeInfo.hasVoice = true;
             mNoticeInfo.noticeVoiceInfosString = CommonUtil.getGson().toJson(mNoticeInfo.voiceInfos);
+        }else{
+            mNoticeInfo.noticeVoiceInfosString=null;
         }
+
         dbHelper.saveNoticeInfo(mNoticeInfo);
         Intent intent = new Intent();
         intent.putExtra("data", mNoticeInfo);
