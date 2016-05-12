@@ -18,25 +18,28 @@
         android:layout_marginTop="5dp"
         android:orientation="vertical">
 
+
         <cn.xmrk.rkandroid.widget.MultiListView
             android:id="@+id/rv_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@null"
             android:clickable="false"
-            android:focusable="false"
+            android:clipChildren="false"
+            android:divider="@null"
             android:dividerHeight="3dp"
+            android:focusable="false"
             android:scrollbars="none" />
 
         <cn.xmrk.rkandroid.widget.MultiListView
             android:id="@+id/lv_voice_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:divider="@null"
             android:clickable="false"
-            android:focusable="false"
+            android:divider="@null"
+            android:clipChildren="false"
             android:dividerHeight="3dp"
+            android:focusable="false"
+            android:layout_marginTop="3dp"
             android:scrollbars="none" />
 
         <include layout="@layout/item_notice_base_top" />
