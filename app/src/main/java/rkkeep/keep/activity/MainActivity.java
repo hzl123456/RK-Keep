@@ -44,6 +44,7 @@ import rkkeep.keep.pojo.NoticeImgVoiceInfo;
 import rkkeep.keep.pojo.NoticeInfo;
 import rkkeep.keep.pojo.UserInfo;
 import rkkeep.keep.util.UserInfoUtil;
+import rkkeep.keep.util.VoiceSetWindow;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -82,11 +83,14 @@ public class MainActivity extends AppCompatActivity
 
     private PictureChooseHelper mPictureChooseHelper;
 
+    private VoiceSetWindow mVoiceSetWindow;
+
     //各个页面的fragment
     private RecyclerViewFragment currentFragment;
     private RecyclerViewFragment mJiShiFragment;
     private RecyclerViewFragment mTiXingFragment;
     private RecyclerViewFragment mDustbinFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -272,6 +276,8 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (mVoiceSetWindow != null && mVoiceSetWindow.isShowing()) {
+            mVoiceSetWindow.dismiss();
         } else if (currentFragment.canBackActivity()) {
             super.onBackPressed();
         }
@@ -313,10 +319,29 @@ public class MainActivity extends AppCompatActivity
         } else if (v == ibKeepEdit) {//画图添加
 
         } else if (v == ibKeepVoice) {//录音添加
-
+            showVoiceWindow();
         } else if (v == ibKeepCamera) {//选择图片添加
             addPicture();
         }
+    }
+
+    private void showVoiceWindow() {
+        if (mVoiceSetWindow == null) {
+            mVoiceSetWindow = new VoiceSetWindow();
+        }
+        mVoiceSetWindow.showPopuwindow(getTitleBar());
+        mVoiceSetWindow.setOnVoiceFinishListener(new VoiceSetWindow.OnVoiceFinishListener() {
+            @Override
+            public void onFinish(NoticeImgVoiceInfo info) {
+                setNoticeInfoAndEdit(info.voicePic,info.length);
+            }
+
+            @Override
+            public void onError(String errorText) {
+                CommonUtil.showSnackToast(errorText, getTitleBar());
+            }
+        });
+
     }
 
     private void addPicture() {
