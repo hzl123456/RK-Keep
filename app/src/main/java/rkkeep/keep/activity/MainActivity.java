@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity
     public final int NOTICE_ADD = 10;
     public final int NOTICE_EDIT = 11;
     public final int NOTICE_EDIT_LIST = 12;
+    public final int NOTICE_HAND_WRITE = 13;
     public final int REQUEST_CODE_ASK_PERMISSIONS = 100;
 
 
@@ -317,7 +318,7 @@ public class MainActivity extends AppCompatActivity
         } else if (v == ibKeepText) {//文本添加
             setNoticeInfoAndEdit();
         } else if (v == ibKeepEdit) {//画图添加
-
+            startActivityForResult(new Intent(this, HandWritingActivity.class), NOTICE_HAND_WRITE);
         } else if (v == ibKeepVoice) {//录音添加
             showVoiceWindow();
         } else if (v == ibKeepCamera) {//选择图片添加
@@ -333,7 +334,7 @@ public class MainActivity extends AppCompatActivity
         mVoiceSetWindow.setOnVoiceFinishListener(new VoiceSetWindow.OnVoiceFinishListener() {
             @Override
             public void onFinish(NoticeImgVoiceInfo info) {
-                setNoticeInfoAndEdit(info.voicePic,info.length);
+                setNoticeInfoAndEdit(info.voicePic, info.length);
             }
 
             @Override
@@ -435,6 +436,9 @@ public class MainActivity extends AppCompatActivity
                     mFragment.updateNoticeInfo(info);
                 }
             }
+        }
+        if(resultCode==RESULT_OK&&requestCode==NOTICE_HAND_WRITE){//这里处理的是绘图的
+
         }
     }
 
