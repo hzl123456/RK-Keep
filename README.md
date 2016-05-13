@@ -5,9 +5,9 @@
 
   上传几张语音相关的截图
   
-![image](https://github.com/hzl123456/RK-Keep/tree/master/photo/Screenshot_2016-05-12-19-06-42.png)
-![image](https://github.com/hzl123456/RK-Keep/tree/master/photo/Screenshot_2016-05-12-19-06-37.png)
-![image](https://github.com/hzl123456/RK-Keep/tree/master/photo/Screenshot_2016-05-12-19-06-18.png)
+![image](https://github.com/hzl123456/RK-Keep/blob/master/photo/Screenshot_2016-05-12-19-06-42.png)
+![image](https://github.com/hzl123456/RK-Keep/blob/master/photo/Screenshot_2016-05-12-19-06-37.png)
+![image](https://github.com/hzl123456/RK-Keep/blob/master/photo/Screenshot_2016-05-12-19-06-18.png)
 
 # RK-Keep
   仿照Google Keep写的一款记事本软件，按Google design的风格开发。完全是用来练手的一个项目
