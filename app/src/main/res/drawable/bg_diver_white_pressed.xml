@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/bg_diver_white" android:state_pressed="false"></item>
+    <item android:state_pressed="true">
+        <shape android:shape="oval">
+            <solid android:color="@color/color_input_hint"></solid>
+            <stroke android:width="0.5dp" android:color="#44000000"></stroke>
+        </shape>
+    </item>
+</selector>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/layout_color"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_black_radio">
+
+        <cn.xmrk.rkandroid.widget.imageView.RoundImageView
+            android:id="@+id/iv_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@android:color/black" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

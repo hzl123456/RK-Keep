@@ -33,6 +33,7 @@ dependencies {
     }
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':rkandroid')
+    compile project(':ColorPickerPreference')
     compile files('libs/BaiduLBS_Android.jar')
     compile 'com.sothree.slidinguppanel:library:3.3.0'
 }

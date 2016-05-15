@@ -26,6 +26,7 @@
             android:orientation="horizontal">
 
             <RadioGroup
+                android:id="@+id/rg_group"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
@@ -33,19 +34,23 @@
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:drawableTop="@drawable/ink_eraser_inactive_24dp"
+                    android:id="@+id/rb_rubish"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:button="@null" />
+                    android:background="@drawable/a_bg_radio"
+                    android:button="@null"
+                    android:drawableTop="@drawable/ink_eraser_inactive_24dp" />
 
                 <RadioButton
-                    android:drawableTop="@drawable/ic_ink_pen_grey"
+                    android:id="@+id/rb_paint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:button="@null" />
-
+                    android:background="@drawable/a_bg_radio"
+                    android:button="@null"
+                    android:checked="true"
+                    android:drawableTop="@drawable/ic_ink_pen_grey" />
             </RadioGroup>
 
             <LinearLayout
@@ -54,9 +59,82 @@
                 android:layout_weight="3"
                 android:orientation="horizontal">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
 
+                    <cn.xmrk.rkandroid.widget.imageView.RoundImageView
+                        android:id="@+id/ib_choose_color"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerInParent="true" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageButton
+                        android:id="@+id/ib_choose_width"
+                        style="@style/SerachImageButton"
+                        android:background="@drawable/bg_diver_white_pressed"
+                        android:src="@drawable/ic_add_box_black" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageButton
+                        android:id="@+id/ib_clear"
+                        style="@style/SerachImageButton"
+                        android:background="@drawable/bg_diver_white_pressed"
+                        android:src="@drawable/ic_material_trash_dark" />
+                </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
 
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/layout_paint_size"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_size"
+            android:background="@color/bg_white">
+
+            <View
+                style="@style/View_divider"
+                android:layout_height="0.5dp" />
+
+            <SeekBar
+                android:id="@+id/seek_paint_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/layout"
+                android:max="15"
+                android:progress="2" />
+
+            <RelativeLayout
+                android:id="@+id/layout"
+                android:layout_width="@dimen/action_size"
+                android:layout_height="@dimen/action_size"
+                android:layout_alignParentRight="true">
+
+                <TextView
+                    android:id="@+id/iv_paint_size"
+                    android:layout_width="4dp"
+                    android:layout_height="4dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/bg_round_black" />
+            </RelativeLayout>
+        </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

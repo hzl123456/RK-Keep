@@ -1,1 +1,1 @@
-include ':app', ':rkandroid', ':rksocket'
+include ':app', ':rkandroid', ':rksocket', ':ColorPickerPreference'
