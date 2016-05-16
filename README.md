@@ -1,4 +1,15 @@
 # RK-Keep
+  新添加绘图功能，绘图支持添加背景绘图，支持修改画笔颜色和画笔大小，支持绘图分享，支持撤销和清空绘图，支持橡皮擦功能
+不过此处的橡皮擦删除的是整个线条（也就是你一笔所画出的路径），绘图的保存地址与语音在同一个父目录下
+
+  上传几张绘图相关的截图
+  
+![image](https://github.com/hzl123456/RK-Keep/blob/master/photo/Screenshot_2016-05-16-16-09-01.png)
+![image](https://github.com/hzl123456/RK-Keep/blob/master/photo/Screenshot_2016-05-16-16-08-26.png)
+![image](https://github.com/hzl123456/RK-Keep/blob/master/photo/Screenshot_2016-05-16-16-09-13.png)
+
+
+# RK-Keep
   新添加录音功能，在添加记事的时候可以进行添加录音操作（类似微信的语音），同时也可以播放录音，使用libspeex进行音频
 的压缩，大大减小音频文件的大小。音频文件保存路径为app的安装目录下，具体为android/data/rkkeep.keep/rkvoice 文件夹下
 这样做当卸载app的时候，相关的文件也同时被删除掉
