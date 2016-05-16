@@ -19,6 +19,7 @@ import com.rey.material.widget.ImageButton;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import cn.xmrk.rkandroid.activity.BaseActivity;
 import cn.xmrk.rkandroid.utils.CommonUtil;
@@ -45,6 +46,7 @@ import rkkeep.keep.util.VoiceSetWindow;
 public class AddNoticeActivity extends BaseActivity implements View.OnClickListener {
 
     private final int SHOWIMAGE_CODE = 88;
+    private final int DRAW_PIC_CODE = 512;
 
     /**
      * title使用
@@ -320,7 +322,7 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
                             mPictureChooseHelper.showDialog();
                             break;
                         case NoticeTypeChooseWindow.CHOOSE_DRAW://选择绘图
-
+                            startActivityForResult(HandWritingActivity.class, DRAW_PIC_CODE);
                             break;
                         case NoticeTypeChooseWindow.CHOOSE_VOICE://选择语音
                             if (mVoiceSetWindow == null) {
@@ -425,15 +427,15 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         if (mNoticeInfo.infos != null && mNoticeInfo.infos.size() > 0) {
             mNoticeInfo.hasPic = true;
             mNoticeInfo.noticeImgVoiceInfosString = CommonUtil.getGson().toJson(mNoticeInfo.infos);
-        }else{
-            mNoticeInfo.noticeImgVoiceInfosString=null;
+        } else {
+            mNoticeInfo.noticeImgVoiceInfosString = null;
         }
         //设置语音消息
         if (mNoticeInfo.voiceInfos != null && mNoticeInfo.voiceInfos.size() > 0) {
             mNoticeInfo.hasVoice = true;
             mNoticeInfo.noticeVoiceInfosString = CommonUtil.getGson().toJson(mNoticeInfo.voiceInfos);
-        }else{
-            mNoticeInfo.noticeVoiceInfosString=null;
+        } else {
+            mNoticeInfo.noticeVoiceInfosString = null;
         }
 
         dbHelper.saveNoticeInfo(mNoticeInfo);
@@ -454,10 +456,25 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         }
         if (resultCode != RESULT_CANCELED && requestCode == SHOWIMAGE_CODE) {
             int number = data.getExtras().getInt("num");
-            mNoticeInfo.infos.remove(number);
+            HashMap<Integer, String> changeMap = (HashMap<Integer, String>) data.getExtras().get("change");
+            //先改路径，再判断是否有删除
+            for (Integer key : changeMap.keySet()) {
+                mNoticeInfo.infos.get(key).imagePic = changeMap.get(key);
+            }
+            if (number != -1) {//不为-1，表示有删除的
+                mNoticeInfo.infos.remove(number);
+                mNoticeAdapter.setContentSize();
+            }
+            mNoticeAdapter.notifyDataSetChanged();
+        }
+        if (resultCode == RESULT_OK && requestCode == DRAW_PIC_CODE) {
+            String path = data.getExtras().getString("data");
+            mNoticeInfo.infos.add(0, new NoticeImgVoiceInfo(path));
             mNoticeAdapter.setContentSize();
             mNoticeAdapter.notifyDataSetChanged();
         }
+
+
     }
 
     @Override

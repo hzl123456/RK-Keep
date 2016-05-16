@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import cn.xmrk.rkandroid.activity.BaseActivity;
@@ -26,6 +27,8 @@ import rkkeep.keep.R;
  * Created by Au61 on 2016/4/28.
  */
 public class ShowImageActivity extends BaseActivity implements View.OnClickListener {
+
+    public final int DRAW_PIC_CODE = 56;
 
     /**
      * 设置新的标题栏
@@ -42,6 +45,10 @@ public class ShowImageActivity extends BaseActivity implements View.OnClickListe
     private int num;
     private HackyViewPager mPager;
 
+    /**
+     * 存储修改的position和图片路径
+     **/
+    private HashMap<Integer, String> changeMap;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +60,8 @@ public class ShowImageActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initData() {
+        changeMap = new HashMap<>();
+
         urls = new ArrayList<String>();
         urls.addAll((ArrayList<String>) getIntent().getExtras().get("data"));
         num = getIntent().getExtras().getInt("num");
@@ -139,8 +148,10 @@ public class ShowImageActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v == ibDraw) {
-
-
+            //跳转绘图的activity
+            Intent intent = new Intent(this, HandWritingActivity.class);
+            intent.putExtra("data", urls.get(mPager.getCurrentItem()));
+            startActivityForResult(intent, DRAW_PIC_CODE);
         } else if (v == ibSend) {//发送给别人
             Uri uri = Uri.parse("file://" + urls.get(mPager.getCurrentItem()));
             Intent it = new Intent(Intent.ACTION_SEND);
@@ -153,11 +164,38 @@ public class ShowImageActivity extends BaseActivity implements View.OnClickListe
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent();
+                    intent.putExtra("change", changeMap);
                     intent.putExtra("num", mPager.getCurrentItem());
                     setResult(RESULT_OK, intent);
                     finish();
                 }
             }, null);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        //这里表示的是返回的时候修改的，没有删除的时候num为-1
+        Intent intent = new Intent();
+        intent.putExtra("change", changeMap);
+        intent.putExtra("num", -1);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == DRAW_PIC_CODE) {
+            String path = data.getExtras().getString("data");
+            int position = mPager.getCurrentItem();
+            urls.remove(position);
+            urls.add(position, path);
+            //保存当前修改
+            changeMap.put(position, path);
+            //刷新当前展示，不知道为嘛，notify不起作用
+            mPager.setAdapter(new ViewPagerAdapter());
+            mPager.setCurrentItem(position);
         }
     }
 }

@@ -437,13 +437,13 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
-        if(resultCode==RESULT_OK&&requestCode==NOTICE_HAND_WRITE){//这里处理的是绘图的
-
+        if (resultCode == RESULT_OK && requestCode == NOTICE_HAND_WRITE) {//这里处理的是绘图的
+            String path =data.getExtras().getString("data");
+            setNoticeInfoAndEdit(path);
         }
     }
 
     protected void startActivity(Class<? extends Activity> cls) {
         startActivity(new Intent(this, cls));
     }
-
 }

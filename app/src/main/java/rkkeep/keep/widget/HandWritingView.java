@@ -73,6 +73,10 @@ public class HandWritingView extends View {
         Paint mPaint = new Paint();
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mPaint.setAntiAlias(true);
+        //设置图像抖动处理
+        mPaint.setDither(true);
+        //设置笔刷为圆形样式
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setColor(color);
         mPaint.setStrokeWidth(width);
         if (paints == null) {
@@ -90,7 +94,12 @@ public class HandWritingView extends View {
         //将要放大缩小的比例
         float size = 1.0f;
         Matrix matrix = new Matrix();
-        boolean hasBitHeight = bitmap.getHeight() > bitmap.getWidth();
+        //计算根据高还是宽来放大缩小
+        //标准的高宽比
+        float defaultSize = ((float) getMaxHeight()) / getMaxWidth();
+        //图片的高宽比
+        float bitmapSize = ((float) bitmap.getHeight()) / bitmap.getWidth();
+        boolean hasBitHeight = bitmapSize > defaultSize;
         if (hasBitHeight) {//此时图片更高
             size = ((float) getMaxHeight()) / bitmap.getHeight();
         } else {//此时图片更宽
@@ -124,7 +133,7 @@ public class HandWritingView extends View {
         //布局至中心
         RelativeLayout.LayoutParams layoutParams =
                 new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, (getMaxHeight() - mBackBitmap.getHeight()) / 2, 0, 0);
+        layoutParams.setMargins((getMaxWidth() - mBackBitmap.getWidth()) / 2, (getMaxHeight() - mBackBitmap.getHeight()) / 2, 0, 0);
         setLayoutParams(layoutParams);
         invalidate();
     }
@@ -145,15 +154,16 @@ public class HandWritingView extends View {
         return bitmap;
     }
 
-    private Bitmap getDrawBitmap() {
+    public Bitmap getDrawBitmap() {
         //原始的背景保持不变，只改变为新的背景
         if (newBitmap != null) {//回收上次使用的
             newBitmap.recycle();
             newBitmap = null;
         }
-        newBitmap = Bitmap.createBitmap(mBackBitmap, 0, 0, mBackBitmap.getWidth(), mBackBitmap.getHeight());
+        newBitmap = Bitmap.createBitmap(mBackBitmap, 0, 0, mBackBitmap.getWidth(), mBackBitmap.getHeight()).copy(Bitmap.Config.ARGB_8888, true);
         Canvas canvas = new Canvas(newBitmap);
-        for (int i = 0; i < mPathInfos.size(); i++) {
+        //从后面的往前画
+        for (int i = mPathInfos.size() - 1; i >= 0; i--) {
             onDrawLine(canvas, mPathInfos.get(i));
         }
         //判断是否可以后退
@@ -205,6 +215,7 @@ public class HandWritingView extends View {
                 downPath = new DrawPath(new Path(), paints.size() - 1);
                 mPathInfos.add(0, downPath);
                 downPath.path.moveTo(event.getX(), event.getY());
+                downPath.points.add(new Point(event.getX(), event.getY()));
             }
         } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
             if (isClear) {
@@ -214,6 +225,7 @@ public class HandWritingView extends View {
                 pointY = event.getY();
                 downPath.path.lineTo(pointX, pointY);
                 downPath.path.moveTo(pointX, pointY);
+                downPath.points.add(new Point(pointX, pointY));
             }
             invalidate();
         } else if (event.getAction() == MotionEvent.ACTION_UP) {//起来的时候结束一个path
@@ -224,6 +236,7 @@ public class HandWritingView extends View {
                 pointY = event.getY();
                 downPath.path.lineTo(pointX, pointY);
                 downPath.path.moveTo(pointX, pointY);
+                downPath.points.add(new Point(pointX, pointY));
             }
             invalidate();
         }
@@ -235,19 +248,44 @@ public class HandWritingView extends View {
 
     }
 
+    /**
+     * 橡皮擦删除,实现方法有点蛋疼，没办法，暂时这样了
+     **/
     private void choosePath(float x, float y) {
         List<DrawPath> drawPaths = new ArrayList<>();
-        Path path = null;
-        float width = 0;
+        List<Point> points = null;
+        float width;
+        RectF rf = null;
+        Point firstPoint = null;
+        Point secondPoint = null;
+        //最大最小值
+        float minX;
+        float maxX;
+        float minY;
+        float maxY;
         for (int i = 0; i < mPathInfos.size(); i++) {
-            path = mPathInfos.get(i).path;
+            //获取当前路径上的点
+            points = mPathInfos.get(i).points;
+            //获取绘制当前路径的画笔的宽的一半
             width = paints.get(mPathInfos.get(i).position).getStrokeWidth() / 2;
-            if (path.isRect(new RectF(x - width, y - width, x + width, y + width))) {
-                drawPaths.add(mPathInfos.get(i));
+            //遍历判断按下去的点是否在path的点里面
+            for (int j = 0; j < points.size() - 1; j++) {
+                firstPoint = points.get(j);
+                secondPoint = points.get(j + 1);
+                //计算两点间的距离
+                minX = Math.min(firstPoint.pointX, secondPoint.pointX);
+                maxX = Math.max(firstPoint.pointX, secondPoint.pointX);
+                minY = Math.min(firstPoint.pointY, secondPoint.pointY);
+                maxY = Math.max(firstPoint.pointY, secondPoint.pointY);
+                //取相连的两个点连接进行判断
+                if ((minX < x && x < maxX) && (minY < y && y < maxY)) {
+                    drawPaths.add(mPathInfos.get(i));
+                    break;
+                }
             }
         }
+        mPathInfos.removeAll(drawPaths);
         removePath.addAll(0, drawPaths);
-        mPathInfos.remove(drawPaths);
     }
 
     public void setIsClear(boolean isClear) {
@@ -280,12 +318,30 @@ public class HandWritingView extends View {
     class DrawPath {
         public Path path;
         public int position;
+        public List<Point> points;
 
         public DrawPath(Path path, int position) {
             this.path = path;
             this.position = position;
+            this.points = new ArrayList<>();
         }
     }
 
+    class Point {
+        public float pointX;
+        public float pointY;
+
+        public Point(float pointX, float pointY) {
+            this.pointX = pointX;
+            this.pointY = pointY;
+        }
+    }
+
+    /**
+     * 判断时候含有绘图
+     **/
+    public boolean hasDrawBitmap() {
+        return (mPathInfos != null && mPathInfos.size() > 0);
+    }
 
 }
