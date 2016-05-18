@@ -1,4 +1,16 @@
 # RK-Keep
+  新添加记事添加视频功能，在记事的时候可添加视频，并生成视频缩略图（400*400）添加视频分调取本地视频和调用本地摄像头
+进行视频录制，并且支持视频观看的功能，可全屏
+  ps：不过总的来说有的low，跟各大播放器完全没法比。
+  
+  上传几张视频相关的截图
+  
+![image](https://github.com/hzl123456/RK-Keep/blob/master/photo/Screenshot_2016-05-18-16-46-44.png)
+![image](https://github.com/hzl123456/RK-Keep/blob/master/photo/Screenshot_2016-05-18-16-46-55.png)
+![image](https://github.com/hzl123456/RK-Keep/blob/master/photo/Screenshot_2016-05-18-16-47-37.png)
+  
+
+# RK-Keep
   新添加绘图功能，绘图支持添加背景绘图，支持修改画笔颜色和画笔大小，支持绘图分享，支持撤销和清空绘图，支持橡皮擦功能
 不过此处的橡皮擦删除的是整个线条（也就是你一笔所画出的路径），绘图的保存地址与语音在同一个父目录下
 
