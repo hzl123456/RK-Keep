@@ -34,7 +34,7 @@ public class TiXingFragment extends JiShiFragment {
         }
         mFooterType = 0;
         mData.add(0, info);
-        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyContentItemInserted(0);
         rvContent.getLayoutManager().scrollToPosition(0);
         showDataOrEmpty();
     }

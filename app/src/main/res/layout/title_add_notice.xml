@@ -5,6 +5,16 @@
     android:gravity="center_vertical"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/tv_search"
+        android:text="@string/nav_jishi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:paddingRight="18dp"
+        android:singleLine="true"
+        android:textSize="20sp" />
+
 
     <com.rey.material.widget.ImageButton
         android:id="@+id/ib_notice"

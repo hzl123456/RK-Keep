@@ -2,18 +2,7 @@ package cn.xmrk.rkandroid.config;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Bitmap;
 
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
-import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.decode.BaseImageDecoder;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -24,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+
 import cn.xmrk.rkandroid.utils.PackageUtil;
 import cn.xmrk.rkandroid.utils.UnitUtil;
 import de.mindpipe.android.logging.log4j.LogConfigurator;
@@ -50,9 +40,7 @@ public class RKConfigHelper implements IRKConfig {
         mInstance = new RKConfigHelper();
         mInstance.mRKConfig = config;
         mInstance.context = context;
-
         mInstance.initExceptionHandler();
-        mInstance.initUIL();
         mInstance.initLog4J();
         mInstance.initRefWatcher();
     }
@@ -72,33 +60,6 @@ public class RKConfigHelper implements IRKConfig {
         }
     }
 
-    protected void initUIL() {
-        File cacheDir = StorageUtils.getCacheDirectory(context);
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .build();
-        // 图片的加载设置
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-//		        .memoryCacheExtraOptions(480, 800) // default = device screen dimensions
-//		        .diskCacheExtraOptions(480, 800, null)
-                .threadPoolSize(3) // default
-                .threadPriority(Thread.NORM_PRIORITY - 2) // default
-                .tasksProcessingOrder(QueueProcessingType.LIFO) // default
-                .denyCacheImageMultipleSizesInMemory()
-                .memoryCacheSizePercentage(30) // default
-                .diskCache(new UnlimitedDiskCache(cacheDir)) // default
-//				.diskCacheSize(1000 * 1024 * 60)
-                .diskCacheFileNameGenerator(new HashCodeFileNameGenerator()) // default
-                .imageDownloader(new BaseImageDownloader(context)) // default
-                .imageDecoder(new BaseImageDecoder(false)) // default
-                .defaultDisplayImageOptions(options) // default
-//		        .writeDebugLogs()
-                .build();
-        ImageLoader.getInstance().init(config);
-    }
 
     protected void initLog4J() {
         LogConfigurator logConfigurator = new LogConfigurator();

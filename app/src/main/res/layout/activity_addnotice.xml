@@ -3,16 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/layout_top"
-        layout="@layout/activity_addnotice_top"
+    <RelativeLayout
+        android:id="@+id/layout_base_top"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/layout_bottom" />
+        android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/layout_bottom"
-        layout="@layout/activity_addnotice_bottom" />
+        <include
+            android:id="@+id/layout_top"
+            layout="@layout/activity_addnotice_top"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/layout_bottom" />
+
+        <include
+            android:id="@+id/layout_bottom"
+            layout="@layout/activity_addnotice_bottom" />
+    </RelativeLayout>
+
+    <include layout="@layout/layout_video" />
 
 
 </RelativeLayout>

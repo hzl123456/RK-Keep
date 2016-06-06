@@ -32,6 +32,5 @@
                 android:textColor="#979797"
                 android:textSize="22sp" />
         </ScrollView>
-
     </FrameLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

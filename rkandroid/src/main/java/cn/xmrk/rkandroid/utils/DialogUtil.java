@@ -15,7 +15,7 @@ import cn.xmrk.rkandroid.activity.BaseActivity;
  * @author 思落羽
  *         2014年9月11日 下午3:34:35
  */
-public class DialogUtil implements SweetAlertDialog.OnCancelListener, SweetAlertDialog.OnSweetClickListener {
+public class DialogUtil implements OnCancelListener, SweetAlertDialog.OnSweetClickListener {
 
     private Context mContext;
 

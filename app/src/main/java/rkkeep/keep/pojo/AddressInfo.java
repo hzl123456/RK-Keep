@@ -40,7 +40,7 @@ public class AddressInfo implements Parcelable {
         this.latitude = (Double) in.readValue(Double.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<AddressInfo> CREATOR = new Parcelable.Creator<AddressInfo>() {
+    public static final Creator<AddressInfo> CREATOR = new Creator<AddressInfo>() {
         @Override
         public AddressInfo createFromParcel(Parcel source) {
             return new AddressInfo(source);

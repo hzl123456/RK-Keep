@@ -193,6 +193,8 @@ public class DustbinFragment extends RecyclerViewFragment implements View.OnClic
         }
         holder.rvContent.setAdapter(new MuilGridAdapter(info.infos));
         holder.setNoticeVoiceInfo(info.voiceInfos,true);
+        //设置视频显示
+        holder.setVideoInfos(info.videoInfos);
     }
 
     public boolean isLongPressDragEnabled() {

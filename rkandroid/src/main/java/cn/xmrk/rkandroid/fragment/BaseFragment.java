@@ -28,6 +28,7 @@ public abstract class BaseFragment extends Fragment {
     private View contentView;
 
 
+
     protected boolean isShow = false;
 
     /**

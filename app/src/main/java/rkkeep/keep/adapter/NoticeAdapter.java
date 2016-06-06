@@ -13,23 +13,33 @@ import java.util.List;
 
 import cn.xmrk.rkandroid.adapter.HeaderFooterRecyclerViewAdapter;
 import cn.xmrk.rkandroid.application.RKApplication;
+import cn.xmrk.rkandroid.utils.RKUtil;
 import cn.xmrk.rkandroid.widget.MultiGridView;
 import cn.xmrk.rkandroid.widget.edittext.ClearEditText;
+import cn.xmrk.rkandroid.widget.imageView.ScaleImageView;
 import rkkeep.keep.R;
 import rkkeep.keep.activity.AddNoticeActivity;
 import rkkeep.keep.adapter.listener.OnNoticeItemClickListener;
+import rkkeep.keep.adapter.listener.OnVideoClickListener;
 import rkkeep.keep.pojo.NoticeImgVoiceInfo;
+import rkkeep.keep.pojo.VideoInfo;
 
 /**
  * Created by Au61 on 2016/4/27.
  */
 public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
 
+    private final int VIDEO_TYPE = 0;
+    private final int VOICE_TYPE = 1;
+
 
     //语音的长度
     private int chatMaxWidh;
     private int chatDefWidth;
     private int chatOneSe;
+
+    //视频的高度
+    private int videoHeight;
 
     //正在播放的消息
     public NoticeImgVoiceInfo isPlayingInfo = null;
@@ -41,6 +51,8 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
 
     //图片信息使用
     private List<NoticeImgVoiceInfo> mData;
+    //视频使用
+    private List<VideoInfo> mVideoInfos;
 
     //列表总数
     private int contentSize;
@@ -58,15 +70,18 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
 
     private AddNoticeActivity activity;
 
-    public NoticeAdapter(List<NoticeImgVoiceInfo> mData, List<NoticeImgVoiceInfo> voiceData, AddNoticeActivity activity) {
+    public NoticeAdapter(List<NoticeImgVoiceInfo> mData, List<NoticeImgVoiceInfo> voiceData, List<VideoInfo> mVideoInfos, AddNoticeActivity activity) {
         this.mData = mData;
         this.voiceData = voiceData;
         this.activity = activity;
+        this.mVideoInfos = mVideoInfos;
         chatDefWidth = RKApplication.getInstance().getResources().getDimensionPixelOffset(R.dimen.voice_def_width);
         chatMaxWidh = RKApplication.getInstance().getResources().getDimensionPixelOffset(R.dimen.voice_def_max_width);
         chatOneSe = RKApplication.getInstance().getResources().getDimensionPixelOffset(R.dimen.voice_def_one_width);
+        videoHeight = RKApplication.getInstance().getResources().getDimensionPixelOffset(R.dimen.video_height);
         setContentSize();
     }
+
 
     public void setContentSize() {
         if (mData != null && mData.size() != 0) {
@@ -108,7 +123,7 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
 
     @Override
     protected int getContentItemCount() {
-        return voiceData == null ? 0 : voiceData.size();
+        return (mVideoInfos == null ? 0 : mVideoInfos.size()) + (voiceData == null ? 0 : voiceData.size());
     }
 
     @Override
@@ -125,9 +140,23 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
 
     @Override
     protected RecyclerView.ViewHolder onCreateContentItemViewHolder(ViewGroup parent, int contentViewType) {
-        return new ContentViewHolder(View.inflate(parent.getContext(), R.layout.item_voice, null));
+        if (contentViewType == VIDEO_TYPE) {
+            return new ContentVideoViewHolder(View.inflate(parent.getContext(), R.layout.item_video, null));
+        } else {
+            return new ContentViewHolder(View.inflate(parent.getContext(), R.layout.item_voice, null));
+        }
     }
 
+    @Override
+    protected int getContentItemViewType(int position) {
+        //视频的大小
+        int videoSize = mVideoInfos == null ? 0 : mVideoInfos.size();
+        if (position < videoSize) {
+            return VIDEO_TYPE;
+        } else {
+            return VOICE_TYPE;
+        }
+    }
 
     @Override
     protected void onBindHeaderItemViewHolder(RecyclerView.ViewHolder headerViewHolder, int position) {
@@ -186,26 +215,53 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
     }
 
     @Override
-    protected void onBindContentItemViewHolder(RecyclerView.ViewHolder contentViewHolder, int position) {
-        //处理语音数据
-        ContentViewHolder holder = (ContentViewHolder) contentViewHolder;
-        NoticeImgVoiceInfo info = voiceData.get(position);
-        holder.info = info;
-        holder.position = position;
-        //设置语音长度
-        long duration = (info.length / 1000) > 0 ? (info.length / 1000) : 1;
-        holder.tvVoiceLength.setText(duration + "'");
-        //设置显示的长度
-        long width = (chatDefWidth + chatOneSe * (duration - 1)) > chatMaxWidh ? chatMaxWidh : (chatDefWidth + chatOneSe * (duration - 1));
-        holder.layoutVoice.setLayoutParams(new LinearLayout.LayoutParams((int) width, LinearLayout.LayoutParams.WRAP_CONTENT));
-        //是否处于播放状态
-        if (info == isPlayingInfo) {
-            holder.ivVoice.setBackgroundResource(R.drawable.show_voice);
-            animationDrawable = (AnimationDrawable) holder.ivVoice.getBackground();
-            animationDrawable.setOneShot(false);
-            animationDrawable.start();
+    protected void onBindContentItemViewHolder(RecyclerView.ViewHolder contentViewHolder, final int position) {
+        if (getContentItemViewType(position) == VIDEO_TYPE) {//视频的
+            final VideoInfo info = mVideoInfos.get(position);
+            final ContentVideoViewHolder holder = (ContentVideoViewHolder) contentViewHolder;
+            holder.tvVideoName.setText(info.videoName);
+
+            RKUtil.displayFileImage(info.videoPath, holder.ivImage, 0);
+
+            holder.ivImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnVideoClickListener != null) {
+                        mOnVideoClickListener.onClick(info, position);
+                    }
+
+                }
+            });
+            holder.ivImage.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (mOnVideoClickListener != null) {
+                        mOnVideoClickListener.onLongClick(info, position);
+                    }
+                    return true;
+                }
+            });
         } else {
-            holder.ivVoice.setBackgroundResource(R.drawable.ease_chatfrom_voice_playing);
+            //处理语音数据
+            ContentViewHolder holder = (ContentViewHolder) contentViewHolder;
+            NoticeImgVoiceInfo info = voiceData.get(position - mVideoInfos.size());
+            holder.info = info;
+            holder.position = position;
+            //设置语音长度
+            long duration = (info.length / 1000) > 0 ? (info.length / 1000) : 1;
+            holder.tvVoiceLength.setText(duration + "'");
+            //设置显示的长度
+            long width = (chatDefWidth + chatOneSe * (duration - 1)) > chatMaxWidh ? chatMaxWidh : (chatDefWidth + chatOneSe * (duration - 1));
+            holder.layoutVoice.setLayoutParams(new LinearLayout.LayoutParams((int) width, LinearLayout.LayoutParams.WRAP_CONTENT));
+            //是否处于播放状态
+            if (info == isPlayingInfo) {
+                holder.ivVoice.setBackgroundResource(R.drawable.show_voice);
+                animationDrawable = (AnimationDrawable) holder.ivVoice.getBackground();
+                animationDrawable.setOneShot(false);
+                animationDrawable.start();
+            } else {
+                holder.ivVoice.setBackgroundResource(R.drawable.ease_chatfrom_voice_playing);
+            }
         }
     }
 
@@ -235,6 +291,21 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
         public HeaderViewHolder(View itemView) {
             super(itemView);
             layoutContent = (MultiGridView) itemView.findViewById(R.id.layout_rv_content);
+        }
+    }
+
+    /**
+     * 显示视频信息的viewHolder
+     **/
+    class ContentVideoViewHolder extends RecyclerView.ViewHolder {
+
+        public ScaleImageView ivImage;
+        public TextView tvVideoName;
+
+        public ContentVideoViewHolder(View itemView) {
+            super(itemView);
+            ivImage = (ScaleImageView) itemView.findViewById(R.id.image);
+            tvVideoName = (TextView) itemView.findViewById(R.id.tv_video_name);
         }
     }
 
@@ -283,5 +354,10 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
         this.mOnNoticeItemClickListener = mOnNoticeItemClickListener;
     }
 
+    private OnVideoClickListener mOnVideoClickListener;
+
+    public void setOnVideoClickListener(OnVideoClickListener mOnVideoClickListener) {
+        this.mOnVideoClickListener = mOnVideoClickListener;
+    }
 
 }

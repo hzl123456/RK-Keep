@@ -92,6 +92,27 @@
                     android:textSize="@dimen/text_big" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/tv_video"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/action_size"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:layout_width="@dimen/action_size"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:src="@drawable/ic_video" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/addnotice_video"
+                    android:textColor="#55000000"
+                    android:textSize="@dimen/text_big" />
+            </LinearLayout>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_content"
                 android:layout_width="match_parent"

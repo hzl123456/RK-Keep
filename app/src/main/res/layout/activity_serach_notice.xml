@@ -21,10 +21,10 @@
             android:layout_weight="1">
 
             <ImageButton
-                android:id="@+id/ib_text"
+                android:id="@+id/ib_video"
                 style="@style/SerachImageButton"
                 android:background="@drawable/bg_search"
-                android:src="@drawable/ic_perm_group_calendar" />
+                android:src="@drawable/ic_video" />
         </RelativeLayout>
 
         <RelativeLayout

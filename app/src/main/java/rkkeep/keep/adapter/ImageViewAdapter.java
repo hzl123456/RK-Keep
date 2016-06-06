@@ -57,22 +57,23 @@ public class ImageViewAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = View.inflate(parent.getContext(), R.layout.image, null);
-            convertView.setTag(new ImageViewHolder(convertView));
+            convertView.setTag(R.id.glide_tag, new ImageViewHolder(convertView));
         }
-        ImageViewHolder holder = (ImageViewHolder) convertView.getTag();
-        RKUtil.displayFileImage(mData.get(position).imagePic, holder.image);
-        if(needClick){
+        final ImageViewHolder holder = (ImageViewHolder) convertView.getTag(R.id.glide_tag);
+
+        RKUtil.displayFileImage(mData.get(position).imagePic, holder.image, 0);
+        if (needClick) {
             holder.image.setEnabled(true);
             holder.image.setClickable(true);
             holder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mOnNoticeItemClickListener != null) {
-                        mOnNoticeItemClickListener.onClick(mData.get(position),position);
+                        mOnNoticeItemClickListener.onClick(mData.get(position), position);
                     }
                 }
             });
-        }else{
+        } else {
             holder.image.setEnabled(false);
             holder.image.setClickable(false);
         }

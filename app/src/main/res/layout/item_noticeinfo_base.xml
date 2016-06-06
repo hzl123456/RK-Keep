@@ -30,27 +30,18 @@
             android:scrollbars="none" />
 
         <LinearLayout
+            android:id="@+id/layout_video_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <LinearLayout
             android:id="@+id/layout_voice_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"></LinearLayout>
-
-
-        <cn.xmrk.rkandroid.widget.MultiListView
-            android:id="@+id/lv_voice_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:clickable="false"
-            android:clipChildren="false"
-            android:divider="@null"
-            android:dividerHeight="3dp"
-            android:focusable="false"
-            android:scrollbars="none" />
+            android:orientation="vertical" />
 
         <include layout="@layout/item_notice_base_top" />
 
     </LinearLayout>
-
-
 </LinearLayout>

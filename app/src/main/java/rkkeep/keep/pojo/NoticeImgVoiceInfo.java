@@ -54,7 +54,7 @@ public class NoticeImgVoiceInfo implements Parcelable {
         this.length = in.readLong();
     }
 
-    public static final Parcelable.Creator<NoticeImgVoiceInfo> CREATOR = new Parcelable.Creator<NoticeImgVoiceInfo>() {
+    public static final Creator<NoticeImgVoiceInfo> CREATOR = new Creator<NoticeImgVoiceInfo>() {
         @Override
         public NoticeImgVoiceInfo createFromParcel(Parcel source) {
             return new NoticeImgVoiceInfo(source);

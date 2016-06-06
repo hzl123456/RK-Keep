@@ -8,12 +8,16 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.xmrk.rkandroid.application.RKApplication;
+import cn.xmrk.rkandroid.utils.CommonUtil;
+import cn.xmrk.rkandroid.utils.RKUtil;
 import cn.xmrk.rkandroid.widget.MultiListView;
+import cn.xmrk.rkandroid.widget.imageView.ScaleImageView;
 import rkkeep.keep.R;
 import rkkeep.keep.adapter.listener.OnNoticeBaseViewClickListener;
 import rkkeep.keep.pojo.NoticeBaseInfo;
 import rkkeep.keep.pojo.NoticeImgVoiceInfo;
 import rkkeep.keep.pojo.NoticeInfo;
+import rkkeep.keep.pojo.VideoInfo;
 
 /**
  * Created by Au61 on 2016/5/5.
@@ -32,7 +36,6 @@ public class NoticeInfoBaseViewHolder extends RecyclerView.ViewHolder {
         this.listener = listener;
     }
 
-    public MultiListView lvVoiceContent;
     public LinearLayout layoutTop;
     public TextView tvTitle;
     public TextView tvContent;
@@ -42,6 +45,7 @@ public class NoticeInfoBaseViewHolder extends RecyclerView.ViewHolder {
     public LinearLayout layoutBae;
     public MultiListView rvContent;
     public LinearLayout layoutVoiceContent;
+    public LinearLayout layoutVideoContent;
 
 
     public NoticeInfoBaseViewHolder(View itemView) {
@@ -54,9 +58,8 @@ public class NoticeInfoBaseViewHolder extends RecyclerView.ViewHolder {
         layoutNotice = (LinearLayout) itemView.findViewById(R.id.layout_notice);
         tvNoticeTime = (TextView) itemView.findViewById(R.id.tv_notice_time);
         tvNoticeAddress = (TextView) itemView.findViewById(R.id.tv_notice_address);
-        lvVoiceContent = (MultiListView) itemView.findViewById(R.id.lv_voice_content);
         layoutVoiceContent = (LinearLayout) itemView.findViewById(R.id.layout_voice_content);
-
+        layoutVideoContent = (LinearLayout) itemView.findViewById(R.id.layout_video_content);
 
         layoutBae.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +110,15 @@ public class NoticeInfoBaseViewHolder extends RecyclerView.ViewHolder {
         return view;
     }
 
+    public View getView(VideoInfo info) {
+        View view = View.inflate(RKApplication.getInstance(), R.layout.item_video, null);
+        ScaleImageView image = (ScaleImageView) view.findViewById(R.id.image);
+        TextView tvName = (TextView) view.findViewById(R.id.tv_video_name);
+        RKUtil.displayFileImage(info.videoPath, image, 0);
+        tvName.setText(info.videoName);
+        return view;
+    }
+
     public void setNoticeVoiceInfo(List<NoticeImgVoiceInfo> mData, boolean isVertical) {
         chatDefWidth = RKApplication.getInstance().getResources().getDimensionPixelOffset(R.dimen.voice_def_width);
         chatMaxWidh = RKApplication.getInstance().getResources().getDimensionPixelOffset(R.dimen.voice_def_max_width);
@@ -116,10 +128,22 @@ public class NoticeInfoBaseViewHolder extends RecyclerView.ViewHolder {
             chatMaxWidh /= 2;
             chatOneSe /= 2;
         }
+        layoutVoiceContent.removeAllViews();
         if (mData != null && mData.size() > 0) {
-            layoutVoiceContent.removeAllViews();
             for (int i = 0; i < mData.size(); i++) {
                 layoutVoiceContent.addView(getView(mData.get(i)));
+            }
+        }
+    }
+
+    public void setVideoInfos(List<VideoInfo> mData) {
+        layoutVideoContent.removeAllViews();
+        if (mData != null && mData.size() > 0) {
+            for (int i = 0; i < mData.size(); i++) {
+                layoutVideoContent.addView(getView(mData.get(i)));
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(0, CommonUtil.dip2px(3), 0, 0);
+                layoutVideoContent.getChildAt(i).setLayoutParams(layoutParams);
             }
         }
     }

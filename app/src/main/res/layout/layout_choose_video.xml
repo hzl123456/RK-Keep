@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minWidth="440dp"
+    android:background="@drawable/bg_whit_radio"
+    android:orientation="vertical"
+    android:paddingBottom="10dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp"
+        android:text="@string/add_video"
+        android:textColor="#000"
+        android:textSize="22sp" />
+
+    <LinearLayout
+        android:id="@+id/layout_take"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_button_size"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_click_ripple"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp">
+
+        <ImageButton
+            android:layout_width="@dimen/main_button_size"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:src="@drawable/ic_perm_group_camera" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:text="@string/take_video"
+            android:textColor="#000"
+            android:textSize="@dimen/text_big" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_choose"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_button_size"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_click_ripple"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp">
+
+        <ImageButton
+            android:layout_width="@dimen/main_button_size"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:src="@drawable/ic_video" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:text="@string/pic_video"
+            android:textColor="#000"
+            android:textSize="@dimen/text_big" />
+
+    </LinearLayout>
+
+</LinearLayout>

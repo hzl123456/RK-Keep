@@ -75,4 +75,9 @@
     <string name="activity_chat_move_to_cancel">手指上滑取消发送</string>
     <string name="activity_chat_release_to_cancel">松开手指取消发送</string>
     <string name="voice_duration_too_short">语音时间太短</string>
+    <string name="add_video">添加视频</string>
+    <string name="take_video">录制</string>
+    <string name="pic_video">选择视频</string>
+    <string name="addnotice_video">视频</string>
+    <string name="add_notice">添加记事</string>
 </resources>

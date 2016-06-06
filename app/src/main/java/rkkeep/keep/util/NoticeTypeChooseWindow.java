@@ -22,12 +22,14 @@ public class NoticeTypeChooseWindow extends PopupWindow implements View.OnClickL
     public static final int CHOOSE_PICTURE = 1;
     public static final int CHOOSE_DRAW = 2;
     public static final int CHOOSE_VOICE = 3;
+    public static final int CHOOSE_VIDEO = 4;
 
     private LinearLayout layoutPicture;
     private LinearLayout layoutDraw;
     private LinearLayout tvVoice;
-    private RecyclerView rvContent;
     private LinearLayout layoutContent;
+    private LinearLayout layoutVideo;
+    private RecyclerView rvContent;
     private View view;
 
     private Context mContent;
@@ -52,6 +54,7 @@ public class NoticeTypeChooseWindow extends PopupWindow implements View.OnClickL
         layoutDraw = (LinearLayout) headerView.findViewById(R.id.layout_draw);
         tvVoice = (LinearLayout) headerView.findViewById(R.id.tv_voice);
         rvContent = (RecyclerView) headerView.findViewById(R.id.rv_content);
+        layoutVideo= (LinearLayout) headerView.findViewById(R.id.tv_video);
         view = headerView.findViewById(R.id.view);
         viewDismiss = headerView.findViewById(R.id.view_dismiss);
 
@@ -60,6 +63,7 @@ public class NoticeTypeChooseWindow extends PopupWindow implements View.OnClickL
         tvVoice.setOnClickListener(this);
         view.setOnClickListener(this);
         viewDismiss.setOnClickListener(this);
+        layoutVideo.setOnClickListener(this);
         setContentView(headerView);
     }
 
@@ -103,6 +107,8 @@ public class NoticeTypeChooseWindow extends PopupWindow implements View.OnClickL
             mOnWindowChooseListener.OnChooseType(CHOOSE_DRAW);
         } else if (v == tvVoice) {
             mOnWindowChooseListener.OnChooseType(CHOOSE_VOICE);
+        }else if(v==layoutVideo){
+            mOnWindowChooseListener.OnChooseType(CHOOSE_VIDEO);
         }
         dismiss();
     }

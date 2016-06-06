@@ -42,12 +42,12 @@ public class NoticeTypeAdapter extends RecyclerView.Adapter<NoticeTypeAdapter.Vi
     }
 
     @Override
-    public NoticeTypeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(View.inflate(parent.getContext(), R.layout.item_color, null));
     }
 
     @Override
-    public void onBindViewHolder(NoticeTypeAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         Bitmap bitmap = Bitmap.createBitmap(CommonUtil.dip2px(40), CommonUtil.dip2px(40), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.parseColor(colors.get(position)));

@@ -428,7 +428,7 @@ public abstract class HeaderFooterRecyclerViewAdapter extends RecyclerView.Adapt
     protected abstract int getContentItemCount();
 
     /**
-     * This method works exactly the same as {@link #onCreateViewHolder(android.view.ViewGroup, int)}, but for header items.
+     * This method works exactly the same as {@link #onCreateViewHolder(ViewGroup, int)}, but for header items.
      *
      * @param parent         the parent view.
      * @param headerViewType the view type for the header.
@@ -437,7 +437,7 @@ public abstract class HeaderFooterRecyclerViewAdapter extends RecyclerView.Adapt
     protected abstract RecyclerView.ViewHolder onCreateHeaderItemViewHolder(ViewGroup parent, int headerViewType);
 
     /**
-     * This method works exactly the same as {@link #onCreateViewHolder(android.view.ViewGroup, int)}, but for footer items.
+     * This method works exactly the same as {@link #onCreateViewHolder(ViewGroup, int)}, but for footer items.
      *
      * @param parent         the parent view.
      * @param footerViewType the view type for the footer.
@@ -446,7 +446,7 @@ public abstract class HeaderFooterRecyclerViewAdapter extends RecyclerView.Adapt
     protected abstract RecyclerView.ViewHolder onCreateFooterItemViewHolder(ViewGroup parent, int footerViewType);
 
     /**
-     * This method works exactly the same as {@link #onCreateViewHolder(android.view.ViewGroup, int)}, but for content items.
+     * This method works exactly the same as {@link #onCreateViewHolder(ViewGroup, int)}, but for content items.
      *
      * @param parent          the parent view.
      * @param contentViewType the view type for the content.
@@ -455,7 +455,7 @@ public abstract class HeaderFooterRecyclerViewAdapter extends RecyclerView.Adapt
     protected abstract RecyclerView.ViewHolder onCreateContentItemViewHolder(ViewGroup parent, int contentViewType);
 
     /**
-     * This method works exactly the same as {@link #onBindViewHolder(android.support.v7.widget.RecyclerView.ViewHolder, int)}, but for header items.
+     * This method works exactly the same as {@link #onBindViewHolder(RecyclerView.ViewHolder, int)}, but for header items.
      *
      * @param headerViewHolder the view holder for the header item.
      * @param position         the position.
@@ -463,7 +463,7 @@ public abstract class HeaderFooterRecyclerViewAdapter extends RecyclerView.Adapt
     protected abstract void onBindHeaderItemViewHolder(RecyclerView.ViewHolder headerViewHolder, int position);
 
     /**
-     * This method works exactly the same as {@link #onBindViewHolder(android.support.v7.widget.RecyclerView.ViewHolder, int)}, but for footer items.
+     * This method works exactly the same as {@link #onBindViewHolder(RecyclerView.ViewHolder, int)}, but for footer items.
      *
      * @param footerViewHolder the view holder for the footer item.
      * @param position         the position.
@@ -471,7 +471,7 @@ public abstract class HeaderFooterRecyclerViewAdapter extends RecyclerView.Adapt
     protected abstract void onBindFooterItemViewHolder(RecyclerView.ViewHolder footerViewHolder, int position);
 
     /**
-     * This method works exactly the same as {@link #onBindViewHolder(android.support.v7.widget.RecyclerView.ViewHolder, int)}, but for content items.
+     * This method works exactly the same as {@link #onBindViewHolder(RecyclerView.ViewHolder, int)}, but for content items.
      *
      * @param contentViewHolder the view holder for the content item.
      * @param position          the position.

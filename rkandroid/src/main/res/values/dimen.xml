@@ -10,6 +10,7 @@
     <dimen name="title_bar_text">18sp</dimen>
 
     <dimen name="corner_size_normal">7dp</dimen>
+    <dimen name="video_height">250dp</dimen>
 
     <!-- 内容里的margin值 -->
     <dimen name="content_margin_x_big">13dp</dimen>

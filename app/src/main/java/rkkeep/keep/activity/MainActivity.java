@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -25,14 +26,13 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.xmrk.rkandroid.activity.ChoicePicActivity;
 import cn.xmrk.rkandroid.utils.CommonUtil;
 import cn.xmrk.rkandroid.utils.FileUtil;
+import cn.xmrk.rkandroid.utils.RKUtil;
 import cn.xmrk.rkandroid.widget.imageView.RoundImageView;
 import rkkeep.keep.R;
 import rkkeep.keep.fragment.DustbinFragment;
@@ -40,9 +40,11 @@ import rkkeep.keep.fragment.JiShiFragment;
 import rkkeep.keep.fragment.RecyclerViewFragment;
 import rkkeep.keep.fragment.TiXingFragment;
 import rkkeep.keep.help.PictureChooseHelper;
+import rkkeep.keep.help.VideoChooseHelper;
 import rkkeep.keep.pojo.NoticeImgVoiceInfo;
 import rkkeep.keep.pojo.NoticeInfo;
 import rkkeep.keep.pojo.UserInfo;
+import rkkeep.keep.pojo.VideoInfo;
 import rkkeep.keep.util.UserInfoUtil;
 import rkkeep.keep.util.VoiceSetWindow;
 
@@ -85,6 +87,8 @@ public class MainActivity extends AppCompatActivity
     private PictureChooseHelper mPictureChooseHelper;
 
     private VoiceSetWindow mVoiceSetWindow;
+
+    private VideoChooseHelper mVideoChooseHelper;
 
     //各个页面的fragment
     private RecyclerViewFragment currentFragment;
@@ -210,7 +214,7 @@ public class MainActivity extends AppCompatActivity
         tvTitle.setText(mUserInfo.userName);
         tvContent.setText(mUserInfo.userIntro);
         if (mUserInfo.userPic != null) {
-            ImageLoader.getInstance().displayImage("file:///" + mUserInfo.userPic, ivHeader);
+            RKUtil.displayFileImage(mUserInfo.userPic, ivHeader,R.drawable.ic_launcher);
         }
     }
 
@@ -261,7 +265,7 @@ public class MainActivity extends AppCompatActivity
         ibKeepVoice = (ImageButton) findViewById(R.id.ib_keep_voice);
         ibKeepCamera = (ImageButton) findViewById(R.id.ib_keep_camera);
 
-        CommonUtil.setLongClick(ibKeepText, getString(R.string.add));
+        CommonUtil.setLongClick(ibKeepText, getString(R.string.add_video));
         CommonUtil.setLongClick(ibKeepEdit, getString(R.string.add_draw));
         CommonUtil.setLongClick(ibKeepVoice, getString(R.string.add_voice));
         CommonUtil.setLongClick(ibKeepCamera, getString(R.string.add_picture));
@@ -315,8 +319,8 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(new Intent(this, ChoicePicActivity.class), REQUEST_CHOICE_PORTRAIT);
         } else if (v == tvAddTextItem) {//文本添加
             setNoticeInfoAndEdit();
-        } else if (v == ibKeepText) {//文本添加
-            setNoticeInfoAndEdit();
+        } else if (v == ibKeepText) {//视频添加
+            addVideo();
         } else if (v == ibKeepEdit) {//画图添加
             startActivityForResult(new Intent(this, HandWritingActivity.class), NOTICE_HAND_WRITE);
         } else if (v == ibKeepVoice) {//录音添加
@@ -324,6 +328,19 @@ public class MainActivity extends AppCompatActivity
         } else if (v == ibKeepCamera) {//选择图片添加
             addPicture();
         }
+    }
+
+    private void addVideo() {
+        if (mVideoChooseHelper == null) {
+            mVideoChooseHelper = new VideoChooseHelper(this,getTitleBar());
+        }
+        mVideoChooseHelper.setOnVideoGetListener(new VideoChooseHelper.OnVideoGetListener() {
+            @Override
+            public void OnPic(String path,String imagePath) {
+                setNoticeInfoAndEditForVideo(path,imagePath);
+            }
+        });
+        mVideoChooseHelper.showDialog();
     }
 
     private void showVoiceWindow() {
@@ -363,6 +380,7 @@ public class MainActivity extends AppCompatActivity
         NoticeInfo mNoticeInfo = new NoticeInfo();
         mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
         mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
+        mNoticeInfo.videoInfos = new ArrayList<VideoInfo>();
         toAddNoticeInfoActivity(mNoticeInfo);
     }
 
@@ -371,8 +389,23 @@ public class MainActivity extends AppCompatActivity
         NoticeInfo mNoticeInfo = new NoticeInfo();
         mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
         mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
+        mNoticeInfo.videoInfos = new ArrayList<VideoInfo>();
 
+        //添加一个图片
         mNoticeInfo.infos.add(new NoticeImgVoiceInfo(path));
+        toAddNoticeInfoActivity(mNoticeInfo);
+    }
+
+
+    //实例化一个noticeInfo，并且添加一个视频文件进行编辑
+    private void setNoticeInfoAndEditForVideo(String path,String imagePath) {
+        NoticeInfo mNoticeInfo = new NoticeInfo();
+        mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
+        mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
+        mNoticeInfo.videoInfos = new ArrayList<VideoInfo>();
+
+        //添加一个视频文件
+        mNoticeInfo.videoInfos.add(new VideoInfo(path,imagePath));
         toAddNoticeInfoActivity(mNoticeInfo);
     }
 
@@ -381,6 +414,9 @@ public class MainActivity extends AppCompatActivity
         NoticeInfo mNoticeInfo = new NoticeInfo();
         mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
         mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
+        mNoticeInfo.videoInfos = new ArrayList<VideoInfo>();
+
+        //添加一个语音
         mNoticeInfo.voiceInfos.add(new NoticeImgVoiceInfo(path, length));
         toAddNoticeInfoActivity(mNoticeInfo);
     }
@@ -395,7 +431,6 @@ public class MainActivity extends AppCompatActivity
             if (currentFragment instanceof TiXingFragment) {//提醒的需要默认的添加时间
                 info.remindTime = System.currentTimeMillis() + 24 * 60 * 60 * 1000;
             }
-
         } else {
             code = NOTICE_EDIT;
         }
@@ -409,11 +444,14 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CHOICE_PORTRAIT) {
             mUserInfo.userPic = FileUtil.uri2Path(data.getData());
-            ImageLoader.getInstance().displayImage("file:///" + FileUtil.uri2Path(data.getData()), ivHeader);
+            RKUtil.displayFileImage(FileUtil.uri2Path(data.getData()), ivHeader,R.drawable.ic_launcher);
             UserInfoUtil.setUserInfo(mUserInfo);
         }
         if (mPictureChooseHelper != null) {
             mPictureChooseHelper.onActivityResult(this, requestCode, resultCode, data);
+        }
+        if (mVideoChooseHelper != null) {
+            mVideoChooseHelper.onActivityResult(this, requestCode, resultCode, data);
         }
         if (resultCode == RESULT_OK && requestCode == NOTICE_ADD) {//这里表示的是添加的
             NoticeInfo info = (NoticeInfo) data.getExtras().get("data");
@@ -421,6 +459,7 @@ public class MainActivity extends AppCompatActivity
             mFragment.addNoticeInfo(info);
         }
         if (resultCode == RESULT_OK && requestCode == NOTICE_EDIT) {//这里表示的是修改的
+            Log.i("ddd","ddd");
             NoticeInfo info = (NoticeInfo) data.getExtras().get("data");
             RecyclerViewFragment mFragment = (RecyclerViewFragment) currentFragment;
             mFragment.updateNoticeInfo(info);
@@ -438,7 +477,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         if (resultCode == RESULT_OK && requestCode == NOTICE_HAND_WRITE) {//这里处理的是绘图的
-            String path =data.getExtras().getString("data");
+            String path = data.getExtras().getString("data");
             setNoticeInfoAndEdit(path);
         }
     }

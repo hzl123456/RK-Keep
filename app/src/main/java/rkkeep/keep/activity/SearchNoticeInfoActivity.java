@@ -111,7 +111,7 @@ public class SearchNoticeInfoActivity extends BaseActivity implements View.OnCli
     }
 
     private void findViews() {
-        ibText = (ImageButton) findViewById(R.id.ib_text);
+        ibText = (ImageButton) findViewById(R.id.ib_video);
         ibVoice = (ImageButton) findViewById(R.id.ib_voice);
         ibPic = (ImageButton) findViewById(R.id.ib_pic);
         ibJishi = (ImageButton) findViewById(R.id.ib_jishi);
@@ -121,7 +121,7 @@ public class SearchNoticeInfoActivity extends BaseActivity implements View.OnCli
         tvEmpty = (TextView) findViewById(R.id.tv_empty);
         ivRound = (RoundImageView) findViewById(R.id.iv_round);
 
-        CommonUtil.setLongClick(ibText, "过滤出清单");
+        CommonUtil.setLongClick(ibText, "过滤出含视频的记事");
         CommonUtil.setLongClick(ibVoice, "过滤出含音频的记事");
         CommonUtil.setLongClick(ibPic, "过滤出含图片的记事");
         CommonUtil.setLongClick(ibJishi, "过滤出含有提醒的记事");
@@ -285,7 +285,7 @@ public class SearchNoticeInfoActivity extends BaseActivity implements View.OnCli
             searchNoticeInfo();
         } else if (v == ibDelete) {//删除
             final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setMessage(rkkeep.keep.R.string.move_to_dustbin);
+            dialog.setMessage(R.string.move_to_dustbin);
             dialog.setPositiveButton(cn.xmrk.rkandroid.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -300,7 +300,7 @@ public class SearchNoticeInfoActivity extends BaseActivity implements View.OnCli
                     dragHolder.clear();
                     setTitle();
                     showEmptyOrData();
-                    CommonUtil.showSnackToast(getString(rkkeep.keep.R.string.had_move_to_dustbin), rvContent);
+                    CommonUtil.showSnackToast(getString(R.string.had_move_to_dustbin), rvContent);
                 }
             });
             dialog.setNegativeButton(cn.xmrk.rkandroid.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -394,6 +394,8 @@ public class SearchNoticeInfoActivity extends BaseActivity implements View.OnCli
             holder.rvContent.setAdapter(new MuilGridAdapter(info.infos));
             //设置语音显示
             holder.setNoticeVoiceInfo(info.voiceInfos,true);
+            //设置视频显示
+            holder.setVideoInfos(info.videoInfos);
         }
 
         @Override
@@ -457,7 +459,7 @@ public class SearchNoticeInfoActivity extends BaseActivity implements View.OnCli
     }
 
     private void searchNoticeInfo() {
-        mData = mNoticeInfoDbHelper.getNoticeInfoList(etSearch.getText().toString(), ibVoiceChecked, ibPicChecked, ibColorSetChecked ? checkColor : null, !ibJishiChecked);
+        mData = mNoticeInfoDbHelper.getNoticeInfoList(etSearch.getText().toString(), ibVoiceChecked, ibPicChecked, ibTextChecked,ibColorSetChecked ? checkColor : null, !ibJishiChecked);
         mAdapter.notifyDataSetChanged();
         showEmptyOrData();
     }

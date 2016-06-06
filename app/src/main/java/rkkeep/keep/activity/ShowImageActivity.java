@@ -107,7 +107,7 @@ public class ShowImageActivity extends BaseActivity implements View.OnClickListe
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             PhotoView image = new PhotoView(ShowImageActivity.this);
-            RKUtil.displayFileImage(urls.get(position), image);
+            RKUtil.displayFileImage(urls.get(position), image, 0);
             container.addView(image, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             return image;
         }

@@ -163,18 +163,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * @param show 为 {@code true} titlebar 显示
-     */
-    public void setTitlebarVisible(boolean show) {
-        if (show) {
-            titlebar.setVisibility(View.VISIBLE);
-        } else {
-            titlebar.setVisibility(View.GONE);
-        }
-    }
-
-
-    /**
      * @param ctb 自定义的Titlebar
      */
     public void setCustomTitlebar(View ctb) {

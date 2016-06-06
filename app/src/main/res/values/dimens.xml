@@ -13,5 +13,7 @@
 
     <!--选择地址详情页面拖拽的距离-->
     <dimen name="drag_height">65dp</dimen>
+    <!--视频的高度-->
+    <dimen name="video_height">250dp</dimen>
 
 </resources>

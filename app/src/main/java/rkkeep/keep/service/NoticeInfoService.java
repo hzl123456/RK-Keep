@@ -144,7 +144,6 @@ public class NoticeInfoService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //为了与后续的群主进行区分，单聊的id都加上10000
                 int NOTIFICATION_ID = (int) System.currentTimeMillis();
                 RKApplication appliction = RKApplication.getInstance();
                 Context context = appliction.getApplicationContext();
@@ -174,9 +173,7 @@ public class NoticeInfoService extends Service {
                     Bitmap picBitamp = BitmapFactory.decodeFile(ntInfo.infos.get(0).imagePic);
                     btnPicStyle.bigPicture(picBitamp);
                 }
-
                 mBuilder.setStyle(btnPicStyle);
-
                 notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
             }
         }).start();

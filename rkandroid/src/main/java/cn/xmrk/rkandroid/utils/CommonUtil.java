@@ -5,8 +5,10 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -39,6 +41,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import cn.xmrk.rkandroid.R;
+import cn.xmrk.rkandroid.application.RKApplication;
 import cn.xmrk.rkandroid.config.RKConfigHelper;
 
 
@@ -139,6 +143,26 @@ public class CommonUtil {
             tempEntry = iterator.next();
             map.put(tempEntry.getKey(), tempEntry.getValue().getAsString());
         }
+    }
+
+    /**
+     * 获取视频文件的tup
+     **/
+    public static Bitmap getVidioBitmap(String filePath, int width, int height, int kind) {
+        if (kind == 0) {
+            kind = MediaStore.Images.Thumbnails.MICRO_KIND;
+        }
+        if (width == 0) {
+            width =  RKApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.video_height);;
+        }
+        if (height == 0) {
+            height = RKApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.video_height);
+        }
+        Bitmap bitmap = null;
+        bitmap = ThumbnailUtils.createVideoThumbnail(filePath, kind);
+        bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height,
+                ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        return bitmap;
     }
 
     /**

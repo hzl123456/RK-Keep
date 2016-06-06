@@ -24,6 +24,7 @@ import java.util.List;
 import cn.xmrk.rkandroid.R;
 import cn.xmrk.rkandroid.fragment.BaseFragment;
 import cn.xmrk.rkandroid.utils.CommonUtil;
+import cn.xmrk.rkandroid.utils.uil.RecyclerViewPauseOnScrollListener;
 import cn.xmrk.rkandroid.utils.uil.SpacesItemDecoration;
 import rkkeep.keep.adapter.HeaderFooterRecyclerViewDragSwioAdapter;
 import rkkeep.keep.adapter.helper.SimpleItemTouchHelperCallback;
@@ -212,6 +213,8 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
         tvEmpty.setText(getEmptyString());
         tvEmpty.setCompoundDrawablesWithIntrinsicBounds(0, getEmptyResourse(), 0, 0);
         swRefresh.setOnRefreshListener(this);
+        //设置滚动不加载图片
+        rvContent.setOnScrollListener(new RecyclerViewPauseOnScrollListener(true,true));
     }
 
     protected RecyclerView.LayoutManager getLayoutManager() {
@@ -245,6 +248,7 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
                     notifyItemRemoved(position);
                     showDataOrEmpty();
                     CommonUtil.showSnackToast(getActivity().getString(rkkeep.keep.R.string.had_move_to_dustbin), rvContent);
+
                 } else {
                     final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                     dialog.setMessage(rkkeep.keep.R.string.move_to_dustbin);
@@ -334,7 +338,7 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
     }
 
     private void prepareHeaderFooter(RecyclerView.ViewHolder vh) {
-        StaggeredGridLayoutManager.LayoutParams layoutParams = new StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        StaggeredGridLayoutManager.LayoutParams layoutParams = new StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setFullSpan(true);
         vh.itemView.setLayoutParams(layoutParams);
     }
@@ -460,7 +464,7 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
         }
         mFooterType = 0;
         mData.add(0, info);
-        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyFooterItemInserted(0);
         rvContent.getLayoutManager().scrollToPosition(0);
         showDataOrEmpty();
     }
@@ -502,4 +506,6 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
             mAdapter.notifyDataSetChanged();
         }
     }
+
+    public abstract void setNullDragHolder();
 }

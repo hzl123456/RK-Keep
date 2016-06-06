@@ -1,8 +1,12 @@
 package cn.xmrk.rkandroid.utils.uil;
 
+
 import android.support.v7.widget.RecyclerView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.bumptech.glide.Glide;
+
+import cn.xmrk.rkandroid.application.RKApplication;
+
 
 /**
  * 创建日期： 2015/11/12.
@@ -10,17 +14,15 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class RecyclerViewPauseOnScrollListener extends RecyclerView.OnScrollListener {
 
-    private ImageLoader imageLoader;
     private final boolean pauseOnScroll;
     private final boolean pauseOnFling;
     private final RecyclerView.OnScrollListener externalListener;
 
-    public RecyclerViewPauseOnScrollListener(ImageLoader imageLoader, boolean pauseOnScroll, boolean pauseOnFling) {
-        this(imageLoader, pauseOnScroll, pauseOnFling, null);
+    public RecyclerViewPauseOnScrollListener( boolean pauseOnScroll, boolean pauseOnFling) {
+        this(pauseOnScroll, pauseOnFling, null);
     }
 
-    public RecyclerViewPauseOnScrollListener(ImageLoader imageLoader, boolean pauseOnScroll, boolean pauseOnFling, RecyclerView.OnScrollListener customListener) {
-        this.imageLoader = imageLoader;
+    public RecyclerViewPauseOnScrollListener( boolean pauseOnScroll, boolean pauseOnFling, RecyclerView.OnScrollListener customListener) {
         this.pauseOnScroll = pauseOnScroll;
         this.pauseOnFling = pauseOnFling;
         this.externalListener = customListener;
@@ -31,16 +33,16 @@ public class RecyclerViewPauseOnScrollListener extends RecyclerView.OnScrollList
         super.onScrollStateChanged(view, scrollState);
         switch(scrollState) {
             case 0:
-                this.imageLoader.resume();
+                Glide.with(RKApplication.getInstance()).resumeRequests();
                 break;
             case 1:
                 if(this.pauseOnScroll) {
-                    this.imageLoader.pause();
+                    Glide.with(RKApplication.getInstance()).pauseRequests();
                 }
                 break;
             case 2:
                 if(this.pauseOnFling) {
-                    this.imageLoader.pause();
+                    Glide.with(RKApplication.getInstance()).pauseRequests();
                 }
         }
 

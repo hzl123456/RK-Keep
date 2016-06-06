@@ -187,6 +187,8 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         holder.rvContent.setAdapter(new MuilGridAdapter(info.infos));
         //设置语音显示
         holder.setNoticeVoiceInfo(info.voiceInfos,isVertical);
+        //设置视频显示
+        holder.setVideoInfos(info.videoInfos);
     }
 
     protected void setTitle() {
@@ -239,7 +241,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
             }
         } else if (v == ibDelete) {//移至回收站
             final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-            dialog.setMessage(rkkeep.keep.R.string.move_to_dustbin);
+            dialog.setMessage(R.string.move_to_dustbin);
             dialog.setPositiveButton(cn.xmrk.rkandroid.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -254,7 +256,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
                     dragHolder.clear();
                     setTitle();
                     showDataOrEmpty();
-                    CommonUtil.showSnackToast(getActivity().getString(rkkeep.keep.R.string.had_move_to_dustbin), rvContent);
+                    CommonUtil.showSnackToast(getActivity().getString(R.string.had_move_to_dustbin), rvContent);
                 }
             });
             dialog.setNegativeButton(cn.xmrk.rkandroid.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -288,6 +290,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
     }
 
     //将dragholder设置为空
+    @Override
     public void setNullDragHolder() {
         for (int i = 0; i < dragHolder.size(); i++) {
             dragHolder.get(i).info.isCheck = false;
@@ -316,7 +319,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         }
         mFooterType = 0;
         mData.add(0, info);
-        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyContentItemInserted(0);
         rvContent.getLayoutManager().scrollToPosition(0);
         showDataOrEmpty();
     }

@@ -20,6 +20,7 @@ import cn.xmrk.rkandroid.utils.StringUtil;
 import rkkeep.keep.pojo.AddressInfo;
 import rkkeep.keep.pojo.NoticeImgVoiceInfo;
 import rkkeep.keep.pojo.NoticeInfo;
+import rkkeep.keep.pojo.VideoInfo;
 import rkkeep.keep.util.UserInfoUtil;
 
 /**
@@ -165,7 +166,7 @@ public class NoticeInfoDbHelper {
         long infoId = info1.infoId + 1;
         info1.infoId = info2.infoId + 1;
         info2.infoId = infoId;
-        //从新保存下
+        //重新保存下
         saveNoticeInfo(info1);
         saveNoticeInfo(info2);
     }
@@ -181,7 +182,6 @@ public class NoticeInfoDbHelper {
         try {
             Where _where = _dao.queryBuilder().setCountOf(true).where()
                     .eq("ownerId", getMsgOwner());
-
             if (infoType == NoticeInfo.NO_DUSTBIN) {
                 _where.and().eq("infoType", NoticeInfo.NOMAL_TYPE).or().eq("infoType", NoticeInfo.TIXING_TYPE);
             } else {
@@ -216,7 +216,7 @@ public class NoticeInfoDbHelper {
      *
      * @param infoType
      * @param infoId   最早的时间，传0表示最近的，因为消息的id就是时间毫秒值，其实也是一个排序的顺序
-     * @param limit    为0不做限制不为0就做限制
+     * @param limit    为0不做限制，不为0就做限制
      * @return
      */
     public List<NoticeInfo> getNoticeInfoList(int infoType, long infoId, long limit) {
@@ -251,6 +251,9 @@ public class NoticeInfoDbHelper {
             //如果查询结果数量不为0，需要对一些信息进行转换
             if (_result != null && _result.size() > 0) {
                 for (NoticeInfo info : _result) {
+                    if (!StringUtil.isEmptyString(info.videoInfosString)) {
+                        info.videoInfos = CommonUtil.getGson().fromJson(info.videoInfosString, VideoInfo.getListType());
+                    }
                     if (!StringUtil.isEmptyString(info.noticeImgVoiceInfosString)) {
                         info.infos = CommonUtil.getGson().fromJson(info.noticeImgVoiceInfosString, NoticeImgVoiceInfo.getListType());
                     }
@@ -285,6 +288,9 @@ public class NoticeInfoDbHelper {
             //如果查询结果数量不为0，需要对一些信息进行转换
             if (_result != null && _result.size() > 0) {
                 for (NoticeInfo info : _result) {
+                    if (!StringUtil.isEmptyString(info.videoInfosString)) {
+                        info.videoInfos = CommonUtil.getGson().fromJson(info.videoInfosString, VideoInfo.getListType());
+                    }
                     if (!StringUtil.isEmptyString(info.noticeImgVoiceInfosString)) {
                         info.infos = CommonUtil.getGson().fromJson(info.noticeImgVoiceInfosString, NoticeImgVoiceInfo.getListType());
                     }
@@ -310,10 +316,11 @@ public class NoticeInfoDbHelper {
      * @param etInfo,（查找的内容，这边用标题和内容去匹配他）
      * @param hasVoice,（是否包含语音）
      * @param hasPic,（是否包含图片）
+     * @param hasVideo,（是否包含语音）
      * @param color,（信息的颜色,当color为null的时候表示所有颜色都可以）
      * @param isAllType,                            (按type值进行判断)
      **/
-    public List<NoticeInfo> getNoticeInfoList(String etInfo, boolean hasVoice, boolean hasPic, String color, boolean isAllType) {
+    public List<NoticeInfo> getNoticeInfoList(String etInfo, boolean hasVoice, boolean hasPic, boolean hasVideo, String color, boolean isAllType) {
         Dao _dao = getNoticeInfoDao();
         try {
             QueryBuilder<NoticeInfo, Integer> _qb = _dao.queryBuilder();
@@ -324,6 +331,9 @@ public class NoticeInfoDbHelper {
             }
             if (hasPic) {
                 _where.and().eq("hasPic", hasPic);
+            }
+            if(hasVideo){
+                _where.and().eq("hasVideo",hasVideo);
             }
             if (isAllType) {
                 _where.and().not().eq("infoType", NoticeInfo.NOMAL_TYPE_DUSTBIN);
@@ -345,6 +355,9 @@ public class NoticeInfoDbHelper {
             //如果查询结果数量不为0，需要对一些信息进行转换
             if (_result != null && _result.size() > 0) {
                 for (NoticeInfo info : _result) {
+                    if (!StringUtil.isEmptyString(info.videoInfosString)) {
+                        info.videoInfos = CommonUtil.getGson().fromJson(info.videoInfosString, VideoInfo.getListType());
+                    }
                     if (!StringUtil.isEmptyString(info.noticeImgVoiceInfosString)) {
                         info.infos = CommonUtil.getGson().fromJson(info.noticeImgVoiceInfosString, NoticeImgVoiceInfo.getListType());
                     }

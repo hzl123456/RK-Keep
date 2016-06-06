@@ -80,7 +80,7 @@ public class VoiceSetWindow extends PopupWindow implements View.OnClickListener 
 
     public void showPopuwindow(View view) {
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
         setAnimationStyle(R.style.PopupAnimation);
         setOutsideTouchable(true);
         showAtLocation(view, Gravity.TOP, 0, 0);

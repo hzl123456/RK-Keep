@@ -86,6 +86,7 @@ public class NoticeInfo implements Parcelable {
     @DatabaseField(columnName = "noticeTimes")
     public int noticeTimes;
 
+
     /**
      * 存储图片信息
      **/
@@ -99,6 +100,14 @@ public class NoticeInfo implements Parcelable {
     public List<NoticeImgVoiceInfo> voiceInfos;
     @DatabaseField(columnName = "voiceInfos")
     public String noticeVoiceInfosString;
+
+
+    /**
+     * 视频信息
+     * **/
+    public List<VideoInfo> videoInfos;
+    @DatabaseField(columnName = "videoInfos")
+    public String videoInfosString;
 
     /**
      * 地址信息
@@ -119,6 +128,17 @@ public class NoticeInfo implements Parcelable {
      **/
     @DatabaseField(columnName = "hasPic")
     public boolean hasPic;
+
+    /**
+     * 拥有视频
+     * **/
+    @DatabaseField(columnName = "hasVideo")
+    public boolean hasVideo;
+
+
+
+    public NoticeInfo() {
+    }
 
 
     @Override
@@ -142,13 +162,13 @@ public class NoticeInfo implements Parcelable {
         dest.writeString(this.noticeImgVoiceInfosString);
         dest.writeTypedList(voiceInfos);
         dest.writeString(this.noticeVoiceInfosString);
+        dest.writeTypedList(videoInfos);
+        dest.writeString(this.videoInfosString);
         dest.writeParcelable(this.addressInfo, flags);
         dest.writeString(this.addressInfoString);
         dest.writeByte(hasVoice ? (byte) 1 : (byte) 0);
         dest.writeByte(hasPic ? (byte) 1 : (byte) 0);
-    }
-
-    public NoticeInfo() {
+        dest.writeByte(hasVideo ? (byte) 1 : (byte) 0);
     }
 
     protected NoticeInfo(Parcel in) {
@@ -166,10 +186,13 @@ public class NoticeInfo implements Parcelable {
         this.noticeImgVoiceInfosString = in.readString();
         this.voiceInfos = in.createTypedArrayList(NoticeImgVoiceInfo.CREATOR);
         this.noticeVoiceInfosString = in.readString();
+        this.videoInfos = in.createTypedArrayList(VideoInfo.CREATOR);
+        this.videoInfosString = in.readString();
         this.addressInfo = in.readParcelable(AddressInfo.class.getClassLoader());
         this.addressInfoString = in.readString();
         this.hasVoice = in.readByte() != 0;
         this.hasPic = in.readByte() != 0;
+        this.hasVideo = in.readByte() != 0;
     }
 
     public static final Creator<NoticeInfo> CREATOR = new Creator<NoticeInfo>() {

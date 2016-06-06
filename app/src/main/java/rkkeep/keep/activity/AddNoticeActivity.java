@@ -4,17 +4,23 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gauss.speex.encode.MediaUtil;
 import com.rey.material.widget.ImageButton;
+import com.universalvideoview.UniversalMediaController;
+import com.universalvideoview.UniversalVideoView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,13 +35,16 @@ import cn.xmrk.rkandroid.widget.edittext.ClearEditText;
 import rkkeep.keep.R;
 import rkkeep.keep.adapter.NoticeAdapter;
 import rkkeep.keep.adapter.listener.OnNoticeItemClickListener;
+import rkkeep.keep.adapter.listener.OnVideoClickListener;
 import rkkeep.keep.db.NoticeInfoDbHelper;
 import rkkeep.keep.help.ColorHelper;
 import rkkeep.keep.help.NoticeChooseHelper;
 import rkkeep.keep.help.PictureChooseHelper;
+import rkkeep.keep.help.VideoChooseHelper;
 import rkkeep.keep.pojo.AddressInfo;
 import rkkeep.keep.pojo.NoticeImgVoiceInfo;
 import rkkeep.keep.pojo.NoticeInfo;
+import rkkeep.keep.pojo.VideoInfo;
 import rkkeep.keep.util.NoticeTypeChooseWindow;
 import rkkeep.keep.util.PlayCallback;
 import rkkeep.keep.util.VoiceSetWindow;
@@ -62,7 +71,6 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     private NoticeAdapter mNoticeAdapter;
     private LinearLayout layoutTop;
     private NoticeInfoDbHelper dbHelper;
-
 
     /**
      * 底部使用
@@ -95,6 +103,10 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
      * 录音
      **/
     private VoiceSetWindow mVoiceSetWindow;
+    /**
+     * 选择视频
+     **/
+    private VideoChooseHelper mVideoChooseHelper;
 
     /**
      * 播放器
@@ -106,6 +118,18 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
      **/
     private NoticeChooseHelper mNoticeChooseHelper;
 
+    //其他相关
+    private RelativeLayout layoutBaseTop;
+    //播放视频相关
+    private RelativeLayout layoutBaseVideo;
+    private FrameLayout mVideoLayout;
+    private UniversalVideoView mVideoView;
+    private UniversalMediaController mMediaController;
+    private ImageButton ibClose;
+
+    //正在播放的videoInfo
+    private VideoInfo playVideoInfo;
+    private boolean isFullscreen;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,9 +138,92 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         initTitle();
         showDelete();
         initTop();
+        initVideo();
         initBottom();
         initHelper();
         setBackColor();
+    }
+
+    private void setVideoShow(VideoInfo info) {
+        //显示全屏
+        setFullScreen(true);
+        //去掉toolbar
+        showCustomTitlebar(false);
+        //显示出video的layout
+        layoutBaseVideo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
+        layoutBaseVideo.setVisibility(View.VISIBLE);
+        layoutBaseTop.setVisibility(View.GONE);
+        //不上次播放的就重新设置
+        playVideoInfo = info;
+        //重置播放器
+        mVideoView.resume();
+        //设置路径和播放名称并开始播放
+        mVideoView.setVideoPath(playVideoInfo.videoPath);
+        mMediaController.setTitle(playVideoInfo.videoName);
+        mVideoView.seekTo(playVideoInfo.watchLength < mVideoView.getDuration() ? playVideoInfo.watchLength : 0);
+        mVideoView.start();
+    }
+
+    private void showTopContent() {
+        //暂停播放,关闭播放器
+        mVideoView.pause();
+        mVideoView.closePlayer();
+        //隐藏video的layout
+        layoutBaseVideo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
+        layoutBaseVideo.setVisibility(View.GONE);
+        layoutBaseTop.setVisibility(View.VISIBLE);
+        //显示全屏
+        setFullScreen(false);
+        //去掉toolbar
+        showCustomTitlebar(true);
+    }
+
+
+    private void initVideo() {
+        ibClose = (ImageButton) findViewById(R.id.ib_close);
+        layoutBaseVideo = (RelativeLayout) findViewById(R.id.layout_base_video);
+        mVideoLayout = (FrameLayout) findViewById(R.id.video_layout);
+        mVideoView = (UniversalVideoView) findViewById(R.id.videoView);
+        mMediaController = (UniversalMediaController) findViewById(R.id.media_controller);
+        ibClose.setOnClickListener(this);
+
+        mVideoView.setMediaController(mMediaController);
+        mVideoView.setVideoViewCallback(new UniversalVideoView.VideoViewCallback() {
+            @Override
+            public void onScaleChange(boolean isFullscreen) {
+                AddNoticeActivity.this.isFullscreen = isFullscreen;
+                if (isFullscreen) {
+                    ViewGroup.LayoutParams layoutParams = mVideoLayout.getLayoutParams();
+                    layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    mVideoLayout.setLayoutParams(layoutParams);
+                } else {
+                    ViewGroup.LayoutParams layoutParams = mVideoLayout.getLayoutParams();
+                    layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    layoutParams.height = getResources().getDimensionPixelSize(R.dimen.video_height);
+                    mVideoLayout.setLayoutParams(layoutParams);
+                }
+            }
+
+            @Override
+            public void onPause(MediaPlayer mediaPlayer) { // 视频暂停
+                //保存当前的播放进度
+                playVideoInfo.watchLength = mVideoView.getCurrentPosition();
+            }
+
+            @Override
+            public void onStart(MediaPlayer mediaPlayer) { // 视频开始播放或恢复播放
+
+            }
+
+            @Override
+            public void onBufferingStart(MediaPlayer mediaPlayer) {// 视频开始缓冲
+            }
+
+            @Override
+            public void onBufferingEnd(MediaPlayer mediaPlayer) {// 视频结束缓冲
+            }
+        });
     }
 
     private void showDelete() {
@@ -136,6 +243,7 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initHelper() {
+        //实例化选择图片
         mPictureChooseHelper = new PictureChooseHelper(this);
         mPictureChooseHelper.setOnPictureGetListener(new PictureChooseHelper.OnPictureGetListener() {
             @Override
@@ -148,6 +256,36 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
                 mNoticeAdapter.notifyDataSetChanged();
             }
         });
+        //实例化选择语音
+        mVoiceSetWindow = new VoiceSetWindow();
+        mVoiceSetWindow.setOnVoiceFinishListener(new VoiceSetWindow.OnVoiceFinishListener() {
+            @Override
+            public void onFinish(NoticeImgVoiceInfo info) {
+                if (mNoticeInfo.voiceInfos == null) {
+                    mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
+                }
+                mNoticeInfo.voiceInfos.add(0, info);
+                mNoticeAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(String errorText) {
+                CommonUtil.showSnackToast(errorText, getTitlebar());
+            }
+        });
+        //实例化选择视频
+        mVideoChooseHelper = new VideoChooseHelper(this, getTitlebar());
+        mVideoChooseHelper.setOnVideoGetListener(new VideoChooseHelper.OnVideoGetListener() {
+            @Override
+            public void OnPic(String path, String imagePath) {
+                if (mNoticeInfo.videoInfos == null) {
+                    mNoticeInfo.videoInfos = new ArrayList<VideoInfo>();
+                }
+                mNoticeInfo.videoInfos.add(new VideoInfo(path, imagePath));
+                mNoticeAdapter.notifyDataSetChanged();
+            }
+        });
+        //实例化选择提醒
         mNoticeChooseHelper = new NoticeChooseHelper(this);
         mNoticeChooseHelper.setOnNoticeChooseListener(new NoticeChooseHelper.OnNoticeChooseListener() {
             @Override
@@ -203,13 +341,15 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initTop() {
+        layoutBaseTop = (RelativeLayout) findViewById(R.id.layout_base_top);
         layoutTop = (LinearLayout) findViewById(R.id.layout_top);
         rvContent = (RecyclerView) findViewById(R.id.rv_content);
         mLayoutManager = new LinearLayoutManager(this, LinearLayout.VERTICAL, false);
         rvContent.setLayoutManager(mLayoutManager);
         rvContent.addItemDecoration(new SpacesItemDecoration(0, 0, 0, CommonUtil.dip2px(3)));
-        mNoticeAdapter = new NoticeAdapter(mNoticeInfo.infos, mNoticeInfo.voiceInfos, this);
+        mNoticeAdapter = new NoticeAdapter(mNoticeInfo.infos, mNoticeInfo.voiceInfos, mNoticeInfo.videoInfos, this);
         rvContent.setAdapter(mNoticeAdapter);
+        //图片录音点击
         mNoticeAdapter.setOnNoticeItemClickListener(new OnNoticeItemClickListener() {
 
             @Override
@@ -256,6 +396,24 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
                 startActivityForResult(intent, SHOWIMAGE_CODE);
             }
         });
+        //视频点击
+        mNoticeAdapter.setOnVideoClickListener(new OnVideoClickListener() {
+            @Override
+            public void onClick(VideoInfo info, int position) {
+                setVideoShow(info);
+            }
+
+            @Override
+            public void onLongClick(final VideoInfo info, int position) {
+                showDialogMessage("确定删除该视频文件？", "删除文件", getString(R.string.ok), getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mNoticeInfo.videoInfos.remove(info);
+                        mNoticeAdapter.notifyDataSetChanged();
+                    }
+                }, null);
+            }
+        });
 
     }
 
@@ -299,7 +457,6 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
             tvNoticeTime.setText(CommonUtil.getAffineTimestampForGroupChat(mNoticeInfo.remindTime));
         }
 
-
     }
 
     private void showWindowOrDismiss() {
@@ -325,25 +482,10 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
                             startActivityForResult(HandWritingActivity.class, DRAW_PIC_CODE);
                             break;
                         case NoticeTypeChooseWindow.CHOOSE_VOICE://选择语音
-                            if (mVoiceSetWindow == null) {
-                                mVoiceSetWindow = new VoiceSetWindow();
-                            }
                             mVoiceSetWindow.showPopuwindow(getTitlebar());
-                            mVoiceSetWindow.setOnVoiceFinishListener(new VoiceSetWindow.OnVoiceFinishListener() {
-                                @Override
-                                public void onFinish(NoticeImgVoiceInfo info) {
-                                    if (mNoticeInfo.voiceInfos == null) {
-                                        mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
-                                    }
-                                    mNoticeInfo.voiceInfos.add(0, info);
-                                    mNoticeAdapter.notifyDataSetChanged();
-                                }
-
-                                @Override
-                                public void onError(String errorText) {
-                                    CommonUtil.showSnackToast(errorText, getTitlebar());
-                                }
-                            });
+                            break;
+                        case NoticeTypeChooseWindow.CHOOSE_VIDEO://选择视频
+                            mVideoChooseHelper.showDialog();
                             break;
                     }
                 }
@@ -380,12 +522,14 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         if (v == ibNotice) {//一些小的操作
             mNoticeChooseHelper.showDialog();
-        } else if (v == ibAddBox) {//添加图片或者录音啥的
+        } else if (v == ibAddBox) {//添加图片或者录音或者视频
             showWindowOrDismiss();
         } else if (v == tvNoticeTime) {//提醒的时间
             mNoticeChooseHelper.showTimeDialog();
         } else if (v == tvNoticeAddress) {//提醒的地点
             mNoticeChooseHelper.showAddressDialog();
+        } else if (v == ibClose) {
+            showTopContent();
         }
     }
 
@@ -395,6 +539,10 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
             mWindow.dismiss();
         } else if (mVoiceSetWindow != null && mVoiceSetWindow.isShowing()) {
             mVoiceSetWindow.dismiss();
+        } else if (isFullscreen) {
+            mVideoView.setFullscreen(false);
+        } else if (layoutBaseVideo.getVisibility() == View.VISIBLE) {
+            showTopContent();
         } else {
             saveNoticeInfoAndBack();
         }
@@ -429,6 +577,7 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
             mNoticeInfo.noticeImgVoiceInfosString = CommonUtil.getGson().toJson(mNoticeInfo.infos);
         } else {
             mNoticeInfo.noticeImgVoiceInfosString = null;
+            mNoticeInfo.hasPic = false;
         }
         //设置语音消息
         if (mNoticeInfo.voiceInfos != null && mNoticeInfo.voiceInfos.size() > 0) {
@@ -436,6 +585,15 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
             mNoticeInfo.noticeVoiceInfosString = CommonUtil.getGson().toJson(mNoticeInfo.voiceInfos);
         } else {
             mNoticeInfo.noticeVoiceInfosString = null;
+            mNoticeInfo.hasVoice = false;
+        }
+        //设置视频信息
+        if (mNoticeInfo.videoInfos != null && mNoticeInfo.videoInfos.size() > 0) {
+            mNoticeInfo.hasVideo = true;
+            mNoticeInfo.videoInfosString = CommonUtil.getGson().toJson(mNoticeInfo.videoInfos);
+        } else {
+            mNoticeInfo.videoInfosString = null;
+            mNoticeInfo.hasVideo = false;
         }
 
         dbHelper.saveNoticeInfo(mNoticeInfo);
@@ -453,6 +611,9 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         }
         if (mNoticeChooseHelper != null) {
             mNoticeChooseHelper.onActivityResult(this, requestCode, resultCode, data);
+        }
+        if (mVideoChooseHelper != null) {
+            mVideoChooseHelper.onActivityResult(this, requestCode, resultCode, data);
         }
         if (resultCode != RESULT_CANCELED && requestCode == SHOWIMAGE_CODE) {
             int number = data.getExtras().getInt("num");
