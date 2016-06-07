@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ColorPickerPreference/ColorPickerPreference.iml" filepath="$PROJECT_DIR$/ColorPickerPreference/ColorPickerPreference.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ColorPickerPreference/ColorPickerPreference.iml" filepath="$PROJECT_DIR$/ColorPickerPreference/ColorPickerPreference.iml" />
       <module fileurl="file://$PROJECT_DIR$/RK-Keep.iml" filepath="$PROJECT_DIR$/RK-Keep.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/rkandroid/rkandroid.iml" filepath="$PROJECT_DIR$/rkandroid/rkandroid.iml" />

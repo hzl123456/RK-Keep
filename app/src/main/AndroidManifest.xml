@@ -85,17 +85,10 @@
             android:name=".activity.HandWritingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <!--不是正式版，采用的是studio的debug的keystore，不同的studio所需要的value不一样-->
-        <!--公司电脑-->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="QN0SrvLiLWpdfDIUj4Kr34IoNnUt1Uc7" />
+            android:value="N0QaR4G8W46UCFjHuxv1g9pG5tnD05iw" />
 
-        <!--自己电脑
-        <meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="lSAyfvMj19UYTAOhtBr0ibWYTjUQU7sx" />
-         -->
         <service android:name=".service.NoticeInfoService" />
 
         <!--百度定位-->

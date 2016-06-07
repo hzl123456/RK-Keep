@@ -4,4 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/tv_url"
+        android:padding="15dp"
+        android:autoLink="all"
+        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:text="https://github.com/hzl123456/RK-Keep"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

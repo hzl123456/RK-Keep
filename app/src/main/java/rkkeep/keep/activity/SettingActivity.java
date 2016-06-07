@@ -109,6 +109,7 @@ public class SettingActivity extends BackableBaseActivity implements View.OnClic
             setTimePicker(SettingContact.CHOOSE_TIME_FOR_WANGSHANG);
         } else if (v == layoutShare) {//启用共享功能
             switchOpenShare.setChecked(!switchOpenShare.isChecked());
+            showAlertMessage("该功能暂时无法使用","提示","知道了",null);
         }
     }
 
