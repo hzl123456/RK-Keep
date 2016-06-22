@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -52,6 +53,16 @@ public abstract class BaseActivity extends AppCompatActivity {
         contentLayout.addView(view);
         super.setContentView(contentView);
         setSupportActionBar(titlebar);
+        setStatusColor();
+    }
+
+    /**
+     * 5.0以上设置状态栏的颜色
+     **/
+    private void setStatusColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.bg_title_bar));
+        }
     }
 
     @Override
