@@ -51,6 +51,7 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
 
     //图片信息使用
     private List<NoticeImgVoiceInfo> mData;
+
     //视频使用
     private List<VideoInfo> mVideoInfos;
 
@@ -244,7 +245,7 @@ public class NoticeAdapter extends HeaderFooterRecyclerViewAdapter {
         } else {
             //处理语音数据
             ContentViewHolder holder = (ContentViewHolder) contentViewHolder;
-            NoticeImgVoiceInfo info = voiceData.get(position - mVideoInfos.size());
+            NoticeImgVoiceInfo info = voiceData.get(position - (mVideoInfos==null?0:mVideoInfos.size()));
             holder.info = info;
             holder.position = position;
             //设置语音长度
