@@ -38,7 +38,7 @@
     </style>
 
     <style name="AddNoticeActivity" parent="AppTheme.NoActionBar">
-
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="SerachImageButton">

@@ -50,6 +50,9 @@ import rkkeep.keep.util.VoiceSetWindow;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+
+    public static final String TRANSFORM_TYPE = "image";
+
     private static final int REQUEST_CHOICE_PORTRAIT = 1;
 
     /**
@@ -214,7 +217,7 @@ public class MainActivity extends AppCompatActivity
         tvTitle.setText(mUserInfo.userName);
         tvContent.setText(mUserInfo.userIntro);
         if (mUserInfo.userPic != null) {
-            RKUtil.displayFileImage(mUserInfo.userPic, ivHeader,R.drawable.ic_launcher);
+            RKUtil.displayFileImage(mUserInfo.userPic, ivHeader, R.drawable.ic_launcher);
         }
     }
 
@@ -318,7 +321,7 @@ public class MainActivity extends AppCompatActivity
         if (v == ivHeader) {
             startActivityForResult(new Intent(this, ChoicePicActivity.class), REQUEST_CHOICE_PORTRAIT);
         } else if (v == tvAddTextItem) {//文本添加
-            setNoticeInfoAndEdit();
+            setNoticeInfoAndEdit(null);
         } else if (v == ibKeepText) {//视频添加
             addVideo();
         } else if (v == ibKeepEdit) {//画图添加
@@ -332,12 +335,12 @@ public class MainActivity extends AppCompatActivity
 
     private void addVideo() {
         if (mVideoChooseHelper == null) {
-            mVideoChooseHelper = new VideoChooseHelper(this,getTitleBar());
+            mVideoChooseHelper = new VideoChooseHelper(this, getTitleBar());
         }
         mVideoChooseHelper.setOnVideoGetListener(new VideoChooseHelper.OnVideoGetListener() {
             @Override
-            public void OnPic(String path,String imagePath) {
-                setNoticeInfoAndEditForVideo(path,imagePath);
+            public void OnPic(String path, String imagePath) {
+                setNoticeInfoAndEditForVideo(path, imagePath, null);
             }
         });
         mVideoChooseHelper.showDialog();
@@ -351,7 +354,7 @@ public class MainActivity extends AppCompatActivity
         mVoiceSetWindow.setOnVoiceFinishListener(new VoiceSetWindow.OnVoiceFinishListener() {
             @Override
             public void onFinish(NoticeImgVoiceInfo info) {
-                setNoticeInfoAndEdit(info.voicePic, info.length);
+                setNoticeInfoAndEdit(info.voicePic, info.length, null);
             }
 
             @Override
@@ -369,23 +372,23 @@ public class MainActivity extends AppCompatActivity
         mPictureChooseHelper.setOnPictureGetListener(new PictureChooseHelper.OnPictureGetListener() {
             @Override
             public void OnPic(String path) {
-                setNoticeInfoAndEdit(path);
+                setNoticeInfoAndEdit(path, null);
             }
         });
         mPictureChooseHelper.showDialog();
     }
 
     //实例化一个noticeInfo，然后跳转下个页面进行编辑,普通
-    private void setNoticeInfoAndEdit() {
+    private void setNoticeInfoAndEdit(View view) {
         NoticeInfo mNoticeInfo = new NoticeInfo();
         mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
         mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
         mNoticeInfo.videoInfos = new ArrayList<VideoInfo>();
-        toAddNoticeInfoActivity(mNoticeInfo);
+        toAddNoticeInfoActivity(mNoticeInfo, view);
     }
 
     //实例化一个noticeInfo，然后跳转下个页面进行编辑，图片
-    private void setNoticeInfoAndEdit(String path) {
+    private void setNoticeInfoAndEdit(String path, View view) {
         NoticeInfo mNoticeInfo = new NoticeInfo();
         mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
         mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
@@ -393,24 +396,24 @@ public class MainActivity extends AppCompatActivity
 
         //添加一个图片
         mNoticeInfo.infos.add(new NoticeImgVoiceInfo(path));
-        toAddNoticeInfoActivity(mNoticeInfo);
+        toAddNoticeInfoActivity(mNoticeInfo, view);
     }
 
 
     //实例化一个noticeInfo，并且添加一个视频文件进行编辑
-    private void setNoticeInfoAndEditForVideo(String path,String imagePath) {
+    private void setNoticeInfoAndEditForVideo(String path, String imagePath, View view) {
         NoticeInfo mNoticeInfo = new NoticeInfo();
         mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
         mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
         mNoticeInfo.videoInfos = new ArrayList<VideoInfo>();
 
         //添加一个视频文件
-        mNoticeInfo.videoInfos.add(new VideoInfo(path,imagePath));
-        toAddNoticeInfoActivity(mNoticeInfo);
+        mNoticeInfo.videoInfos.add(new VideoInfo(path, imagePath));
+        toAddNoticeInfoActivity(mNoticeInfo, view);
     }
 
     //实例化一个noticeInfo，然后跳转下个页面进行编辑，语音
-    private void setNoticeInfoAndEdit(String path, long length) {
+    private void setNoticeInfoAndEdit(String path, long length, View view) {
         NoticeInfo mNoticeInfo = new NoticeInfo();
         mNoticeInfo.infos = new ArrayList<NoticeImgVoiceInfo>();
         mNoticeInfo.voiceInfos = new ArrayList<NoticeImgVoiceInfo>();
@@ -418,11 +421,11 @@ public class MainActivity extends AppCompatActivity
 
         //添加一个语音
         mNoticeInfo.voiceInfos.add(new NoticeImgVoiceInfo(path, length));
-        toAddNoticeInfoActivity(mNoticeInfo);
+        toAddNoticeInfoActivity(mNoticeInfo, view);
     }
 
     //跳转编辑页面
-    public void toAddNoticeInfoActivity(NoticeInfo info) {
+    public void toAddNoticeInfoActivity(NoticeInfo info, View view) {
         //默认为添加的
         int code = 0;
         if (info.editTime == 0) {//如果修改时间为0的话表示为添加的，否则为修改的
@@ -434,17 +437,22 @@ public class MainActivity extends AppCompatActivity
         } else {
             code = NOTICE_EDIT;
         }
-        Intent intent = new Intent(this, AddNoticeActivity.class);
-        intent.putExtra("data", info);
-        startActivityForResult(intent, code);
+        if (view == null) {
+            Intent intent = new Intent(this, AddNoticeActivity.class);
+            intent.putExtra("data", info);
+            startActivityForResult(intent, code);
+        } else {
+            AddNoticeActivity.StartOptionsActivity(this, view, code, info);
+        }
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CHOICE_PORTRAIT) {
             mUserInfo.userPic = FileUtil.uri2Path(data.getData());
-            RKUtil.displayFileImage(FileUtil.uri2Path(data.getData()), ivHeader,R.drawable.ic_launcher);
+            RKUtil.displayFileImage(FileUtil.uri2Path(data.getData()), ivHeader, R.drawable.ic_launcher);
             UserInfoUtil.setUserInfo(mUserInfo);
         }
         if (mPictureChooseHelper != null) {
@@ -459,7 +467,7 @@ public class MainActivity extends AppCompatActivity
             mFragment.addNoticeInfo(info);
         }
         if (resultCode == RESULT_OK && requestCode == NOTICE_EDIT) {//这里表示的是修改的
-            Log.i("ddd","ddd");
+            Log.i("ddd", "ddd");
             NoticeInfo info = (NoticeInfo) data.getExtras().get("data");
             RecyclerViewFragment mFragment = (RecyclerViewFragment) currentFragment;
             mFragment.updateNoticeInfo(info);
@@ -478,7 +486,7 @@ public class MainActivity extends AppCompatActivity
         }
         if (resultCode == RESULT_OK && requestCode == NOTICE_HAND_WRITE) {//这里处理的是绘图的
             String path = data.getExtras().getString("data");
-            setNoticeInfoAndEdit(path);
+            setNoticeInfoAndEdit(path, null);
         }
     }
 

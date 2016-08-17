@@ -1,14 +1,23 @@
 package rkkeep.keep.activity;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.ArcMotion;
+import android.transition.ChangeBounds;
+import android.transition.Transition;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -53,6 +62,8 @@ import rkkeep.keep.util.VoiceSetWindow;
  * Created by Au61 on 2016/4/27.
  */
 public class AddNoticeActivity extends BaseActivity implements View.OnClickListener {
+
+    public static final String EXTRA_IMAGE = "image";
 
     private final int SHOWIMAGE_CODE = 88;
     private final int DRAW_PIC_CODE = 512;
@@ -138,11 +149,61 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         initTitle();
         showDelete();
         initTop();
+        // 这里指定了被共享的视图元素
+        ViewCompat.setTransitionName(layoutBaseTop, EXTRA_IMAGE);
+        
         initVideo();
         initBottom();
         initHelper();
         setBackColor();
+        setUpWindowTransition();
     }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setUpWindowTransition() {
+        //进入的动画监听
+        final ChangeBounds ts = new ChangeBounds();
+        ts.setPathMotion(new ArcMotion());
+        ts.addListener(new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                ts.removeListener(this);
+                mNoticeAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onTransitionCancel(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionPause(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionResume(Transition transition) {
+
+            }
+        });
+        getWindow().setSharedElementEnterTransition(ts);
+    }
+
+
+
+    public static void StartOptionsActivity(AppCompatActivity activity, View transitionView,int requestCode, NoticeInfo info) {
+        Intent intent = new Intent(activity, AddNoticeActivity.class);
+        intent.putExtra("data", info);
+        // 这里指定了共享的视图元素
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, transitionView, EXTRA_IMAGE);
+        ActivityCompat.startActivityForResult(activity, intent,requestCode, options.toBundle());
+    }
+
 
     private void setVideoShow(VideoInfo info) {
         //显示全屏

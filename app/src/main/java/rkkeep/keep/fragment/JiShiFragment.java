@@ -134,7 +134,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
             @Override
             public void OnViewHolderClick(NoticeBaseInfo baseInfo) {
                 if (dragHolder.size() == 0) {//当这个size为0的时候才可以是跳转
-                    activity.toAddNoticeInfoActivity(baseInfo.info);
+                    activity.toAddNoticeInfoActivity(baseInfo.info,holder.itemView);
                 } else {
                     setDragHolder(baseInfo);
                 }
@@ -163,10 +163,10 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         //设置布局形式
         boolean isVertical = true;
         if (layoutManager.getSpanCount() == 1) {
-            isVertical=true;
+            isVertical = true;
             holder.layoutNotice.setOrientation(LinearLayout.HORIZONTAL);
         } else {
-            isVertical=false;
+            isVertical = false;
             holder.layoutNotice.setOrientation(LinearLayout.VERTICAL);
         }
         //设置提醒时间
@@ -186,7 +186,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         //设置图片显示
         holder.rvContent.setAdapter(new MuilGridAdapter(info.infos));
         //设置语音显示
-        holder.setNoticeVoiceInfo(info.voiceInfos,isVertical);
+        holder.setNoticeVoiceInfo(info.voiceInfos, isVertical);
         //设置视频显示
         holder.setVideoInfos(info.videoInfos);
     }
