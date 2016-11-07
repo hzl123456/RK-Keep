@@ -149,14 +149,13 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
         initTitle();
         showDelete();
         initTop();
-        // 这里指定了被共享的视图元素
-        ViewCompat.setTransitionName(layoutBaseTop, EXTRA_IMAGE);
-        
         initVideo();
         initBottom();
         initHelper();
         setBackColor();
         setUpWindowTransition();
+        // 这里指定了被共享的视图元素
+        ViewCompat.setTransitionName(layoutBaseTop, EXTRA_IMAGE);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -195,13 +194,12 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
     }
 
 
-
-    public static void StartOptionsActivity(AppCompatActivity activity, View transitionView,int requestCode, NoticeInfo info) {
+    public static void StartOptionsActivity(AppCompatActivity activity, View transitionView, int requestCode, NoticeInfo info) {
         Intent intent = new Intent(activity, AddNoticeActivity.class);
         intent.putExtra("data", info);
         // 这里指定了共享的视图元素
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, transitionView, EXTRA_IMAGE);
-        ActivityCompat.startActivityForResult(activity, intent,requestCode, options.toBundle());
+        ActivityCompat.startActivityForResult(activity, intent, requestCode, options.toBundle());
     }
 
 

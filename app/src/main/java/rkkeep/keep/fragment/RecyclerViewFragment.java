@@ -36,8 +36,6 @@ import rkkeep.keep.pojo.NoticeInfo;
  * RecyclerView 的Activity
  */
 public abstract class RecyclerViewFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
-
-
     /**
      * 下拉刷新使用
      **/
@@ -56,7 +54,6 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
      * 进行drag和swip使用
      **/
     protected ItemTouchHelper mItemTouchHelper;
-
     /**
      * 显示在recycleView上的数据
      **/

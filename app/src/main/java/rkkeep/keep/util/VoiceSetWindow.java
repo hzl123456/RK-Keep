@@ -48,12 +48,12 @@ public class VoiceSetWindow extends PopupWindow implements View.OnClickListener 
      * 录音工具
      */
     protected SpeexRecorder sRec = null;
-
-
     /**
      * 用来执行录音线程 注意：不可以将发送/读取的线程也放在这个里面，防止线程池被占满不能进行录音
      */
     private ExecutorService mExecutor = Executors.newSingleThreadExecutor();
+
+
 
     public Handler mHandler = new Handler(new Handler.Callback() {
         @Override

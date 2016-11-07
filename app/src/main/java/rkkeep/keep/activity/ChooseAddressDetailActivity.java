@@ -1,6 +1,7 @@
 package rkkeep.keep.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -85,8 +86,12 @@ public class ChooseAddressDetailActivity extends AppCompatActivity implements Vi
         initTitle();
         initBaidu();
         initInfo();
-        getGeoCoder(new LatLng(mPoiInfo.location.latitude, mPoiInfo.location.longitude));
         showMarker(new LatLng(mPoiInfo.location.latitude, mPoiInfo.location.longitude));
+        getGeoCoder(new LatLng(mPoiInfo.location.latitude, mPoiInfo.location.longitude));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(getResources().getColor(cn.xmrk.rkandroid.R.color.bg_title_bar));
+        }
     }
 
     //设置地图的中心点

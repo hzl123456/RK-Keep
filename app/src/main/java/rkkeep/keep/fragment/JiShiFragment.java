@@ -134,7 +134,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
             @Override
             public void OnViewHolderClick(NoticeBaseInfo baseInfo) {
                 if (dragHolder.size() == 0) {//当这个size为0的时候才可以是跳转
-                    activity.toAddNoticeInfoActivity(baseInfo.info,holder.itemView);
+                    activity.toAddNoticeInfoActivity(baseInfo.info,holder.layoutBae);
                 } else {
                     setDragHolder(baseInfo);
                 }
