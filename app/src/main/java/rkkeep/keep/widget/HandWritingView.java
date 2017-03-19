@@ -71,12 +71,8 @@ public class HandWritingView extends View {
      **/
     private void initPaint(int color, float width) {
         Paint mPaint = new Paint();
-        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setAntiAlias(true);
-        //设置图像抖动处理
-        mPaint.setDither(true);
-        //设置笔刷为圆形样式
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setColor(color);
         mPaint.setStrokeWidth(width);
         if (paints == null) {
@@ -208,38 +204,49 @@ public class HandWritingView extends View {
             initPaint(nowColor, nowStokeWidth);
         }
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            pointX = event.getX();
+            pointY = event.getY();
+
             //每次点击下去的时候都会生成一个path
             if (isClear) {
                 choosePath(event.getX(), event.getY());
             } else {
                 downPath = new DrawPath(new Path(), paints.size() - 1);
                 mPathInfos.add(0, downPath);
-                downPath.path.moveTo(event.getX(), event.getY());
-                downPath.points.add(new Point(event.getX(), event.getY()));
+                downPath.path.moveTo(pointX, pointY);
+                downPath.points.add(new Point(pointX, pointY));
             }
         } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
             if (isClear) {
                 choosePath(event.getX(), event.getY());
             } else {
-                pointX = event.getX();
-                pointY = event.getY();
-                downPath.path.lineTo(pointX, pointY);
-                downPath.path.moveTo(pointX, pointY);
-                downPath.points.add(new Point(pointX, pointY));
+                final float x = event.getX();
+                final float y = event.getY();
+
+                final float previousX = pointX;
+                final float previousY = pointY;
+
+                final float dx = Math.abs(x - previousX);
+                final float dy = Math.abs(y - previousY);
+
+                //两点之间的距离大于等于3时，生成贝塞尔绘制曲线
+                if (dx >= 3 || dy >= 3) {
+                    //设置贝塞尔曲线的操作点为起点和终点的一半
+                    float cX = (x + previousX) / 2;
+                    float cY = (y + previousY) / 2;
+
+                    //二次贝塞尔，实现平滑曲线；previousX, previousY为操作点，cX, cY为终点
+                    downPath.path.quadTo(previousX, previousY, cX, cY);
+
+                    //第二次执行时，第一次结束调用的坐标值将作为第二次调用的初始坐标值
+                    pointX = x;
+                    pointY = y;
+
+                    downPath.points.add(new Point(pointX, pointY));
+                }
             }
-            invalidate();
-        } else if (event.getAction() == MotionEvent.ACTION_UP) {//起来的时候结束一个path
-            if (isClear) {
-                choosePath(event.getX(), event.getY());
-            } else {
-                pointX = event.getX();
-                pointY = event.getY();
-                downPath.path.lineTo(pointX, pointY);
-                downPath.path.moveTo(pointX, pointY);
-                downPath.points.add(new Point(pointX, pointY));
-            }
-            invalidate();
         }
+        invalidate();
         return true;
     }
 

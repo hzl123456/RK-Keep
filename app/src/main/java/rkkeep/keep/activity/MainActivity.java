@@ -48,8 +48,7 @@ import rkkeep.keep.pojo.VideoInfo;
 import rkkeep.keep.util.UserInfoUtil;
 import rkkeep.keep.util.VoiceSetWindow;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     public static final String TRANSFORM_TYPE = "image";
 
@@ -64,7 +63,6 @@ public class MainActivity extends AppCompatActivity
     public final int NOTICE_HAND_WRITE = 13;
     public final int REQUEST_CODE_ASK_PERMISSIONS = 100;
 
-
     /**
      * 侧滑的头部使用
      **/
@@ -73,6 +71,7 @@ public class MainActivity extends AppCompatActivity
     private TextView tvTitle;
     private TextView tvContent;
     private Toolbar toolbar;
+
     //用户信息
     private UserInfo mUserInfo;
     private NavigationView navigationView;
@@ -143,8 +142,7 @@ public class MainActivity extends AppCompatActivity
             for (int i = 0; i < sp.length; i++) {
                 sp[i] = needToPer.get(i);
             }
-            requestPermissions(sp,
-                    REQUEST_CODE_ASK_PERMISSIONS);
+            requestPermissions(sp, REQUEST_CODE_ASK_PERMISSIONS);
         }
     }
 

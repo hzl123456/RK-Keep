@@ -397,6 +397,7 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
                 onBackPressed();
             }
         });
+
     }
 
     private void initTop() {
@@ -549,9 +550,7 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
                     }
                 }
             });
-
         }
-
     }
 
     //设置背景颜色
