@@ -129,7 +129,7 @@ public class SpeexRecorder implements Runnable {
 								return recorder;
 						}
 					} catch (Exception e) {
-						Log.e("bug:", rate + "Exception, keep trying.", e);
+						Log.e("bug:", rate + "Exception, keep.keystore trying.", e);
 					}
 				}
 			}

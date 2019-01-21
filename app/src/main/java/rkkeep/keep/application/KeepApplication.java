@@ -1,6 +1,7 @@
 package rkkeep.keep.application;
 
 import android.content.Intent;
+import android.os.Build;
 
 import com.baidu.mapapi.SDKInitializer;
 
@@ -53,6 +54,11 @@ public class KeepApplication extends RKApplication {
         //加载百度地图
         SDKInitializer.initialize(this);
         //启动后台服务
-        startService(new Intent(this, NoticeInfoService.class));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //android8.0以上通过startForegroundService启动service
+            startForegroundService(new Intent(this, NoticeInfoService.class));
+        } else {
+            startService(new Intent(this, NoticeInfoService.class));
+        }
     }
 }

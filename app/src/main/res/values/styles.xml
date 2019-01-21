@@ -1,5 +1,4 @@
-<resources>
-
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
@@ -38,7 +37,7 @@
     </style>
 
     <style name="AddNoticeActivity" parent="AppTheme.NoActionBar">
-
+        <item name="android:windowContentTransitions" tools:ignore="NewApi">true</item>
     </style>
 
     <style name="SerachImageButton">

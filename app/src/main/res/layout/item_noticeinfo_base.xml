@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_ripple_round"
-    android:clickable="true"
     android:minHeight="@dimen/action_size"
     android:orientation="vertical">
 
@@ -22,11 +21,9 @@
             android:id="@+id/rv_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="false"
             android:clipChildren="false"
             android:divider="@null"
             android:dividerHeight="3dp"
-            android:focusable="false"
             android:scrollbars="none" />
 
         <LinearLayout

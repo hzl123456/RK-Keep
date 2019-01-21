@@ -15,6 +15,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.transition.ArcMotion;
 import android.transition.ChangeBounds;
 import android.transition.Transition;
@@ -608,6 +609,11 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
 
 
     private void saveNoticeInfoAndBack() {
+        //标题和内容都为空将不会被保存
+        if (TextUtils.isEmpty(etTitle.getText().toString()) && TextUtils.isEmpty(etContent.getText().toString())) {
+            finish();
+            return;
+        }
         //新的消息需要设置消息id
         if (mNoticeInfo.infoId == 0) {
             mNoticeInfo.infoId = System.currentTimeMillis();
@@ -653,7 +659,6 @@ public class AddNoticeActivity extends BaseActivity implements View.OnClickListe
             mNoticeInfo.videoInfosString = null;
             mNoticeInfo.hasVideo = false;
         }
-
         dbHelper.saveNoticeInfo(mNoticeInfo);
         Intent intent = new Intent();
         intent.putExtra("data", mNoticeInfo);

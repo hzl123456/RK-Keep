@@ -1,5 +1,6 @@
 package rkkeep.keep.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import rkkeep.keep.pojo.NoticeInfo;
 /**
  * Created by Au61 on 2016/4/26.
  */
+@SuppressLint("SetTextI18n")
 public class JiShiFragment extends RecyclerViewFragment implements View.OnClickListener {
 
     protected View titleView;
@@ -68,9 +70,9 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         activity.getTitleBar().removeAllViews();
         if (titleEditView == null) {
             titleEditView = activity.getLayoutInflater().inflate(R.layout.title_jishi_edit, null);
-            ibColor = (ImageButton) titleEditView.findViewById(R.id.ib_color);
-            ibDelete = (ImageButton) titleEditView.findViewById(R.id.ib_delete);
-            tvTitleEdit = (TextView) titleEditView.findViewById(R.id.tv_title);
+            ibColor = titleEditView.findViewById(R.id.ib_color);
+            ibDelete = titleEditView.findViewById(R.id.ib_delete);
+            tvTitleEdit = titleEditView.findViewById(R.id.tv_title);
             ibColor.setOnClickListener(this);
             ibDelete.setOnClickListener(this);
             CommonUtil.setLongClick(ibColor, activity.getString(R.string.change_color));
@@ -93,9 +95,9 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         activity.getTitleBar().removeAllViews();
         if (titleView == null) {
             titleView = activity.getLayoutInflater().inflate(R.layout.title_jishi, null);
-            ibSearch = (ImageButton) titleView.findViewById(R.id.ib_search);
-            ibLayout = (ImageButton) titleView.findViewById(R.id.ib_layout);
-            tvTitleJishi = (TextView) titleView.findViewById(R.id.tv_title);
+            ibSearch = titleView.findViewById(R.id.ib_search);
+            ibLayout = titleView.findViewById(R.id.ib_layout);
+            tvTitleJishi = titleView.findViewById(R.id.tv_title);
             ibSearch.setOnClickListener(this);
             ibLayout.setOnClickListener(this);
             CommonUtil.setLongClick(ibSearch, activity.getString(R.string.search));
@@ -123,7 +125,6 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         return new NoticeInfoBaseViewHolder(View.inflate(parent.getContext(), R.layout.item_noticeinfo_base, null));
     }
 
-
     @Override
     protected void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final NoticeInfo info, int position) {
         final NoticeInfoBaseViewHolder holder = (NoticeInfoBaseViewHolder) viewHolder;
@@ -133,8 +134,8 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         holder.setOnViewHolderClickListener(new OnNoticeBaseViewClickListener() {
             @Override
             public void OnViewHolderClick(NoticeBaseInfo baseInfo) {
-                if (dragHolder.size() == 0) {//当这个size为0的时候才可以是跳转
-                    activity.toAddNoticeInfoActivity(baseInfo.info,holder.layoutBae);
+                if (dragHolder.size() == 0) { //当这个size为0的时候才可以是跳转
+                    activity.toAddNoticeInfoActivity(baseInfo.info, holder.layoutBae);
                 } else {
                     setDragHolder(baseInfo);
                 }
@@ -161,7 +162,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
         holder.tvTitle.setText(info.title);
         holder.tvContent.setText(info.content);
         //设置布局形式
-        boolean isVertical = true;
+        boolean isVertical;
         if (layoutManager.getSpanCount() == 1) {
             isVertical = true;
             holder.layoutNotice.setOrientation(LinearLayout.HORIZONTAL);
@@ -273,7 +274,7 @@ public class JiShiFragment extends RecyclerViewFragment implements View.OnClickL
             mDialog.setOnColorChooseListener(new ChangeColorDialog.OnColorChooseListener() {
                 @Override
                 public void OnChoose(String color) {
-                    NoticeInfo info = null;
+                    NoticeInfo info;
                     for (int i = 0; i < dragHolder.size(); i++) {
                         info = dragHolder.get(i).info;
                         info.color = color;

@@ -1,19 +1,23 @@
 package cn.xmrk.rkandroid.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 
 import java.io.File;
 
+import cn.xmrk.rkandroid.BuildConfig;
+
 /**
  * 照片工具
- *
- * @author 思落羽 2014年9月12日 上午9:07:04
  */
+@SuppressLint("IntentReset")
 public class PhotoUtil {
 
     public String fileName = "temp";// 一次操作只生成一个fileName,默认为temp
@@ -52,22 +56,32 @@ public class PhotoUtil {
         this.height = height;
     }
 
+    //设置输出的文件获取，这里主要是适配一个android7.0的
+    private void setOutputUrl(Intent intent, File outputFile) {
+        //如果在Android7.0以上,使用FileProvider获取Uri
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".FileProvider", outputFile);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+        } else {
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(outputFile));
+        }
+    }
+
     /**
      * 拍照
      */
-    public void takePhoto() throws IllegalAccessException {
+    public void takePhoto() {
         fileName = System.currentTimeMillis() + "temp";
-        if (!PhoneUtil.getSdcardWritable()) {
-            throw new IllegalAccessError("内存卡不可用");
-        }
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra("return-data", false);
         cameraIntent.putExtra("noFaceDetection", true);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempPath()));
-        if (mActivity == null)
+        setOutputUrl(cameraIntent, getTempPath());
+        if (mActivity == null) {
             mFragment.startActivityForResult(cameraIntent, requestTake);
-        else
+        } else {
             mActivity.startActivityForResult(cameraIntent, requestTake);
+        }
     }
 
     /**
@@ -77,29 +91,26 @@ public class PhotoUtil {
         Intent openAlbumIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         openAlbumIntent.putExtra("return-data", false);
         openAlbumIntent.setType("image/*");
-        if (mActivity == null)
+        if (mActivity == null) {
             mFragment.startActivityForResult(openAlbumIntent, requestPick);
-        else
+        } else {
             mActivity.startActivityForResult(openAlbumIntent, requestPick);
+        }
     }
 
     /**
-     * @param @param uri
-     * @return void
-     * @throws
-     * @Title: 裁剪图片
-     * @Description:设置图片的缩放
+     * 裁剪图片
      */
     public void cropPhoto(Uri uri) {
         fileName = System.currentTimeMillis() + "";// 最后都要经过裁剪，所以有个最终的fileName
         Intent intent = new Intent("com.android.camera.action.CROP");
-        // 下面需要判断哪个文件夹是否是存在的不存在则需要创建
-        intent.putExtra("output", Uri.fromFile(getTempPath())); // 裁剪完成保存位置
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        //下面需要判断哪个文件夹是否是存在的不存在则需要创建
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempPath()));
         intent.setDataAndType(uri, "image/*"); // 设置要裁剪的图片
         // crop为true是设置在开启的intent中设置显示的view可以剪裁
         intent.putExtra("crop", "true");
-        // aspectX aspectY 是宽高的比例
-        // outputX,outputY 是剪裁图片的宽高
         if (width > 0 && height > 0) {
             intent.putExtra("outputX", width);
             intent.putExtra("outputY", height);
@@ -108,11 +119,11 @@ public class PhotoUtil {
         }
         intent.putExtra("return-data", false);
         intent.putExtra("ouputFormat", Bitmap.CompressFormat.JPEG.toString());
-        // intent.putExtra("noFaceDetection", true);
-        if (mActivity == null)
+        if (mActivity == null) {
             mFragment.startActivityForResult(intent, requestCrop);
-        else
+        } else {
             mActivity.startActivityForResult(intent, requestCrop);
+        }
     }
 
     /**
@@ -127,7 +138,7 @@ public class PhotoUtil {
         if (!tempFileDir.isDirectory()) {
             tempFileDir.mkdirs();
         }
-        // 保存裁剪的图片名称为当前系统时间的毫秒值
+        //保存裁剪的图片名称为当前系统时间的毫秒值
         File tempFile = new File(tempFileDir.getAbsolutePath() + File.separator + fileName + ".jpg");
         tempFile.deleteOnExit();
         return tempFile;

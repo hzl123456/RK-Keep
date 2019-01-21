@@ -1,19 +1,37 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion rootProject.ext.compile_sdk_version
+    buildToolsVersion rootProject.ext.build_tools_Version
 
     defaultConfig {
-        applicationId "rkkeep.keep"
-        minSdkVersion 19
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0.1"
+        applicationId "com.hzl.rkkeep"
+        minSdkVersion rootProject.ext.min_sdk_version
+        targetSdkVersion rootProject.ext.target_sdk_version
+        versionCode 2
+        versionName "1.0.2"
     }
+
+    signingConfigs {
+        config {
+            storeFile file("rkkeep.keystore")
+            storePassword "123456"
+            keyAlias "rkkeep"
+            keyPassword "123456"
+        }
+    }
+
     buildTypes {
+
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.config
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
         release {
             minifyEnabled false
+            signingConfig signingConfigs.config
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -28,14 +46,11 @@ android {
 }
 
 dependencies {
-    repositories {
-        mavenCentral()
-    }
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':rkandroid')
-    compile project(':ColorPickerPreference')
-    compile files('libs/BaiduLBS_Android.jar')
-    compile 'com.linsea:universalvideoview:1.1.0@aar'
-    compile 'com.sothree.slidinguppanel:library:3.3.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':rkandroid')
+    implementation project(':ColorPickerPreference')
+    implementation files('libs/BaiduLBS_Android.jar')
+    implementation 'com.linsea:universalvideoview:1.1.0@aar'
+    implementation 'com.sothree.slidinguppanel:library:3.4.0'
 }
 

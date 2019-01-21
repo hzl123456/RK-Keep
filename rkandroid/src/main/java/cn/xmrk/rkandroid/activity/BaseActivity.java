@@ -47,9 +47,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setContentView(View view) {
         View contentView = getLayoutInflater().inflate(R.layout.app_bar_main, null);
         //加载头部，头部使用toolbar进行显示
-        titlebar = (Toolbar) contentView.findViewById(R.id.toolbar);
+        titlebar = contentView.findViewById(R.id.toolbar);
         //加载内容主体容器，并且将实际内容放进去
-        RelativeLayout contentLayout = (RelativeLayout) contentView.findViewById(R.id.layout_containert);
+        RelativeLayout contentLayout = contentView.findViewById(R.id.layout_containert);
         contentLayout.addView(view);
         super.setContentView(contentView);
         setSupportActionBar(titlebar);
@@ -109,8 +109,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         // 修复InputMethodManager导致的内存泄漏
         fixInputMethodManager(this);
-        // 内存泄露检测
-        RKApplication.getInstance().getRefWatcher().watch(this);
     }
 
     /**

@@ -3,10 +3,14 @@ package cn.xmrk.rkandroid.utils;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 
 import java.io.File;
+
+import cn.xmrk.rkandroid.BuildConfig;
 
 /**
  * Created by Au61 on 2016/5/18.
@@ -55,20 +59,28 @@ public class VideoUtil {
         return tempFile;
     }
 
-    public void takeVideo() throws IllegalAccessException {
-        if (!PhoneUtil.getSdcardWritable()) {
-            throw new IllegalAccessError("内存卡不可用");
-        }
+    /**
+     * 进行视频的录制
+     **/
+    public void takeVideo() {
         //创建一个文件路径，并且用fileName去保存它
         fileName = String.valueOf(System.currentTimeMillis());
         Intent intent = new Intent();
         intent.setAction("android.media.action.VIDEO_CAPTURE");
         intent.addCategory("android.intent.category.DEFAULT");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempPath()));
-        if (mActivity == null)
+        //如果在Android7.0以上,使用FileProvider获取Uri
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(mActivity, BuildConfig.APPLICATION_ID + ".FileProvider", getTempPath());
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+        } else {
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempPath()));
+        }
+        if (mActivity == null) {
             mFragment.startActivityForResult(intent, REQUEST_TAKE);
-        else
+        } else {
             mActivity.startActivityForResult(intent, REQUEST_TAKE);
+        }
     }
 
     /**
@@ -78,9 +90,10 @@ public class VideoUtil {
         Intent openAlbumIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         openAlbumIntent.putExtra("return-data", false);
         openAlbumIntent.setType("video/*");
-        if (mActivity == null)
+        if (mActivity == null) {
             mFragment.startActivityForResult(openAlbumIntent, REQUEST_PICK);
-        else
+        } else {
             mActivity.startActivityForResult(openAlbumIntent, REQUEST_PICK);
+        }
     }
 }

@@ -201,8 +201,7 @@ public class NoticeInfoDbHelper {
         Dao _dao = getNoticeInfoDao();
         try {
             QueryBuilder<NoticeInfo, Integer> _qb = _dao.queryBuilder();
-            Where _where = _qb.where()
-                    .eq("ownerId", getMsgOwner()).and().eq("infoId", infoId);
+            Where _where = _qb.where().eq("ownerId", getMsgOwner()).and().eq("infoId", infoId);
             return _qb.query().get(0).infoType;
         } catch (Exception e) {
             e.printStackTrace();

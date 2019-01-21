@@ -127,8 +127,7 @@ public class HandWritingView extends View {
         removePath = new ArrayList<>();
         measure(mBackBitmap.getWidth(), mBackBitmap.getHeight());
         //布局至中心
-        RelativeLayout.LayoutParams layoutParams =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins((getMaxWidth() - mBackBitmap.getWidth()) / 2, (getMaxHeight() - mBackBitmap.getHeight()) / 2, 0, 0);
         setLayoutParams(layoutParams);
         invalidate();

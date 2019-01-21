@@ -19,9 +19,9 @@ public class UserInfoUtil {
         //为空的话就预设置个
         if (getUserInfo() == null) {
             UserInfo info = new UserInfo();
-            info.userId = 1;
-            info.userName = "请叫我百米冲刺";
-            info.userIntro = "伟大不是去授予的，而是去赢取的。";
+            info.userId = -1;
+            info.userName = "未登录用户";
+            info.userIntro = "";
             setUserInfo(info);
         }
     }

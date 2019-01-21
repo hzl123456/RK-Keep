@@ -2,7 +2,6 @@ package cn.xmrk.rkandroid.application;
 
 import android.app.Application;
 
-import com.squareup.leakcanary.RefWatcher;
 
 import cn.xmrk.rkandroid.config.IRKConfig;
 import cn.xmrk.rkandroid.config.RKConfigHelper;
@@ -14,10 +13,6 @@ public abstract class RKApplication extends Application {
 
 	public static final RKApplication getInstance() {
 		return mApplication;
-	}
-
-	public RefWatcher getRefWatcher() {
-		return RKConfigHelper.getInstance().getRefWatcher();
 	}
 
 	@Override

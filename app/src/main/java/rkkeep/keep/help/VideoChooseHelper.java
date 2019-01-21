@@ -1,5 +1,6 @@
 package rkkeep.keep.help;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
@@ -22,6 +23,7 @@ import rkkeep.keep.util.VoiceUtil;
 /**
  * Created by Au61 on 2016/5/18.
  */
+@SuppressLint("HandlerLeak")
 public class VideoChooseHelper implements IMessageOperate, View.OnClickListener {
 
     private Snackbar mSnackbar;
@@ -36,7 +38,7 @@ public class VideoChooseHelper implements IMessageOperate, View.OnClickListener 
 
     private String videoPath;
 
-    public VideoChooseHelper(Activity activity,View view) {
+    public VideoChooseHelper(Activity activity, View view) {
         this.activity = activity;
         mVideoUtil = new VideoUtil(activity);
         mSnackbar = Snackbar.make(view, "正在加载视频文件", Snackbar.LENGTH_INDEFINITE);
@@ -64,7 +66,7 @@ public class VideoChooseHelper implements IMessageOperate, View.OnClickListener 
                 videoPath = mVideoUtil.getTempPath().getAbsolutePath();
                 setVideo(videoPath);
             } else if (requestCode == VideoUtil.REQUEST_PICK) {
-                videoPath = CommonUtil.uri2Path(data.getData());
+                videoPath = FileUtil.uri2Path(data.getData());
                 setVideo(videoPath);
             }
         }
@@ -79,7 +81,7 @@ public class VideoChooseHelper implements IMessageOperate, View.OnClickListener 
             @Override
             public void run() {
                 String imagePath = VoiceUtil.getImagePath() + System.currentTimeMillis() + ".png";
-                FileUtil.saveBmpToFilePng(CommonUtil.getVidioBitmap(Path,0, 0, 0), new File(imagePath));
+                FileUtil.saveBmpToFilePng(CommonUtil.getVidioBitmap(Path, 0, 0, 0), new File(imagePath));
                 mHandler.sendMessage(mHandler.obtainMessage(0, imagePath));
             }
         }).start();
@@ -101,11 +103,7 @@ public class VideoChooseHelper implements IMessageOperate, View.OnClickListener 
     @Override
     public void onClick(View v) {
         if (v == view.findViewById(R.id.layout_take)) {//图片拍照
-            try {
-                mVideoUtil.takeVideo();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            mVideoUtil.takeVideo();
         } else if (v == view.findViewById(R.id.layout_choose)) {//选择图片
             mVideoUtil.pickVideo();
         }

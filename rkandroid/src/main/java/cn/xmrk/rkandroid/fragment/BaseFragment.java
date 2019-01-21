@@ -41,13 +41,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // 内存泄露检测
-        RKApplication.getInstance().getRefWatcher().watch(this);
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         dispatchHide();
@@ -96,7 +89,6 @@ public abstract class BaseFragment extends Fragment {
      */
     protected void initOnCreateView(boolean isCreate) {
     }
-
 
     public void startActivity(Class<? extends Activity> actCls) {
         Context context = getActivity();

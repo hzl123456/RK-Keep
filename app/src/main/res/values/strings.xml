@@ -3,7 +3,6 @@
     <string name="navigation_drawer_open">open</string>
     <string name="navigation_drawer_close">close</string>
 
-
     <!--左侧的各个小标题-->
     <string name="nav_jishi">记事</string>
     <string name="nav_tixing">提醒</string>

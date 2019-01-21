@@ -126,7 +126,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @TargetApi(Build.VERSION_CODES.M)
     private void insertDummyContactWrapper() {
         //需要手动请求的权限，（相机，音频，文件读写,定位）
-        String[] needPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION};
+        String[] needPermission = new String[]{
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_FINE_LOCATION};
         //未允许使用的权限
         List<String> needToPer = new ArrayList<>();
         for (int i = 0; i < needPermission.length; i++) {
@@ -220,8 +225,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void setViews() {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
 
             @Override
             public void onDrawerStateChanged(int newState) {
@@ -449,8 +453,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CHOICE_PORTRAIT) {
-            mUserInfo.userPic = FileUtil.uri2Path(data.getData());
-            RKUtil.displayFileImage(FileUtil.uri2Path(data.getData()), ivHeader, R.drawable.ic_launcher);
+            if (data.getExtras().containsKey("imagePath")) {
+                mUserInfo.userPic = data.getExtras().get("imagePath").toString();
+            } else {
+                mUserInfo.userPic = FileUtil.uri2Path(data.getData());
+            }
+            Log.i("xxxx->", mUserInfo.userPic);
+            RKUtil.displayFileImage(mUserInfo.userPic, ivHeader, R.drawable.ic_launcher);
             UserInfoUtil.setUserInfo(mUserInfo);
         }
         if (mPictureChooseHelper != null) {
@@ -465,12 +474,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mFragment.addNoticeInfo(info);
         }
         if (resultCode == RESULT_OK && requestCode == NOTICE_EDIT) {//这里表示的是修改的
-            Log.i("ddd", "ddd");
             NoticeInfo info = (NoticeInfo) data.getExtras().get("data");
             RecyclerViewFragment mFragment = (RecyclerViewFragment) currentFragment;
             mFragment.updateNoticeInfo(info);
         }
-
         if (resultCode == RESULT_OK && requestCode == NOTICE_EDIT_LIST) {//这里是修改的list
             List<NoticeInfo> infos = (List<NoticeInfo>) data.getExtras().get("data");
             if (infos != null && infos.size() > 0) {

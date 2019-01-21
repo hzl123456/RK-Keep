@@ -11,7 +11,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -211,7 +210,7 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
         tvEmpty.setCompoundDrawablesWithIntrinsicBounds(0, getEmptyResourse(), 0, 0);
         swRefresh.setOnRefreshListener(this);
         //设置滚动不加载图片
-        rvContent.setOnScrollListener(new RecyclerViewPauseOnScrollListener(true,true));
+        rvContent.setOnScrollListener(new RecyclerViewPauseOnScrollListener(true, true));
     }
 
     protected RecyclerView.LayoutManager getLayoutManager() {
@@ -420,13 +419,13 @@ public abstract class RecyclerViewFragment extends BaseFragment implements Swipe
     private class LoadmoreViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public final ViewSwitcher vsLoadmore;
-        public final Button btnLoadmore;
+        public final TextView btnLoadmore;
 
         public LoadmoreViewHolder(View itemView) {
             super(itemView);
 
-            vsLoadmore = (ViewSwitcher) itemView.findViewById(R.id.vs_loadmore);
-            btnLoadmore = (Button) itemView.findViewById(R.id.btn_loadmore);
+            vsLoadmore = itemView.findViewById(R.id.vs_loadmore);
+            btnLoadmore = itemView.findViewById(R.id.btn_loadmore);
 
             btnLoadmore.setOnClickListener(this);
         }

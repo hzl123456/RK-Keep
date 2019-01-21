@@ -91,7 +91,7 @@ public class MuilGridAdapter extends BaseAdapter {
                 }
             }
         }
-        holder.layoutContent.setAdapter(new ImageViewAdapter(infos,false));
+        holder.layoutContent.setAdapter(new ImageViewAdapter(infos, false));
         return convertView;
     }
 

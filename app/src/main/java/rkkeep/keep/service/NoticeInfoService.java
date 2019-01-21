@@ -1,6 +1,7 @@
 package rkkeep.keep.service;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -23,29 +25,24 @@ import rkkeep.keep.db.NoticeInfoDbHelper;
 import rkkeep.keep.help.LocationHelper;
 import rkkeep.keep.pojo.NoticeInfo;
 
-/**
- * Created by Au61 on 2016/5/9.
- */
 public class NoticeInfoService extends Service {
+
+    //用于兼容android8.0的弹窗通知栏显示
+    private NotificationManager notificationManager;
+    private String notificationId = "channelId";
+    private String notificationName = "channelName";
+
 
     public NoticeInfoDbHelper mHelper;
 
     private LocationHelper mLocationHelper;
-
     private List<NoticeInfo> mData;
+    private boolean isLoading;
+    private boolean hasArun; //已经有了一个循环了
 
+    //获取唯一的service对象
     private static NoticeInfoService mService;
 
-    private boolean isLoading;
-
-    /**
-     * 已经有了一个循环了
-     **/
-    private boolean hasArun;
-
-    /**
-     * 获取唯一对象
-     **/
     public static NoticeInfoService getInstance() {
         return mService;
     }
@@ -60,8 +57,24 @@ public class NoticeInfoService extends Service {
     public void onCreate() {
         super.onCreate();
         mService = this;
+        //初始化定位相关的一些东东
         initHelper();
         initLocation();
+        //用于android8.0的前台服务使用
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(notificationId, notificationName, NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(channel);
+        }
+        startForeground(778899, getNotification());
+    }
+
+    private Notification getNotification() {
+        Notification.Builder builder = new Notification.Builder(this).setSmallIcon(R.drawable.ic_launcher);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setChannelId(notificationId);
+        }
+        return builder.build();
     }
 
     private void initLocation() {
@@ -84,7 +97,7 @@ public class NoticeInfoService extends Service {
                             try {
                                 //休眠2秒钟吧
                                 Thread.sleep(2000);
-                                NoticeInfo ntInfo = null;
+                                NoticeInfo ntInfo;
                                 if (mData != null && mData.size() > 0) {
                                     for (int i = 0; i < mData.size(); i++) {
                                         ntInfo = mData.get(i);
@@ -146,9 +159,6 @@ public class NoticeInfoService extends Service {
             public void run() {
                 int NOTIFICATION_ID = (int) System.currentTimeMillis();
                 RKApplication appliction = RKApplication.getInstance();
-                Context context = appliction.getApplicationContext();
-                CharSequence contentTitle = ntInfo.title;
-                CharSequence contentText = ntInfo.content;
 
                 // 点击后打开的项目 创建一个Intent
                 Intent notificationIntent = new Intent(appliction, AddNoticeActivity.class);
@@ -156,24 +166,18 @@ public class NoticeInfoService extends Service {
                 PendingIntent contentIntent = PendingIntent.getActivity(appliction, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
                 Bitmap bitmap = BitmapFactory.decodeResource(appliction.getResources(), R.drawable.ic_launcher);
 
-                NotificationManager notificationManager = (NotificationManager) appliction.getSystemService(Context.NOTIFICATION_SERVICE);
                 //创建通知
-                Notification.Builder mBuilder = new Notification.Builder(context)
+                Notification.Builder mBuilder = new Notification.Builder(appliction)
                         .setLargeIcon(bitmap)
                         .setSmallIcon(R.drawable.ic_launcher)
                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                         .setAutoCancel(true)
                         .setContentIntent(contentIntent);
 
-                Notification.BigPictureStyle btnPicStyle = new Notification.BigPictureStyle();
-                btnPicStyle.setBigContentTitle(contentTitle);
-                btnPicStyle.setSummaryText(contentText);
-
-                if (ntInfo.infos != null && ntInfo.infos.size() > 0) {
-                    Bitmap picBitamp = BitmapFactory.decodeFile(ntInfo.infos.get(0).imagePic);
-                    btnPicStyle.bigPicture(picBitamp);
+                //android8.0以上使用
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    mBuilder.setChannelId(notificationId);
                 }
-                mBuilder.setStyle(btnPicStyle);
                 notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
             }
         }).start();

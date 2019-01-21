@@ -162,14 +162,14 @@ public class SpeexDecoder {
 
 	protected static int readInt(final byte[] data, final int offset) {
 		/*
-		 * no 0xff on the last one to keep the sign
+		 * no 0xff on the last one to keep.keystore the sign
 		 */
 		return (data[offset] & 0xff) | ((data[offset + 1] & 0xff) << 8) | ((data[offset + 2] & 0xff) << 16) | (data[offset + 3] << 24);
 	}
 
 	protected static long readLong(final byte[] data, final int offset) {
 		/*
-		 * no 0xff on the last one to keep the sign
+		 * no 0xff on the last one to keep.keystore the sign
 		 */
 		return (data[offset] & 0xff) | ((data[offset + 1] & 0xff) << 8) | ((data[offset + 2] & 0xff) << 16) | ((data[offset + 3] & 0xff) << 24) | ((data[offset + 4] & 0xff) << 32)
 				| ((data[offset + 5] & 0xff) << 40) | ((data[offset + 6] & 0xff) << 48) | (data[offset + 7] << 56);
@@ -177,7 +177,7 @@ public class SpeexDecoder {
 
 	protected static int readShort(final byte[] data, final int offset) {
 		/*
-		 * no 0xff on the last one to keep the sign
+		 * no 0xff on the last one to keep.keystore the sign
 		 */
 		return (data[offset] & 0xff) | (data[offset + 1] << 8);
 	}

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
@@ -53,31 +52,6 @@ import cn.xmrk.rkandroid.config.RKConfigHelper;
 public class CommonUtil {
 
     protected static Toast toast;
-
-
-    /**
-     * uri转化为图片路径
-     *
-     * @return
-     */
-    public static String uri2Path(Uri uri) {
-        if (uri == null) {
-            return null;
-        }
-        if (StringUtil.isEqualsString(uri.getScheme(), "file")) {
-            return uri.getPath();
-        }
-        // 查询，返回cursor
-        String[] projection = {MediaStore.MediaColumns.DATA};
-        Cursor cursor = getAppContext().getContentResolver().query(uri, projection, null, null, null);
-        try {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            cursor.close();
-        }
-    }
 
     /**
      * 小于10的数字前面加0

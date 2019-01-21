@@ -3,9 +3,6 @@ package cn.xmrk.rkandroid.config;
 import android.app.Application;
 import android.content.Context;
 
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
-
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -42,29 +39,18 @@ public class RKConfigHelper implements IRKConfig {
         mInstance.context = context;
         mInstance.initExceptionHandler();
         mInstance.initLog4J();
-        mInstance.initRefWatcher();
     }
 
     private IRKConfig mRKConfig;
     private Application context;
 
     private final Logger log = Logger.getLogger(RKConfigHelper.class);
-    private RefWatcher mRefWatcher;
     private StatisticsConfig mStatisticsConfig;
-
-    protected void initRefWatcher() {
-        if (RKConfigHelper.getInstance().isLeakWatch()) {
-            mRefWatcher = LeakCanary.install(context);
-        } else {
-            mRefWatcher = RefWatcher.DISABLED;
-        }
-    }
 
 
     protected void initLog4J() {
         LogConfigurator logConfigurator = new LogConfigurator();
-        logConfigurator.setFileName(PackageUtil.getDir(context) + File.separator
-                + "log.txt");
+        logConfigurator.setFileName(PackageUtil.getDir(context) + File.separator + "log.txt");
         logConfigurator.setRootLevel(org.apache.log4j.Level.ALL);
         // 文件最大512kb
         logConfigurator.setMaxFileSize(512 * 1000);
@@ -79,7 +65,7 @@ public class RKConfigHelper implements IRKConfig {
 
     private void initExceptionHandler() {
         final Thread.UncaughtExceptionHandler dueh = Thread.getDefaultUncaughtExceptionHandler();
-		/* 处理未捕捉异常 */
+        /* 处理未捕捉异常 */
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 
             @Override
@@ -92,7 +78,7 @@ public class RKConfigHelper implements IRKConfig {
                     if (!path.isDirectory()) {
                         path.mkdirs();
                     }
-                    fos = new FileOutputStream(/* CommonUtil.getDir() */path.getAbsolutePath() + File.separator + "crash_log.txt", true);
+                    fos = new FileOutputStream(path.getAbsolutePath() + File.separator + "crash_log.txt", true);
                     ps = new PrintStream(fos);
                     ps.println(UnitUtil.getFullTimestamp(System.currentTimeMillis()));
                     ex.printStackTrace(ps);
@@ -114,12 +100,9 @@ public class RKConfigHelper implements IRKConfig {
         });
     }
 
-    public RefWatcher getRefWatcher() {
-        return mRefWatcher;
-    }
-
     /**
      * 设置统计分析配置
+     *
      * @return
      */
     public void setStatisticsConfig(StatisticsConfig config) {
@@ -128,6 +111,7 @@ public class RKConfigHelper implements IRKConfig {
 
     /**
      * 获取当前设置好的统计分析配置
+     *
      * @return
      */
     public StatisticsConfig getStatisticsConfig() {
